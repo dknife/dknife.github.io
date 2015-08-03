@@ -1,0 +1,34 @@
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Moon Phase</title>
+		<style type="text/css">canvas {border: 2px dotted blue;}</style>
+		<!-- Fragment Shader //-->
+		<script id="shader-fs" type="x-shader/x-fragment">
+		    #ifdef GL_ES
+		    precision highp float;
+		    #endif
+			void main() {
+				gl_FragColor = vec4(0.8, 0.8, 1.0, 1.0);
+			}
+		</script>
+		<!-- Vertex Shader //-->
+		<script id="shader-vs" type="x-shader/x-vertex">
+			attribute vec3 pos;
+			void main() {
+				gl_Position = vec4(pos, 2.0);
+			}
+		</script>
+		<script src="./moonPhaseCalculator.js"></script>
+		<link rel="stylesheet" href="./myCSS.css">
+	</head>
+	<body>
+		 <div id="page">
+		<h1>오늘 달님의 모양은…</h1>		
+		<script src="./textInfoDisplay.js"></script>	
+		<script src="./webGL.js"></script>
+		<canvas id="canvas" width=300 height=300>Canvas Not Supported</canvas>	
+		 </div>
+	</body>
+	
+</html>

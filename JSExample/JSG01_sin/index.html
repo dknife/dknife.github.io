@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <title>
+            Fast Sine Demonstration
+        </title>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js">
+        </script>
+        <style type="text/css">
+            #draw-target { width:480px; height:320px; background-color:#f00; position:relative;
+            }
+        </style>
+        <script type="text/javascript">
+            $(document).ready(
+                function() {
+                    (
+                        function() {                    
+                        // obtain a lookup table with 4096 steps
+                            var drawTarget = $('#draw-target'),
+                                divs = '',
+                                bars, x = 0;
+                            var drawGraph = function(ang, freq, height) {
+                                for (var i = 0; i < 480; i++) {
+                                    bars[i].style.top = (Math.sin(ang+(i*freq)) * height + 160) + 'px'; 
+                                    bars[i].style.height = 10 + 'pt';
+                                }
+                            };
+                            for (var i = 0; i < 480; i++) {
+                                divs += '<div style="position:absolute; width:1px; height:1px; ' + 'background-color:#0d0; top:0px; left: ' + i + 'px;"></div>';
+                            }
+                            drawTarget.append(divs);
+                            bars = drawTarget.children(); // 'divs' are referenced by 'bars'
+                            setInterval(function() {
+                                drawGraph(x * 50, 0.05, 80);
+                                x--;
+                            }, 40);
+                        }
+                    )();
+                }
+            );
+        </script>
+    </head>
+    
+    <body>
+    	<p>DHTML Demonstration with an animated effect.</p>
+     
+        <div id="draw-target">
+        </div>
+    </body>
+
+</html>

@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<html manifest = "tilepic.manifest">    <!-- Manifest file required for offline caching. -->
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>TilePic - A jQuery Mobile Game</title>
+    <script type="text/javascript" src="phonegap.0.9.4.js"></script>
+    
+    <script src="jquery-1.5.1.min.js"></script>
+	
+	<script type="text/javascript">
+		$(function() {
+			
+            var tileSize,   // Tile size in pixels.
+                numTiles,   // Number of tiles, e.g. 4 = 4 by 4 grid.
+                tilesArray, // An array of tile objects.
+                emptyGx,    // X position of empty tile space.
+                emptyGy,    // Y position of empty tile space.
+                imageUrl;   // Url of image to tile.
+            
+            var phoneObject = function() {
+                var	ready = false;
+                document.addEventListener("deviceready", function(){
+                    ready = true;					
+                }, false);
+                return {
+                    beep: function(n) {
+                        if(ready) {
+                            navigator.notification.beep(n);
+                        }
+                    },
+                    vibrate: function(n) {
+                        if(ready) {
+                            navigator.notification.vibrate(n);
+                        }
+                    }
+                }
+            }();
+            
+            // tileObj represents a single tile in the puzzle.
+            // gx and gy are the grid position of the tile.
+            var tileObj = function (gx, gy) {
+                // solvedGx and solvedGy are the grid coordinates
+                // of the tile in its 'solved' position.
+                var solvedGx = gx,
+                    solvedGy = gy,
+                    // Left and top represent the equivalent css pixel positions.
+                    left = gx * tileSize,
+                    top = gy * tileSize,
+                    $tile = $("<div class='tile'></div>"),
+
+                    that = {
+                        $element: $tile,
+                        gx: gx,
+                        gy: gy,
+                        
+                        // The move() method makes a tile move to a new grid position.
+                        // The use of animation is optional.
+                        move: function (ngx, ngy, animate) {
+                            that.gx = ngx;
+                            that.gy = ngy;
+                            tilesArray[ngy][ngx] = that;
+                            if (animate) {
+                                $tile.animate({
+                                    left: ngx * tileSize,
+                                    top: ngy * tileSize
+                                }, 250);
+                            } else {
+                                $tile.css({
+                                    left: ngx * tileSize,
+                                    top: ngy * tileSize
+                                });
+                            }
+                        },
+                        // The checkSolved() method returns true if the tile
+                        // is in the correct 'solved' position.
+                        checkSolved: function () {
+                            if (that.gx !== solvedGx || that.gy !== solvedGy) {
+                                return false;
+                            }
+                            return true;
+                        }
+                    };
+                // Set up the tile element's css properties.
+                $tile.css({
+                    left: gx * tileSize + 'px',
+                    top: gy * tileSize + 'px',
+                    width: tileSize - 2 + 'px',
+                    height: tileSize - 2 + 'px',
+                    backgroundPosition: -left + 'px ' + -top + 'px',
+                    backgroundImage: 'url(' + imageUrl + ')'
+                });
+                // Store a reference to the tileObj instance 
+                // in the jQuery DOM tile element.
+                $tile.data('tileObj', that);
+                // Return a reference to the tile object.
+                return that;
+            };
+            
+            // The checkSolved() function iterates throught all the tile objects
+            // and checks if all the tiles in the puzzle are solved.
+            var checkSolved = function () {
+                var gy, gx;
+                for (gy = 0; gy < numTiles; gy++) {
+                    for (gx = 0; gx < numTiles; gx++) {
+                        if (!tilesArray[gy][gx].checkSolved()) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            };
+
+            // When a tile is clicked on, the moveTiles() function will
+            // move one or more tiles into the empty space. This can be done
+            // with or without animation.
+            var moveTiles = function (tile, animate) {
+                var clickPos, x, y, dir, t;
+                // If empty space is on same vertical level as clicked tile,
+                // move tile(s) horizontally.
+                if (tile.gy === emptyGy) {
+                    clickPos = tile.gx;
+                    dir = tile.gx < emptyGx ? 1 : -1;
+                    for (x = emptyGx - dir; x !== clickPos - dir; x -= dir) {
+                        t = tilesArray[tile.gy][x];
+                        t.move(x + dir, tile.gy, animate);
+                    }
+                    // Update position of empty tile.
+                    emptyGx = clickPos;
+                }
+                // If empty space is on same horizontal level as clicked tile,
+                // move tile(s) vertically.
+                if (tile.gx === emptyGx) {
+                    clickPos = tile.gy;
+                    dir = tile.gy < emptyGy ? 1 : -1;
+                    for (y = emptyGy - dir; y !== clickPos - dir; y -= dir) {
+                        t = tilesArray[y][tile.gx];
+                        t.move(tile.gx, y + dir, animate);
+                    }
+                    // Update position of empty tile.
+                    emptyGy = clickPos;
+                }
+            };
+			
+			
+            // Randomly shuffles the tiles, ensuring that the puzzle
+            // is solvable. moveTiles() is called with no animation.
+            var shuffle = function () {
+                var randIndex = Math.floor(Math.random() * (numTiles - 1));
+                if (Math.floor(Math.random() * 2)) {
+                    moveTiles(tilesArray[emptyGx][(emptyGy + 1 + randIndex) % numTiles], false);
+                } else {
+                    moveTiles(tilesArray[(emptyGx + 1 + randIndex) % numTiles][emptyGy], false);
+                }
+            };
+	
+            // Initial setup. Clears picture frame of old tiles,
+            // creates new tiles and shuffles them.
+            var setup = function () {
+                var x, y, i;
+                imageUrl = $("input[name='pic-choice']:checked").val();
+                // Create a subtle watermark 'guide' image to make the puzzle
+                // a little easier.
+                $('#pic-guide').css({
+                    opacity: 0.2,
+                    backgroundImage: 'url(' + imageUrl + ')'
+                });
+                // Prepare the completed 'solved' image.
+                $('#well-done-image').attr("src", imageUrl);
+                // Remove all old tiles.
+                $('.tile', $('#pic-frame')).remove();
+                // Create new tiles.
+                numTiles = $('#difficulty').val();
+                tileSize = Math.ceil(280 / numTiles);
+                emptyGx = emptyGy = numTiles - 1;
+                tilesArray = [];
+                for (y = 0; y < numTiles; y++) {
+                    tilesArray[y] = [];
+                    for (x = 0; x < numTiles; x++) {
+                        if (x === numTiles - 1 && y === numTiles - 1) {
+                            break;
+                        }
+                        var tile = tileObj(x, y);
+                        tilesArray[y][x] = tile;
+                        $('#pic-frame').append(tile.$element);
+                    }
+                }
+                // Shuffle the new tiles randomly.
+                for (i = 0; i < 100; i++) {
+                    shuffle();
+                }
+            };
+			
+            var bindEvents = function () {
+                // Trap 'tap' events on the picture frame.
+                $('#pic-frame').bind('tap',function(evt) {            
+                    var $targ = $(evt.target);
+                    // Has a tile been tapped?
+                    if (!$targ.hasClass('tile')) return;
+                    // If a tile has been tapped, then move the appropriate tile(s).
+                    moveTiles($targ.data('tileObj'),true);                    
+                    // Check if the puzzle is solved.
+                    if (checkSolved()) {
+                    	// If puzzle solve, beep and vibrate.
+                    	phoneObject.beep(1);
+                    	phoneObject.vibrate(500);
+                    	// Pop up the well done screen.
+                        $.mobile.changePage("#well-done","pop");
+                    }
+                });
+                
+                $('#play-button').bind('click',setup);
+            };
+            bindEvents();
+            setup();
+
+		});
+	</script>
+    
+    <link rel="stylesheet" href="jquery.mobile-1.0a3/jquery.mobile-1.0a3.min.css" />
+	<script src="jquery.mobile-1.0a3/jquery.mobile-1.0a3.min.js"></script>
+
+	<style type="text/css">
+        label img {
+            margin-right:10px;
+        }
+        
+        #pic-frame {
+            width:280px;
+            height:280px;                     
+            position:relative;
+            left:0px;
+            top:0px;
+        }
+        
+        #pic-guide {
+            position:absolute;
+            backround-repeat:no-repeat;           
+            width:100%;
+            height:100%;   
+        }
+        
+        .tile {           
+            border:1px solid;
+            position:absolute;
+        }   
+        
+        #well-done {
+            position:relative;
+        }
+
+	</style>
+</head>
+<body>
+    
+    <!-- Menu page -->
+    <div id="menu" data-role="page">
+        <div data-role="header" data-backbtn="false">
+            <h1>
+                TilePic
+            </h1>
+        </div>
+        <div data-role="content">
+            <div id="pic-choice" data-role="fieldcontain">
+                <fieldset data-role="controlgroup">
+                    <legend>
+                        Choose Picture:
+                    </legend>
+                    <input type="radio" name="pic-choice" id="pic-choice-1" value="rhino.jpg"
+                    checked="checked" />
+                    <label for="pic-choice-1">
+                        <img width="32" src="rhino.jpg" />
+                        Rhino
+                    </label>
+                    <input type="radio" name="pic-choice" id="pic-choice-2" value="butterfly.jpg"
+                    />
+                    <label for="pic-choice-2">
+                        <img width="32" src="butterfly.jpg" />
+                        Butterfly
+                    </label>
+                    <input type="radio" name="pic-choice" id="pic-choice-3" value="otter.jpg"
+                    />
+                    <label for="pic-choice-3">
+                        <img width="32" src="otter.jpg" />
+                        Otter
+                    </label>
+                </fieldset>
+            </div>
+            <div data-role="fieldcontain">
+                <label for="difficulty" " class="select ">Choose Difficulty:</label>
+                <select name="difficulty "" id="difficulty">
+                    <option value="3">
+                        Easy (9 Tiles)
+                    </option>
+                    <option value="4" selected="1">
+                        Normal (16 Tiles)
+                    </option>
+                    <option value="5">
+                        Hard (25 Tiles)
+                    </option>
+                    </select>
+            </div>
+            <a id="play-button" href="#game" data-role="button">Play!</a>
+        </div>
+    </div>
+    
+    <!-- Game page -->
+    <div id="game" data-role="page" data-backbtn="false">
+        <div data-role="header" data-backbtn="false">
+            <h1>
+                TilePic
+            </h1>
+        </div>
+        <div data-role="content">
+            <div id="pic-frame">
+                <div id="pic-guide">
+                </div>
+            </div>
+            <a href="#menu" data-role="button">Main Menu</a>
+        </div>
+    </div>
+    
+    <!-- Well done popup page -->
+    <div id="well-done" data-role="page">
+        <div data-role="header" data-backbtn="false">
+            <h1>
+                TilePic - Solved!
+            </h1>
+        </div>
+        <div data-role="content">
+            <img id="well-done-image" width="280" height="280" />
+            <a href="#menu" data-role="button">Main Menu</a>
+        </div>
+    </div>
+    
+
+</body>
+</html>
