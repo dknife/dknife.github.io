@@ -25,15 +25,15 @@
 	<script src="./webGL.js"></script>
 	<body>
 		 <div id="page">
-		<h1>오늘 달님의 모양은…</h1>		
+		<h2>Moon Phase Today</h2>		
 		<script src="./textInfoDisplay.js"></script>	
 		<canvas id="canvas" width=475 height=475>Canvas Not Supported</canvas>	
 		<script type="text/javascript">
 		setInterval(draw("canvas"),40); 	
 		</script>
-		<h2> 오늘의 달님 모양</h2>
+		<h2> Moon Phase on an arbitrary date</h2>
 		<h2> </h2>
-		<ul> 임의의 날짜를 입력하세요
+		<ul> Select the date
 		<script src="./dateInput.js"></script>
 		</ul>
 		<ul id="feedback">Message: </ul>

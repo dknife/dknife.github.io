@@ -24,7 +24,7 @@ function moonPhase(date) {
 	
 	if( typeof date != 'undefined') {
 		var feedbackArea =document.getElementById("feedback");
-		if(feedbackArea) feedbackArea.textContent = "Moon Phase on thid date : "+phase;
+		if(feedbackArea) feedbackArea.textContent = "Moon Phase on this date : "+phase;
 	}
 	return phase;
 }
