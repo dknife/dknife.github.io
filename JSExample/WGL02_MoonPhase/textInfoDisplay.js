@@ -18,7 +18,7 @@ switch(monthNum) {
 	case 10: monthString = "November"; break;
 	case 11: monthString = "December"; break;
 }
-document.write("<ul><li>Today is "  + monthString +", " +today.getDate()+ "," + today.getFullYear() + "</li>");
+document.write("<ul><li>Today is "  + monthString + " " +today.getDate() + "," + today.getFullYear() + "</li>");
 document.write('<li>달님 상태는 <b><span id="moonPhase">'+phase+'</span></b></li>');
 document.write('<li>영민 - JavaScript+WebGL 연습</li></ul>');
 	
