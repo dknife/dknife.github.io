@@ -192,7 +192,17 @@ section {
   position: relative;
 }
 
+section ul {
+  color: #ff0000;
+  font-style: italic;
+}
+
 section ul li {
+  color: #000000;
+  font-style: normal;
+}
+  
+section ul li a {
   color: #000000;
 }
 
