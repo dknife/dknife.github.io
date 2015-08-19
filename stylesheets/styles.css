@@ -192,8 +192,12 @@ section {
   position: relative;
 }
 
+section ul li {
+  color: #000000;
+}
+
 h1, h2, h3, h4, h5, h6 {
-  color: #222;
+  color: #000000;
   padding: 0;
   margin: 0 0 20px;
   line-height: 1.2;
