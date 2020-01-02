@@ -2,7 +2,7 @@
     "use strict";
 
     // TODO: Add your ion access token from cesium.com/ion/
-    // Cesium.Ion.defaultAccessToken = '<YOUR ACCESS TOKEN HERE>';
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzM2IyMjg3Ni03NzI5LTRkOTgtYjI1YS0xNGIyMTIyMmNmMWMiLCJpZCI6MjA1NjEsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1Nzc3NzU3NDF9.5fkQPN4apqrj0_2hH0l2ByuL5E3LGaWnvvhThTqfUJQ';
 
     //////////////////////////////////////////////////////////////////////////
     // Creating the Viewer
