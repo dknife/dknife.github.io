@@ -12,11 +12,20 @@
     <script  type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=08ec2584224fb57383f85e217c144936"></script>
 
     <script type="text/javascript">
+
+        var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+        mapOption = {
+    	        center: new kakao.maps.LatLng(35.146497, 129.056171), // 지도의 중심좌표
+    	        level: 5, // 지도의 확대 레벨 
+    	    }; 
+        // 지도를 생성한다 
+        var map=new kakao.maps.Map(mapContainer, mapOption); 
+        
         function getMyLocation() { 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(myCallback);
             } else {
-                alert("지오로케이션이 지원되지 않습니다.");
+                document.getElementById("display").innerHTML = '위치를 찾을 수 없습니다.';
             }
         }
         function myCallback(myPosition) {
