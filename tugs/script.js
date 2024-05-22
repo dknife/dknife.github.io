@@ -1,5 +1,6 @@
 
 const gameBoard = document.getElementById('gameBoard')
+const cardSize = 100
 
 const cardsArray = [
 	'A', 'A', 'B', 'B',
@@ -33,7 +34,7 @@ function flipCard() {
 
 	//this.textContent = this.dataset.value;
 	let value = this.dataset.value;
-	let imgTag = `<img src=./${value}.jpg width=100>`;
+	let imgTag = `<img src=./${value}.jpg width=${cardSize}>`;
 	this.innerHTML = imgTag;
 	
 	this.classList.add('flipped');
@@ -54,7 +55,7 @@ function checkMatch() {
 		firstCard.classList.add('matched');
 		secondCard.classList.add('matched');
 		removeMsg(secondCard.dataset.value);
-		addMsg(secondCard.dataset.value);
+		addMsg(secondCard.dataset.value);		
 		resetBoard();
 	}
 	else {
@@ -82,7 +83,7 @@ function addMsg(value) {
 	msgBoard = document.getElementById('msgBoard');
 	const msg = document.createElement('p');
 	msg.classList.add(value);
-	msg.innerHTML = setMsg(value);	
+	msg.innerHTML = getMessage(value);	
 	msgBoard.appendChild(msg)
 	
 }
@@ -97,7 +98,7 @@ function removeMsg(value) {
 
 }
 
-function setMsg(value) {
+function getMessage(value) {
 	if (value == 'A') {
 		return '4년제 대학 최초의 게임교육을 실시한 동명대학교, 그 20년 게임교육 전통이 살아 있는 동명대학교 게임학부';
 	}

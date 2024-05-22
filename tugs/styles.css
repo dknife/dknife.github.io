@@ -1,7 +1,9 @@
+:root {
+  --cardSize: 100px;  
+}
+
 body {		
-	align-content: center;
-	justify-content: center;
-	align-items: center;
+
 	font-family: Arial, sans-serif;
 	background-color: #88ff88;
 }
@@ -9,13 +11,13 @@ body {
 .game-board {
 	align-items: center;
 	display: grid;
-	grid-template-columns: repeat(4, 100px);
+	grid-template-columns: repeat(4, var(--cardSize));
 	grid-gap: 10px;
 }
 
 .card {
-	width: 100px;
-	height: 100px;
+	width: var(--cardSize);
+	height: var(--cardSize) ;
 	background-color: #cccccc;
 	color: gray;
 	display: flex;
