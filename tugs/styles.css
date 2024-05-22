@@ -9,13 +9,13 @@ body {
 .game-board {
 	align-items: center;
 	display: grid;
-	grid-template-columns: repeat(4, 150px);
+	grid-template-columns: repeat(4, 100px);
 	grid-gap: 10px;
 }
 
 .card {
-	width: 150px;
-	height: 150px;
+	width: 100px;
+	height: 100px;
 	background-color: #cccccc;
 	color: gray;
 	display: flex;
