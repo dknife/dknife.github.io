@@ -62,9 +62,6 @@ function checkMatch() {
 		if(matchedItem<8) {
 			resetBoard();
 		}
-		else {
-			alert('드디어 다 찾아내셨네요!')
-		}
 	}
 	else {
 		setTimeout( 
@@ -89,7 +86,7 @@ function resetBoard() {
 
 function addMsg(value) {
 	msgBoard = document.getElementById('msgBoard');
-	const msg = document.createElement('p');
+	const msg = document.createElement('li');
 	msg.classList.add(value);
 	msg.innerHTML = getMessage(value);	
 	msgBoard.appendChild(msg)
@@ -131,4 +128,5 @@ function getMessage(value) {
 	if (value == 'H') {
 		return '무엇이든 실천할 수 있는 자기가 설계하는 Do-ing 교육 실현으로 나만의 공부, 체험, 도전이 가능한 동명 캠퍼스';
 	}
+	
 }
