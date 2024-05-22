@@ -27,12 +27,16 @@ body {
 	cursor: pointer;
 	position: relative;
 	border: 1px solid #000000;
+	transform: rotateY(0deg);
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
 }
 
 .card.flipped {
 	background-color: #eeeeee;
 	color: black;
 	cursor: default;
+	transform: rotateY(180deg);
 
 }
 

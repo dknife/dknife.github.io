@@ -18,6 +18,7 @@ for (cardValue of cardsArray) {
 let firstCard = null;
 let secondCard = null;
 let lockBoard = false;
+let matchedItem = 0;
 
 function createCard(cardValue) {
 	const card = document.createElement('div');
@@ -46,7 +47,7 @@ function flipCard() {
 	}
 	secondCard = this;
 	lockBoard = true;
-	checkMatch();
+	checkMatch()
 }
 
 function checkMatch() {
@@ -56,7 +57,14 @@ function checkMatch() {
 		secondCard.classList.add('matched');
 		removeMsg(secondCard.dataset.value);
 		addMsg(secondCard.dataset.value);		
-		resetBoard();
+		
+		matchedItem ++;
+		if(matchedItem<8) {
+			resetBoard();
+		}
+		else {
+			alert('드디어 다 찾아내셨네요!')
+		}
 	}
 	else {
 		setTimeout( 
