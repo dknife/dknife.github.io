@@ -33,7 +33,7 @@ function flipCard() {
 
 	//this.textContent = this.dataset.value;
 	let value = this.dataset.value;
-	let imgTag = `<img src=./${value}.jpg width=150>`;
+	let imgTag = `<img src=./${value}.jpg width=100>`;
 	this.innerHTML = imgTag;
 	
 	this.classList.add('flipped');
