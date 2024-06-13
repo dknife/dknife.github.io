@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tower of Hanoi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .towers {
+            display: flex;
+            justify-content: space-around;
+            width: 80%;
+        }
+        .tower {
+            display: inline-block;
+            width: 150px;
+            min-height: 250px;
+            border: 2px solid #000;
+            margin: 20px;
+            position: relative;
+        }
+        .disc {
+            position: absolute;
+            width: 80%;
+            height: 20px;
+            background-color: #f00;
+            margin: 2px auto;
+            border-radius: 5px;
+            left: 10%;
+        }
+        .controls {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="towers">
+            <div id="tower1" class="tower"></div>
+            <div id="tower2" class="tower"></div>
+            <div id="tower3" class="tower"></div>
+        </div>
+        <div class="controls">
+            <button onclick="solveHanoi()">Solve Tower of Hanoi</button>
+        </div>
+        <div id="moves"></div>
+    </div>
+    <script src="hanoi.js"></script>
+</body>
+</html>
