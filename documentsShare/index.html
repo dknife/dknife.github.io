@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>강영민 칼럼 — AI 시대의 사유</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:       #1a1612;
+      --ink-soft:  #3d3530;
+      --ink-muted: #7a6f66;
+      --rule:      #d4c8be;
+      --rule-dark: #8a7a70;
+      --paper:     #faf7f3;
+      --paper-warm:#f4ede3;
+      --accent:    #8b2e12;
+      --accent2:   #1e3a5f;
+      --gold:      #c4922a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    /* ── MASTHEAD ── */
+    .masthead {
+      background: var(--ink);
+      color: var(--paper);
+      text-align: center;
+      padding: 3rem 2rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .masthead::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 39px,
+        rgba(255,255,255,0.03) 40px
+      );
+    }
+    .masthead-label {
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .masthead-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-style: italic;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .masthead-subtitle {
+      font-family: 'Noto Serif KR', serif;
+      font-size: clamp(0.95rem, 2vw, 1.3rem);
+      font-weight: 300;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 2rem;
+    }
+    .masthead-rule {
+      width: 60px;
+      height: 1px;
+      background: var(--gold);
+      margin: 0 auto 1.5rem;
+    }
+    .masthead-byline {
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── NAV ── */
+    .nav-strip {
+      background: var(--paper-warm);
+      border-top: 3px solid var(--accent);
+      border-bottom: 1px solid var(--rule);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+    .nav-home {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      padding: 0.75rem 1.2rem 0.75rem 0;
+      border-right: 1px solid var(--rule);
+      margin-right: 0.5rem;
+      white-space: nowrap;
+    }
+    .nav-link {
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: var(--ink-muted);
+      text-decoration: none;
+      padding: 0.75rem 0.9rem;
+      border-radius: 2px;
+      transition: color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    .nav-link:hover { color: var(--ink); background: rgba(0,0,0,0.04); }
+    .nav-link.active { color: var(--accent); font-weight: 500; }
+
+    /* ── HERO LIST ── */
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem 2rem;
+    }
+    .section-label {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .section-rule {
+      border: none;
+      border-top: 2px solid var(--ink);
+      margin-bottom: 2rem;
+    }
+
+    /* Card grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    @media (max-width: 860px) {
+      .card-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--rule);
+      cursor: pointer;
+      transition: transform 0.25s, box-shadow 0.25s;
+      position: relative;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.10);
+    }
+    .card-accent-bar {
+      height: 4px;
+    }
+    .card:nth-child(1) .card-accent-bar { background: var(--accent); }
+    .card:nth-child(2) .card-accent-bar { background: var(--accent2); }
+    .card:nth-child(3) .card-accent-bar { background: var(--gold); }
+
+    .card-body { padding: 1.8rem 1.8rem 1.4rem; flex: 1; }
+    .card-issue {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-bottom: 0.8rem;
+    }
+    .card-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.55;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+    .card-excerpt {
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      line-height: 1.75;
+    }
+    .card-footer {
+      padding: 1rem 1.8rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-tag {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      padding: 0.25rem 0.6rem;
+      border-radius: 2px;
+    }
+    .card:nth-child(1) .card-tag { background: rgba(139,46,18,0.08); color: var(--accent); }
+    .card:nth-child(2) .card-tag { background: rgba(30,58,95,0.08); color: var(--accent2); }
+    .card:nth-child(3) .card-tag { background: rgba(196,146,42,0.12); color: #8a6010; }
+
+    .card-read {
+      font-size: 0.72rem;
+      color: var(--ink-muted);
+      font-weight: 400;
+    }
+
+    /* ── ARTICLE VIEW ── */
+    .articles-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem 5rem;
+    }
+
+    .article-wrapper {
+      margin-bottom: 5rem;
+      scroll-margin-top: 4rem;
+    }
+
+    .article-header {
+      padding: 3rem 0 2rem;
+      border-top: 2px solid var(--ink);
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 3rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: end;
+    }
+    @media (max-width: 640px) {
+      .article-header { grid-template-columns: 1fr; }
+    }
+    .article-num {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+    .article-wrapper:nth-child(1) .article-num { color: var(--accent); }
+    .article-wrapper:nth-child(2) .article-num { color: var(--accent2); }
+    .article-wrapper:nth-child(3) .article-num { color: var(--gold); }
+
+    .article-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--ink);
+    }
+    .article-meta {
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      text-align: right;
+      line-height: 1.9;
+    }
+    .article-meta strong {
+      display: block;
+      font-family: 'Noto Serif KR', serif;
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+    }
+
+    /* Two-column article body */
+    .article-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem 3.5rem;
+      column-gap: 3.5rem;
+    }
+    @media (max-width: 720px) {
+      .article-columns { grid-template-columns: 1fr; }
+    }
+
+    .article-body {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 0.97rem;
+      line-height: 2.0;
+      color: var(--ink-soft);
+      column-span: all;
+    }
+
+    /* Use CSS columns for article text */
+    .article-text {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 0.97rem;
+      line-height: 2.05;
+      color: var(--ink-soft);
+      columns: 2;
+      column-gap: 3.5rem;
+      column-rule: 1px solid var(--rule);
+    }
+    @media (max-width: 720px) {
+      .article-text { columns: 1; }
+    }
+
+    .article-text p {
+      margin-bottom: 1.2em;
+      break-inside: avoid;
+    }
+    .article-text p:first-child::first-letter {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 3.8em;
+      font-weight: 700;
+      float: left;
+      line-height: 0.78;
+      margin: 0.05em 0.1em -0.05em 0;
+      color: var(--ink);
+    }
+
+    .article-subhead {
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+      margin: 1.6em 0 0.4em;
+      padding-top: 1.4em;
+      border-top: 1px solid var(--rule);
+      break-before: column;
+    }
+
+    .article-pullquote {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.15rem;
+      font-weight: 500;
+      font-style: italic;
+      color: var(--accent);
+      border-left: 3px solid var(--accent);
+      padding: 0.6rem 1.2rem;
+      margin: 1.8rem 0;
+      line-height: 1.7;
+      break-inside: avoid;
+    }
+    .article-wrapper:nth-child(2) .article-pullquote {
+      color: var(--accent2);
+      border-color: var(--accent2);
+    }
+    .article-wrapper:nth-child(3) .article-pullquote {
+      color: #8a6010;
+      border-color: var(--gold);
+    }
+
+    .article-byline {
+      margin-top: 2.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      font-weight: 500;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+    }
+    footer strong { color: rgba(255,255,255,0.65); }
+
+    /* Back to top */
+    .back-top {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.72rem;
+      color: var(--gold);
+      text-decoration: none;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .back-top:hover { text-decoration: underline; }
+
+    /* Divider ornament */
+    .ornament {
+      text-align: center;
+      color: var(--rule-dark);
+      margin: 4rem 0 0;
+      font-size: 1rem;
+      letter-spacing: 0.5em;
+    }
+  </style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead" id="top">
+  <p class="masthead-label">강영민 칼럼 시리즈</p>
+  <h1 class="masthead-title">AI 시대의 사유</h1>
+  <p class="masthead-subtitle">확신·권위·판단 — 인공지능이 바꾸는 세 가지 조건</p>
+  <div class="masthead-rule"></div>
+  <p class="masthead-byline">강영민 · 동명대 교수(게임학부)</p>
+</header>
+
+<!-- NAV -->
+<nav class="nav-strip">
+  <div class="nav-inner">
+    <a class="nav-home" href="#top">칼럼 홈</a>
+    <a class="nav-link" href="#col1">① 확신을 부추기는 사회</a>
+    <a class="nav-link" href="#col2">② 인공지능의 권위</a>
+    <a class="nav-link" href="#col3">③ 전문가의 황혼</a>
+  </div>
+</nav>
+
+<!-- CARD LIST -->
+<section class="hero">
+  <p class="section-label">칼럼 목록</p>
+  <hr class="section-rule" />
+  <div class="card-grid">
+
+    <a class="card" href="#col1">
+      <div class="card-accent-bar"></div>
+      <div class="card-body">
+        <p class="card-issue">칼럼 01</p>
+        <h2 class="card-title">확신을 부추기는 사회</h2>
+        <p class="card-excerpt">확신이 강할수록 진실은 멀어진다. 의심은 연구자의 미덕에 머물지 않고, 우리 문명 자체의 안전장치가 된다.</p>
+      </div>
+      <div class="card-footer">
+        <span class="card-tag">미디어·민주주의</span>
+        <span class="card-read">읽기 →</span>
+      </div>
+    </a>
+
+    <a class="card" href="#col2">
+      <div class="card-accent-bar"></div>
+      <div class="card-body">
+        <p class="card-issue">칼럼 02</p>
+        <h2 class="card-title">인공지능의 권위가 시작됐다</h2>
+        <p class="card-excerpt">몰트북 실험, 바이브 코딩, 피지컬 AI — 에이전트 사회의 등장과 "AI가 그렇게 말했기 때문"이라는 새로운 권위.</p>
+      </div>
+      <div class="card-footer">
+        <span class="card-tag">AI 에이전트·군사</span>
+        <span class="card-read">읽기 →</span>
+      </div>
+    </a>
+
+    <a class="card" href="#col3">
+      <div class="card-accent-bar"></div>
+      <div class="card-body">
+        <p class="card-issue">칼럼 03</p>
+        <h2 class="card-title">전문가의 황혼 — 추론하는 AI와 판단력의 위기</h2>
+        <p class="card-excerpt">지식의 민주화가 판단력의 외주화로 전락할 때, 우리가 잃는 것은 전문직 일자리가 아니라 인간 집단의 판단 능력 자체다.</p>
+      </div>
+      <div class="card-footer">
+        <span class="card-tag">전문직·과학·책임</span>
+        <span class="card-read">읽기 →</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ARTICLES -->
+<main class="articles-section">
+
+  <!-- ── COL 1 ── -->
+  <article class="article-wrapper" id="col1">
+    <div class="article-header">
+      <div>
+        <p class="article-num">칼럼 01 · 미디어와 민주주의</p>
+        <h2 class="article-title">확신을 부추기는 사회</h2>
+      </div>
+      <div class="article-meta">
+        <strong>강영민</strong>
+        동명대 교수(게임학부)
+      </div>
+    </div>
+
+    <div class="article-text">
+      <p>확신은 종종 지적 성취의 얼굴로 등장한다. 오만할 정도로 단정적인 문장, 흔들림 없는 태도를 유지하며 반대자에겐 간단히 '무지한 자'라는 딱지를 붙이고 손쉽게 승리를 선언한다. 그러나 확신이 강할수록 진실은 멀어진다. 확신은 질문을 멈추게 하기 때문이다. 그런데 이것이 개인의 지적 노력의 문제에 머물지 않고, 사회 전반의 미디어 환경이 '확신을 증폭시키는 기계'로 재편되고 있다는 점이 걱정이다.</p>
+
+      <p>현실의 많은 영역에서 믿을 만한 이해를 제공하는 과학의 핵심은 의심이다. 과학은 "완전히 이해했다"는 선언을 하지 않고, 그 결론은 '지금까지 관찰된 사실을 가장 잘 설명하는 잠정적 이해'일 뿐이다. 모든 지식을 반증과 재검증의 심판대 위에서 언제든 깨어질 수 있는 취약한 존재로 두었기에 어떤 방법보다 견고한 설명이 가능하다.</p>
+
+      <p>철학 역시 "나는 모른다"라는 자각 위에 서 있다. 회의(懷疑)는 철학의 가장 강력한 도구이며, 확신의 폭주를 통제한다. 과학과 철학은 인류가 서로 다른 견해를 다룰 때, 폭력적 선동과 충돌이 아니라 합리적 논증으로 조정하는 사회제도를 확립하는 토대가 되었다. 이렇게 의심은 연구자의 미덕에 머물지 않고, 우리 문명 자체의 안전장치가 된 것이다.</p>
+
+      <div class="article-pullquote">검증은 느리고 번거롭지만, 확신은 빠르고 달콤하기에 반응의 강도만 수익화한다.</div>
+
+      <p>미디어는 정반대의 방향으로 달리고 있다. 진실을 확인하기 위해 불확실성을 견디는 지적 훈련은 약해지고, 즉각적인 확신을 소비하는 문화가 만연하다. 공론장이라 불리던 공간은 수익만을 좇는 '자극의 경매장'이 되어 간다. 사실보다는 분노할 것을 사냥하고, 정확성보다는 확신에 편승하려고만 한다.</p>
+
+      <p>그 결과로 얻는 세계는 무책임한 단정이 책임 있는 설명을 이기는 곳이다. 그 폐해가 가장 잘 드러나는 곳이 정치이다. 정당들끼리 갈라지고, 그 안에서도 원수처럼 계파와 진영이 쪼개지지만, 이유는 모호하다. 정치가 논쟁해야 할 것은 정책인데, 지금은 사람의 이름만 남는다.</p>
+
+      <p>이런 토양은 음모론이 번식하기에 최적이다. 음모론은 증거가 부족할수록 반증을 회피하기 쉽다는 점을 악용한다. 검증이 중요하지 않은 사회에서 음모론은 주장만으로 생존한다. 그리고 모든 반대 증거는 '조작'이나 '가짜'라는 딱지만 붙이면 된다. 이때 음모론은 정체성 장치이다. 설득하는 것이 아니라 믿어줄 사람만 모아 그들에게 '깨어 있는 나'라는 우월감을 제공한다.</p>
+
+      <p>적을 향한 감정이 혐오로 굳어지는 순간, 음모론적 사고는 공동체를 좀먹는 방식으로 기능한다. "취업이 어렵다, 삶이 불안하다, 사회가 불공정하다." 이 복잡한 문제들의 이유는 설명하기는 어렵지만, 이것에 대해 분노하는 것은 누구나 할 수 있다. 혐오는 설명의 부재를 폭력적 확신으로 대체하는 가장 값싼 방식이다.</p>
+
+      <p>최근 미국에서 벌어진 한 사건은 이 위험한 결합이 어떤 방식으로 현실 정치에서 폭발적으로 드러날 수 있는지 보여준다. 2026년 1월 미니애폴리스에서 연방 이민 단속 과정에서 미국 시민 두 명이 잇달아 피격 사망하였다. 목격자들이 촬영한 다수의 현장 영상에서 두 사람이 단속 요원들을 폭력적으로 공격을 했다는 증거를 확인할 수 없다.</p>
+
+      <p>그러나 당국은 이들을 테러리스트로 규정하려는 발언들을 내어놓는다. 이것은 증거를 통한 검증이라는 토론의 무대가 사라진 시대를 보여준다. 정치인들의 메시지는 진실이 아니라 자신들을 더 믿게 만드는 선전과 낙인일 뿐이다.</p>
+
+      <p>미디어 환경의 위기는 인공지능의 등장으로 더욱 복잡해지고 있다. 인공지능은 본질적으로 확신을 출력하는 것이 아니라, 가장 그럴듯한 결과를 출력한다. 그러나 그럴듯함의 신뢰도가 높아질수록 사람들은 이 신기한 기술을 사실을 찾아주는 기계로 착각한다.</p>
+
+      <p>이 위험을 상징적으로 보여준 사례가 2024년 미국 뉴햄프셔 경선 로보콜 사건이다. 당시 유권자의 투표를 방해하는 취지의 메시지에 인공지능이 생성한 조 바이든 대통령 음성이 사용되었다. 중요한 점은 "기술이 거짓말을 더 그럴듯하게 만들었다"는 사실이 아니라, 기술이 오도할 수 있는 정보가 순식간에 퍼질 때 이를 바로잡는 사실 검증의 속도가 너무 느리다는 점이다.</p>
+
+      <p>그렇다면 무엇이 필요한가. 단순히 시대에 부합하는 '정보 기술 교육'만으로는 부족하다. 지금 필요한 것은 시민적 교양으로서의 의심이며, 반박 가능성을 환영하는 문화다. 단정의 쾌감을 경계하고, 설명의 어려움을 감수하며, "내 믿음이 틀릴 수도 있다"는 생각을 대화의 기본 문법으로 복원해야 한다.</p>
+
+      <p>굳은 신념에 근거한 실천이 중요한 종교·도덕·이념의 영역에서도 겸허함을 잃지 않아야 한다. 과학의 위대함은 오히려 무엇을 할 수 없는지 경계를 인정하는 겸허함에 있다. 그것들이 겸허함을 잃고, 마치 진리를 독점한 듯 주장하는 순간 비극은 불가피하다는 것이 역사적 교훈이다.</p>
+
+      <p>이것은 개인의 문제가 아니다. 사회 구조가 확신을 부추긴다면 사람들은 그렇게 반응할 수밖에 없다. 미디어 플랫폼의 책임에 대한 재설계가 필요하다. 분노와 혐오로 확신을 확산시키는 언어에 경제적 보상이 따라오는 구조를 바꾸어야 한다. 이 문제는 규제가 아니라 '표현의 자유'와 '공적 안전'의 균형 문제이다.</p>
+
+      <div class="article-pullquote">오늘의 위기는 지식의 부족이 아니라 "틀릴 수도 있다"는 문장을 견딜 능력의 상실이다.</div>
+
+      <p>확신은 개인에게는 편안함을, 집단에는 결속을 주지만, 그 대가로 진실을 잃게 만든다. 그 문장을 회복하지 못한다면, 음모론과 혐오는 계속 확신의 언어로 자신을 정당화하며, 공론장의 폐허 위에서 번성할 것이다.</p>
+
+      <p>미래를 위해 필요한 것은 거창한 구호가 아니라, 느리더라도 정확함을 선택하는 사회적 습관이다. 의심은 냉소나 반대의 도구가 아니라, 책임이다. 그리고 민주주의는 그 책임을 감당할 때에만 견딜 수 있다.</p>
+    </div>
+
+    <p class="article-byline">강영민 · 동명대 교수(게임학부)</p>
+    <div class="ornament">— ✦ —</div>
+  </article>
+
+  <!-- ── COL 2 ── -->
+  <article class="article-wrapper" id="col2">
+    <div class="article-header">
+      <div>
+        <p class="article-num">칼럼 02 · AI 에이전트와 군사</p>
+        <h2 class="article-title">인공지능의 권위가 시작됐다</h2>
+      </div>
+      <div class="article-meta">
+        <strong>강영민</strong>
+        동명대 교수(게임학부)
+      </div>
+    </div>
+
+    <div class="article-text">
+      <p>인공지능은 이제 질문에 그럴듯한 답이나 내는 수준을 벗어나고 있다. 2026년을 시작하며 가장 논쟁적인 주제로 떠오른 것은 몰트북(Moltbook)이었다. Moltbook은 인간이 자신의 AI 에이전트에게 권한을 위임해 활동하게 하는 지능형 에이전트 전용 인터넷 커뮤니티 플랫폼이다. 많은 사람들은 낯선 장면을 목격했다. 마치 인간처럼 소셜미디어에서 활동하는 인공지능 계정들이 폭발적으로 늘어나더니 글을 올리고, 서로 대화하며, 답을 달고, 심지어 새로운 주제를 제안하며 토론을 이어갔다.</p>
+
+      <p>더 놀라운 점은 이 몰트북 환경 자체가 사람이 직접 개발하지 않고 그저 어떤 느낌의 프로그램을 만들어 달라고 인공지능에게 요청해서 만드는 이른바 '바이브 코딩'의 산물이라는 점이다. 많은 사람들은 인공지능이 더 이상 수동적 답변을 생성하는 데에 머무르지 않는 세상을 체험하기 시작했다. 스스로 목표를 설정하고, 도구를 호출하고, 다른 인공지능이나 인간과 상호작용하며 활동하는 능동적 행위자(agent)로 행동하기 시작했다는 사실에 놀랐다.</p>
+
+      <p>시간이 조금 지나자 이 충격의 상당 부분이 기대와 과장이 뒤섞인 것이라는 사실도 드러났다. 인간의 개입이 없는 소셜 네트워크라고 했지만 직간접적으로 인간이 개입한 증거가 대량 발견되었고, 바이브 코딩은 만능이 아니었다. 몰트북은 오히려 '바이브 코딩'의 결과를 검증 없이 바로 배포하여 심각한 보안 취약점이나 구조적 결함을 피하지 못한 사례가 되었다. 기술이 빠르게 확산할수록 인간의 검증 능력이 그 속도를 따라가지 못하는 순간이 생길 수 있다는 경고는 무시하기 어렵다.</p>
+
+      <div class="article-pullquote">인공지능은 지금 새로운 활용 단계로 이동하고 있다. 소프트웨어 에이전트가 로봇·드론과 연결되는 순간, 우리는 실존적 실체를 가진 개체와 상호작용하는 시대에 들어가게 된다.</div>
+
+      <p>그럼에도 불구하고 한 가지 사실만큼은 분명하다. 인공지능은 지금 새로운 활용 단계로 이동하고 있다. 이 변화는 곧 또 다른 단계로 이어질 가능성이 높다. 바로 몸을 가진 피지컬 인공지능의 결합이다. 소프트웨어 공간에서 작동하는 에이전트가 로봇, 드론, 자동화 설비 같은 물리적 시스템과 연결되는 순간 우리는 더 이상 프로그램을 사용하는 것이 아니라 실존적 실체를 가진 인공지능 개체와 상호작용하는 시대에 들어가게 된다.</p>
+
+      <p>문제는 이 변화가 인간을 뛰어넘는 기계의 등장이라는 이야기에 머물지 않고, 인류가 처음으로 다른 집단을 살상하고 소멸시키는 능력을 가진 존재와 조우하게 할 수 있다는 점이다. 인공지능은 이미 무기를 고도화하는 핵심기술이다. 우크라이나 전쟁에서는 드론과 영상 분석 시스템에 인공지능이 활용되고 있고, 중동 지역에서는 AI 기반 표적 식별 기술이 실제 작전에 적용됐다는 논쟁이 이어지고 있다.</p>
+
+      <p>미국의 AI 기업 앤스로픽(Anthropic)은 자사의 모델이 자율무기나 공격적 군사 시스템에 사용되는 것에 강한 제한을 두겠다는 입장을 밝혔지만, 미국 정부는 그 기술을 동원하겠다는 의지를 노골적으로 드러내고 있다. 국가 안보와 기술 윤리 사이에서 기업이 어디까지 협력해야 하는지를 둘러싼 논쟁이 본격적으로 시작된 것이다. 전쟁 전략을 설계하는 데 인공지능이 사용될 때 책임은 누구에게 있는가.</p>
+
+      <p>더 깊은 문제는 따로 있다. 인공지능의 발전은 인간을 단순히 대체하는 것이 아니라, 인간을 의사결정의 주변부로 밀어내고 있다. 금융 거래, 의료 진단, 정책 분석, 군사 전략까지 점점 더 많은 영역에서 인간은 결정을 내리는 존재라기보다 알고리즘의 판단을 받아들이는 존재가 되어가고 있다.</p>
+
+      <p>인류의 역사에서 권위는 여러 번 바뀌어 왔다. 종교가 도덕의 권위를 제공했고, 학문과 과학이 진리의 권위를 제공했다. 그런데 지금 우리는 또 다른 권위가 등장하는 순간을 지나고 있는지도 모른다. 바로 "인공지능이 그렇게 말했기 때문"이라는 권위다. 사람들은 점점 더 자신의 판단보다 알고리즘의 분석을 신뢰한다.</p>
+
+      <p>인공지능은 인간이 만든 데이터를 통해 세상을 배운다. 인류의 역사에서 인간이 가장 능숙하게 반복해 온 것은 전쟁과 권력, 그리고 그 전쟁을 정당화하는 명분이었다. 인간에게 인공지능보다 나은 능력이 그것만 남았다면, 인공지능은 결국 그것까지 배우게 될 것이다. 그리고 인공지능은 인간보다 더 빠르게 계산하고, 더 냉정하게 전략을 세울 것이다.</p>
+
+      <div class="article-pullquote">인공지능이 위협적인 것이 아니라, 그들이 마침내 우리를 배우게 되는 것이 위험한 것이 아닌가.</div>
+
+      <p>인공지능의 미래. 아직까지는 그 선택권이 인간에게 남아 있다. 그 선택은 적어도 두 가지를 포함해야 한다. 첫째, 인공지능이 전쟁과 살상을 효율화하는 방법을 학습하지 않게 제한하는 것. 둘째, 강대국의 무력을 다국적 규범으로 제어하는 인류의 노력이 껍데기로 전락하지 않게 만드는 것이다. 이는 이상주의가 아니라, 핵확산금지조약이 보여준 것처럼 불가능하지만 필수적인 과제다.</p>
+
+      <p>쉽지 않을 것이다. 하지만 쉽지 않다고 외면할 수는 없다. 인공지능이 우리의 역사를 배우기 전에, 우리는 다른 역사를 만들어 보여야 한다.</p>
+    </div>
+
+    <p class="article-byline">강영민 · 동명대 교수(게임학부)</p>
+    <div class="ornament">— ✦ —</div>
+  </article>
+
+  <!-- ── COL 3 ── -->
+  <article class="article-wrapper" id="col3">
+    <div class="article-header">
+      <div>
+        <p class="article-num">칼럼 03 · 전문직과 과학</p>
+        <h2 class="article-title">전문가의 황혼 — 추론하는 AI와 판단력의 위기</h2>
+      </div>
+      <div class="article-meta">
+        <strong>강영민</strong>
+        동명대 교수(게임학부)
+      </div>
+    </div>
+
+    <div class="article-text">
+      <p>2025년을 거치며 인공지능에서 가장 두드러진 변화는 '추론(reasoning)'이라는 단어의 부상이었다. OpenAI의 o3, 앤스로픽의 Claude 3.7, 구글의 Gemini 2.0 같은 모델들은 단순히 답을 생성하는 수준을 넘어 문제를 단계별로 분해하고, 스스로 검토하고 수정하며, 틀릴 경우 다시 생각하는 방식으로 작동하기 시작했다. 이것이 진정한 사고인지에 대한 논쟁은 계속되지만, 실용적 결과는 명확하다. 이제 AI는 단순한 정보 검색이 아니라, 판단이 필요한 문제를 처리하기 시작했다.</p>
+
+      <p>이 변화는 기술 사양의 업그레이드가 아니다. 사회적 위치의 이동이다. 의료 영역에서는 AI가 특정 암의 영상 진단에서 일부 전문의와 동등하거나 그 이상의 정확도를 보인다는 연구가 계속 발표되고 있다. 법률 분야에서는 계약서 검토와 판례 분석에서 AI 보조 시스템이 사람 변호사보다 빠르고 광범위한 결과를 내놓는다. 과학 연구에서는 알파폴드3 이후로 단백질 구조 예측을 넘어 신약 설계, 재료 탐색, 임상 가설 생성까지 AI가 개입하기 시작했다.</p>
+
+      <p>이 변화들이 본격화되면서 전문직 시장에는 이미 눈에 보이는 균열이 생기고 있다. 엔트리 레벨의 법무, 의료 검토, 재무 분석 일자리가 줄고 있다는 신호가 곳곳에서 나온다. 그러나 더 중요한 것은 일자리의 문제가 아니다. 이 변화가 전문가라는 존재의 사회적 위치를 흔들기 시작했다는 점이다.</p>
+
+      <div class="article-pullquote">오류를 저지르는 전문가가 없는 것과, 오류를 잡아낼 전문가가 없는 것은 전혀 다른 문제다.</div>
+
+      <p>오랫동안 전문가는 두 가지를 제공했다. 지식과 판단이다. 지식은 수련과 경험을 통해 오랜 시간을 들여야만 축적됐고, 그 희소성이 전문가의 권위를 만들었다. 판단은 그 지식을 맥락에 맞게 적용하는 능력이다. AI는 이 두 가지 중 지식의 영역을 빠르게 장악하고 있다. 추론 AI의 등장으로 판단의 영역에서도 그 경계가 흐려지고 있다.</p>
+
+      <p>앞선 칼럼에서 나는 "AI가 그렇게 말했기 때문"이라는 권위의 등장을 경고한 바 있다. 전문 영역에서 이 위험은 더욱 구체적이다. 의사가 진단을 내릴 때 환자는 질문할 수 있다. 왜 그렇게 생각하는지, 다른 가능성은 없는지를 물을 수 있고, 의사는 설명해야 할 의무가 있다. 그러나 AI가 진단을 내릴 때, 특히 그 AI가 자신보다 훨씬 많은 케이스를 학습한 것으로 알려져 있을 때, 질문은 점점 더 어색해진다.</p>
+
+      <p>이것은 AI의 오류 가능성 문제가 아니다. 더 근본적인 문제는 AI의 판단을 검증할 수 있는 능력 자체가 사회에서 사라지기 시작할 수 있다는 점이다. 전문가가 필요 없어지는 속도보다 전문가를 키우는 교육 시스템이 대응하는 속도가 느리다면, 우리는 결국 AI를 판단할 수 있는 사람이 없는 사회를 만들게 된다.</p>
+
+      <p>AI가 전문 지식의 접근성을 높인다는 논리는 설득력이 있다. 고액의 변호사나 의사를 만날 수 없는 사람들도 AI를 통해 전문적 도움을 받을 수 있게 된다면, 이것은 지식의 민주화다. 그러나 이 낙관론에는 한 가지 사각지대가 있다. 지식의 민주화가 판단력의 외주화로 이어질 때, 우리가 잃는 것은 전문직 일자리가 아니라 인간 집단의 판단 능력 자체다.</p>
+
+      <p>농업이 산업화되면서 우리는 먹거리를 직접 생산하는 능력을 잃었다. 그 결과 특정 공급망이 끊기면 단기간에 심각한 취약성이 드러난다. 전문적 판단이 AI에 외주화될 때도 같은 구조가 만들어진다. AI 시스템이 작동하지 않거나, 잘못된 방향으로 학습되거나, 특정 세력에 의해 통제될 때, 그것을 교정할 인간의 능력이 남아 있어야 한다.</p>
+
+      <div class="article-pullquote">빠른 지식의 생산이 신뢰할 수 있는 지식의 감소로 이어지는 역설이 현실이 되고 있다.</div>
+
+      <p>특히 우려되는 영역은 과학 연구다. AI가 가설을 생성하고, 실험을 설계하고, 데이터를 분석하는 전 과정에 깊이 개입하기 시작할 때, 과학이라는 인간의 집단적 인식 활동이 AI의 편향을 내재화할 위험이 생긴다. AI를 활용한 논문의 수가 폭발적으로 증가하면서 동료 심사(peer review)의 부담이 이미 임계점에 도달하고 있다는 우려가 학계에서 나오고 있다는 점이 심각하다.</p>
+
+      <p>앞선 칼럼에서 나는 "확신은 질문을 멈추게 한다"고 썼다. 지금 과학의 현장에서 AI는 가장 설득력 있는 확신의 언어로 말한다. 방대한 데이터, 정교한 통계, 시각화된 결론. 그 언어를 의심하는 훈련이 뒷받침되지 않는다면, 과학조차 확증 편향의 새로운 도구가 될 수 있다.</p>
+
+      <p>그렇다면 무엇을 해야 하는가. 첫째, AI 리터러시는 AI를 사용하는 방법을 가르치는 것에 머물러서는 안 된다. AI의 판단을 검증하고 비판하는 능력을 가르쳐야 한다. 둘째, 전문가 교육의 목적이 바뀌어야 한다. AI가 이미 잘 하는 것을 가르치는 데 수련의 대부분을 쓰는 것은 낭비다. 전문가의 역할은 지식을 저장하고 검색하는 것에서 AI의 판단을 감독하고 책임지는 것으로 이동해야 한다. 셋째, AI 판단에 대한 책임의 구조를 명확히 해야 한다. AI가 내린 의료 진단이 틀렸을 때 누가 책임지는가. 이 질문들은 기술의 문제가 아니라 사회 제도의 문제다.</p>
+
+      <p>추론하는 AI의 등장은 단순히 더 똑똑한 도구의 등장이 아니다. 그것은 오랫동안 인간의 전유물로 여겨졌던 전문적 판단의 영역에 기계가 본격적으로 개입하기 시작했다는 선언이다. 지식의 민주화가 판단력의 외주화로 전락하지 않으려면, 우리는 AI를 잘 쓰는 능력만큼이나 AI에게 맡기지 말아야 할 것을 지키는 능력을 보존해야 한다.</p>
+
+      <p>AI에게 판단을 맡기는 것은 편리하다. 그러나 그 편리함의 대가가 인간 집단의 판단 능력 상실이라면, 이것은 개인의 선택 문제가 아니다. 의심의 근육을 쓰지 않으면 그것은 결국 퇴화한다. 민주주의가 "틀릴 수도 있다"는 문장을 견딜 능력 위에 서 있다면, 전문 지식 사회는 "AI도 틀릴 수 있다"는 문장을 실제로 검증할 능력 위에 서야 한다. 그 능력을 유지하는 것, 그것이 추론하는 AI 시대에 인간이 놓쳐서는 안 되는 마지막 전문성이다.</p>
+    </div>
+
+    <p class="article-byline">강영민 · 동명대 교수(게임학부)</p>
+    <div class="ornament">— ✦ —</div>
+  </article>
+
+  <div style="text-align:center; margin-top: 3rem;">
+    <a class="back-top" href="#top">↑ 맨 위로</a>
+  </div>
+</main>
+
+<footer>
+  <strong>강영민 칼럼 — AI 시대의 사유</strong><br />
+  동명대학교 교수 · 게임학부
+</footer>
+
+<script>
+  // Highlight active nav link on scroll
+  const sections = ['col1','col2','col3'];
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.25 });
+
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
