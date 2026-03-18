@@ -1,0 +1,2231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARES 자문 결과보고서 — 부록: 소스코드</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Noto+Serif+KR:wght@400;700&display=swap">
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/xml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/css.min.js"></script>
+</head>
+<body>
+
+<!-- ── 고정 헤더 ───────────────────────────────────── -->
+<header class="site-header">
+  <div class="site-header-inner">
+    <span class="site-header-logo">ARES</span>
+    <span class="site-header-sub">
+      <a href="index.html" style="color:var(--muted-text)">← 본문으로</a>
+      &nbsp;|&nbsp; 부록: 소스코드
+    </span>
+  </div>
+</header>
+
+<div class="page-wrap">
+
+<div class="appendix-header">부록 — 소스코드 전문</div>
+
+<div style="text-align:center; margin-bottom: 32px;">
+  <a href="index.html#appendix"
+     style="display:inline-block; border:1.5px solid var(--mars-red); color:var(--mars-red);
+            font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:14px;
+            padding:9px 28px; border-radius:4px; text-decoration:none;
+            letter-spacing:0.03em;">
+    ← 본문으로 돌아가기
+  </a>
+</div>
+
+<!-- ── 목차 ─────────────────────────────────────────── -->
+<nav class="toc-section">
+  <h2>부록 목차</h2>
+  <ol>
+    <li><a href="#appA">펌웨어 소스코드 (Pico Source)</a>
+      <ol>
+        <li><a href="#appA1">핵심 애플리케이션</a> — main.py, process_data.py</li>
+        <li><a href="#appA2">시스템 관리</a> — hardware.py, system_config.py, pins.py</li>
+        <li><a href="#appA3">하드웨어 드라이버</a> — wheel.py, buzzer.py, ultrasonic.py, magsensor.py, leds.py, dcmotor.py, gun.py</li>
+        <li><a href="#appA4">서드파티 라이브러리</a> — ssd1306.py, icon.py</li>
+      </ol>
+    </li>
+    <li><a href="#appB">웹 서비스 소스코드 (Web Source)</a>
+      <ol>
+        <li><a href="#appB1">HTML 페이지</a> — index.html, main.html, dashboard.html</li>
+        <li><a href="#appB2">JavaScript 모듈</a> — state.js, constants.js, elements.js, logger.js, bluetooth.js, commandexecutor.js, blocklyconfig.js, main.js</li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+
+
+<!-- ══════════════════════════════════════════════════
+     A. 펌웨어 소스코드
+══════════════════════════════════════════════════ -->
+<section id="appA" class="appendix-section">
+  <div class="section-title">
+    <div class="section-num">A</div>
+    <h2>펌웨어 소스코드 (Pico Source)</h2>
+  </div>
+  <p>펌웨어는 MicroPython으로 작성되었으며, Raspberry Pi Pico W 보드에서 실행된다. UART 블루투스 통신, 하드웨어 드라이버, 시스템 설정 관리 등의 모듈로 구성된다.</p>
+
+  <!-- A.1 핵심 애플리케이션 -->
+  <h3 id="appA1">A.1 핵심 애플리케이션</h3>
+
+  <div class="code-caption">main.py — 메인 애플리케이션 루프</div>
+  <pre><code class="language-python"># ARES 로버 메인 애플리케이션
+
+from machine import UART, Pin
+import utime
+from process_data import CommandProcessor
+from hardware import robot
+from pins import UART_TX_PIN, UART_RX_PIN
+
+UART_ID = 0
+UART_BAUDRATE = 9600
+MAIN_LOOP_DELAY_MS = 10
+RECEIVE_TIMEOUT_MS = 50
+MAX_BUFFER_SIZE = 512
+
+
+class AresRover:
+    """ARES 로버 메인 애플리케이션 클래스"""
+
+    def __init__(self):
+        self.uart = UART(UART_ID, baudrate=UART_BAUDRATE,
+                         tx=Pin(UART_TX_PIN), rx=Pin(UART_RX_PIN))
+        self.processor = CommandProcessor()
+        self.robot = robot
+        self.is_running = False
+        self.rx_buffer = ""
+
+    def boot(self):
+        """부팅 시퀀스 실행"""
+        if self.uart.any():
+            print("Cleaning UART buffer...")
+            while self.uart.any():
+                self.uart.read()
+        self.rx_buffer = ""
+        self._safe_stop_all_motors()
+        self.robot.buzzer.boot_sound()
+        self.robot.oled.fill(0)
+        self.robot.oled.text("ARES READY", 0, 0)
+        self.robot.oled.show()
+        print("ARES Rover: Waiting for data...")
+        self.is_running = True
+
+    def _safe_stop_all_motors(self):
+        self.robot.stop_all()
+
+    def _read_uart_line(self):
+        """UART에서 완전한 라인 읽기"""
+        if not self.uart.any():
+            return None
+        while self.uart.any():
+            chunk = self.uart.read()
+            if chunk:
+                self.rx_buffer += chunk.decode('utf-8', 'ignore')
+            if len(self.rx_buffer) > MAX_BUFFER_SIZE:
+                print("[UART] 버퍼 오버플로우, 초기화")
+                self.rx_buffer = ""
+                return None
+            utime.sleep_ms(5)
+        utime.sleep_ms(RECEIVE_TIMEOUT_MS)
+        while self.uart.any():
+            chunk = self.uart.read()
+            if chunk:
+                self.rx_buffer += chunk.decode('utf-8', 'ignore')
+        if '\n' in self.rx_buffer:
+            idx = self.rx_buffer.index('\n')
+            complete_line = self.rx_buffer[:idx].strip()
+            self.rx_buffer = self.rx_buffer[idx + 1:]
+            return complete_line
+        if self.rx_buffer:
+            data = self.rx_buffer.strip()
+            if data and not data.endswith(','):
+                self.rx_buffer = ""
+                return data
+        return None
+
+    def _is_status_message(self, data):
+        return data.startswith('+')
+
+    def _send_response(self, response):
+        """UART로 응답 전송 (20바이트 청킹)"""
+        data = response.encode('utf-8') + b'\n'
+        CHUNK_SIZE = 20
+        for i in range(0, len(data), CHUNK_SIZE):
+            self.uart.write(data[i:i + CHUNK_SIZE])
+            utime.sleep_ms(10)
+
+    def _process_command(self, data):
+        try:
+            print(f"[CMD] {data}")
+            result = self.processor.process(data)
+            return f"{result}"
+        except Exception as e:
+            print(f"처리 오류: {e}")
+            return "ERROR"
+
+    def run(self):
+        self.boot()
+        while self.is_running:
+            try:
+                data = self._read_uart_line()
+                if not data:
+                    pass
+                elif self._is_status_message(data):
+                    print(f"BT 상태: {data}")
+                else:
+                    response = self._process_command(data)
+                    self._send_response(response)
+            except Exception as e:
+                print(f"UART 오류: {e}")
+            utime.sleep_ms(MAIN_LOOP_DELAY_MS)
+
+
+if __name__ == "__main__":
+    app = AresRover()
+    app.run()</code></pre>
+
+  <div class="code-caption">process_data.py — UART 명령 파싱 및 실행</div>
+  <pre><code class="language-python"># ARES 로버 명령 처리기
+
+import utime
+import time
+from hardware import robot
+from system_config import sys_config
+
+PWM_MAX = 65535
+
+
+class CommandProcessor:
+    """UART 명령 파싱 및 실행 클래스"""
+
+    def __init__(self):
+        pass
+
+    def _get_speed_pwm(self):
+        spd = sys_config.get('max_speed') / 100.0
+        return int(spd * PWM_MAX)
+
+    def process(self, data):
+        """명령 처리 및 결과 반환"""
+        if data == "PING":          return self._handle_ping()
+        elif data == "READY":       return "READY"
+        elif data == "STOP_ALL":    return self._handle_stop_all()
+        elif data == "GET_STATUS":  return self._handle_get_status()
+        elif data == "GET_SYS":     return self._handle_get_sys()
+        elif data == "GET_MODULES": return self._handle_get_modules()
+        elif data.startswith("SYS_SET"):    return self._handle_sys_set(data)
+        elif data.startswith("SET_PIN"):    return self._handle_set_pin(data)
+        elif data.startswith("SET_MODULE"): return self._handle_set_module(data)
+        elif data.startswith("BUZZER_ON"):  return self._handle_buzzer_on(data)
+        elif data.startswith("SING"):       return self._handle_sing()
+        elif data == "DISTANCE":
+            return f"DIST:{robot.distance_sensor.get_distance()}" if robot.distance_sensor else "DIST:ERROR"
+        elif data == "MAGNET":
+            return f"MAG:{robot.mag_sensor.detect()}" if robot.mag_sensor else "MAG:ERROR"
+        # 서보 이동 (시간 제한)
+        elif data.startswith("SERVO_tFORWARD"): return self._handle_timed_wheel(data, "forward")
+        elif data.startswith("SERVO_tBACKWARD"): return self._handle_timed_wheel(data, "backward")
+        elif data.startswith("SERVO_tRIGHT"):   return self._handle_timed_wheel(data, "right")
+        elif data.startswith("SERVO_tLEFT"):    return self._handle_timed_wheel(data, "left")
+        # 레거시 호환
+        elif data.startswith("tFORWARD"):  return self._handle_timed_wheel(data, "forward")
+        elif data.startswith("tBACKWARD"): return self._handle_timed_wheel(data, "backward")
+        elif data.startswith("tRIGHT"):    return self._handle_timed_wheel(data, "right")
+        elif data.startswith("tLEFT"):     return self._handle_timed_wheel(data, "left")
+        # 서보 이동 (연속)
+        elif data == "SERVO_FORWARD":  return self._handle_continuous_wheel("forward")
+        elif data == "SERVO_BACKWARD": return self._handle_continuous_wheel("backward")
+        elif data == "SERVO_LEFT":     return self._handle_continuous_wheel("left")
+        elif data == "SERVO_RIGHT":    return self._handle_continuous_wheel("right")
+        elif data == "SERVO_STOP":
+            robot.wheel.stop(); return 1
+        # 레거시 호환
+        elif data == "FORWARD":  return self._handle_continuous_wheel("forward")
+        elif data == "BACKWARD": return self._handle_continuous_wheel("backward")
+        elif data == "LEFT":     return self._handle_continuous_wheel("left")
+        elif data == "RIGHT":    return self._handle_continuous_wheel("right")
+        elif data == "STOP":
+            robot.wheel.stop(); return 1
+        # DC 모터
+        elif data.startswith("DC_tFORWARD"):  return self._handle_timed_dcmotor_new(data, "forward")
+        elif data.startswith("DC_tBACKWARD"): return self._handle_timed_dcmotor_new(data, "backward")
+        elif data == "DC_FORWARD":  return self._handle_main_motor("forward")
+        elif data == "DC_BACKWARD": return self._handle_main_motor("backward")
+        elif data == "DC_STOP":
+            robot.dcmotor.dc_stop(); return 1
+        # 레거시 DC 모터
+        elif data.startswith("DCMOTOR"):  return self._handle_dcmotor(data)
+        elif data.startswith("tDCMOTOR"): return self._handle_timed_dcmotor(data)
+        elif data == "MAIN_FORWARD":  return self._handle_main_motor("forward")
+        elif data == "MAIN_BACKWARD": return self._handle_main_motor("backward")
+        elif data == "MAIN_STOP":
+            robot.dcmotor.dc_stop(); return 1
+        # 캘리브레이션
+        elif data.startswith("CALIB_START"): return self._handle_calib_start()
+        elif data.startswith("CALIB_SET"):   return self._handle_calib_set(data)
+        # LED
+        elif data == "LED_PATTERN":
+            robot.leds.swipe_effect(); return 1
+        elif data.startswith("MAIN_LED_ON"):  return self._handle_main_led_on(data)
+        elif data == "MAIN_LED_OFF":          return self._handle_main_led_off(data)
+        elif data.startswith("LED_ON"):       return self._handle_led_on(data)
+        elif data.startswith("LED_OFF"):      return self._handle_led_off(data)
+        elif data.startswith("["):            return self._handle_led_pattern(data)
+        # 디스플레이
+        elif data == "CLEAR_DISPLAY":
+            robot.oled.fill(0); robot.oled.show(); return 1
+        elif data.startswith("MSG,"):         return self._handle_msg(data)
+        # 전투
+        elif data.startswith("GUN_FIRE"):
+            if robot.gun: robot.gun.fire_once()
+            return 1
+        # 대기
+        elif data.startswith("SLEEP"):        return self._handle_sleep(data)
+        return 0
+
+    def _handle_ping(self):
+        if robot.oled:
+            robot.oled.fill(0)
+            robot.oled.text("CONNECTED!", 0, 0)
+            robot.oled.text(str(sys_config.get('device_name')), 0, 16)
+            robot.oled.show()
+        return 1
+
+    def _handle_stop_all(self):
+        robot.stop_all()
+        if robot.oled:
+            robot.oled.fill(0)
+            robot.oled.text("EMERGENCY STOP", 0, 0)
+            robot.oled.show()
+        return 1
+
+    def _handle_get_status(self):
+        s = robot.get_status_dict()
+        return f"STATUS,{s['dist']},{s['mag']},{s['temp']},{s['mem']},{s['uptime']}"
+
+    def _handle_get_sys(self):
+        c = sys_config.config
+        l_cal = c.get('left_calibration', 100)
+        r_cal = c.get('right_calibration', 100)
+        return f"SYS_VALUES,{c['max_speed']},{c['collision_dist']},{c['auto_stop']},{c['device_name']},{l_cal},{r_cal}"
+
+    def _handle_get_modules(self):
+        try:
+            info = sys_config.get_module_info()
+            result = "MODULES,"
+            for module, data in info.items():
+                status = "ON" if data['enabled'] else "OFF"
+                result += f"{module}:{status},"
+            return result.rstrip(',')
+        except Exception as e:
+            return "MODULES,ERROR"
+
+    def _handle_sys_set(self, data):
+        try:
+            parts = data.split(',')
+            if len(parts) >= 5:
+                sys_config.save_config(parts[1], parts[2], parts[3], ",".join(parts[4:]))
+                return 1
+        except Exception as e:
+            print(f"SYS_SET 오류: {e}")
+        return 0
+
+    def _handle_set_pin(self, data):
+        try:
+            parts = data.split(',')
+            if len(parts) >= 3:
+                if sys_config.set_pin(f"pin_{parts[1]}", int(parts[2])):
+                    return f"PIN_SET,{parts[1]},{parts[2]}"
+        except Exception as e:
+            print(f"SET_PIN 오류: {e}")
+        return "PIN_SET,ERROR"
+
+    def _handle_set_module(self, data):
+        try:
+            parts = data.split(',')
+            if len(parts) >= 3:
+                if sys_config.enable_module(parts[1], int(parts[2])):
+                    return f"MODULE_SET,{parts[1]},{'ON' if int(parts[2]) else 'OFF'}"
+        except Exception as e:
+            print(f"SET_MODULE 오류: {e}")
+        return "MODULE_SET,ERROR"
+
+    def _handle_buzzer_on(self, data):
+        if not robot.buzzer: return 0
+        try:
+            argv = data.split(',')
+            robot.buzzer.start(freq=int(float(argv[1])), duration=float(argv[2]), vol=50000)
+            while robot.buzzer.is_playing:
+                robot.buzzer.update()
+                utime.sleep_ms(10)
+            return 1
+        except Exception as e:
+            return 0
+
+    def _handle_sing(self):
+        if not robot.buzzer: return 0
+        if robot.oled:
+            robot.oled.fill(0); robot.oled.text("Singing...", 0, 0); robot.oled.show()
+        robot.buzzer.halamadrid()
+        return 1
+
+    def _handle_timed_wheel(self, data, direction):
+        if not robot.wheel: return 0
+        try:
+            sec = float(data.split(',')[1])
+            spd = sys_config.get('max_speed') / 100.0
+            getattr(robot.wheel, {'forward':'forward','backward':'backward',
+                                   'right':'turn_right','left':'turn_left'}[direction])(speed=spd)
+            time.sleep(sec)
+            robot.wheel.stop()
+            return 1
+        except: return 0
+
+    def _handle_continuous_wheel(self, direction):
+        if not robot.wheel: return 0
+        spd = sys_config.get('max_speed') / 100.0
+        getattr(robot.wheel, {'forward':'forward','backward':'backward',
+                               'right':'turn_right','left':'turn_left'}[direction])(speed=spd)
+        return 1
+
+    def _handle_timed_dcmotor_new(self, data, direction):
+        if not robot.dcmotor: return 0
+        try:
+            sec = float(data.split(',')[1])
+            pwm_val = self._get_speed_pwm()
+            if direction == "forward": robot.dcmotor.dc_forward(pwm_val)
+            else: robot.dcmotor.dc_backward(pwm_val)
+            time.sleep(sec)
+            robot.dcmotor.dc_stop()
+            return 1
+        except: return 0
+
+    def _handle_main_motor(self, direction):
+        if not robot.dcmotor: return 0
+        pwm_val = self._get_speed_pwm()
+        if direction == "forward": robot.dcmotor.dc_forward(pwm_val)
+        else: robot.dcmotor.dc_backward(pwm_val)
+        return 1
+
+    def _handle_calib_start(self):
+        if not robot.wheel or not robot.oled: return 0
+        robot.oled.fill(0); robot.oled.text("Calibration...", 0, 0); robot.oled.show()
+        robot.wheel.forward(speed=0.1)
+        time.sleep(3)
+        robot.wheel.stop()
+        robot.oled.text("Done", 0, 16); robot.oled.show()
+        return 1
+
+    def _handle_calib_set(self, data):
+        if not robot.wheel: return 0
+        try:
+            parts = data.split(',')
+            sys_config.save_calibration(int(parts[1]), int(parts[2]))
+            robot.wheel.update_factors(int(parts[1]), int(parts[2]))
+            return 1
+        except: return 0
+
+    def _handle_main_led_on(self, data):
+        if not robot.leds: return 0
+        try:
+            parts = data.split(',')
+            robot.leds.main_led_on(float(parts[1]) if len(parts) > 1 else 1.0)
+            return 1
+        except: return 0
+
+    def _handle_main_led_off(self, data):
+        if not robot.leds: return 0
+        robot.leds.main_led_off(); return 1
+
+    def _handle_led_on(self, data):
+        if not robot.leds: return 0
+        try:
+            parts = data.split(',')
+            led_num = int(parts[1])
+            brightness = max(0.0, min(1.0, float(parts[2]) if len(parts) > 2 else 1.0))
+            if 0 <= led_num <= 4:
+                robot.leds.leds[led_num].duty_u16(int(65535 * brightness))
+            return 1
+        except: return 0
+
+    def _handle_led_off(self, data):
+        if not robot.leds: return 0
+        try:
+            parts = data.split(',')
+            led_num = parts[1] if len(parts) > 1 else '0'
+            if led_num == 'ALL': robot.leds.leds_off()
+            else:
+                num = int(led_num)
+                if 0 <= num <= 4: robot.leds.leds[num].duty_u16(0)
+            return 1
+        except: return 0
+
+    def _handle_led_pattern(self, data):
+        if not robot.leds: return 0
+        try:
+            values = data.strip('[]').split()
+            for i, val in enumerate(values):
+                if i >= 5: break
+                robot.leds.leds[i].duty_u16(int(65535 * max(0.0, min(1.0, float(val)))))
+            return 1
+        except: return 0
+
+    def _handle_msg(self, data):
+        if not robot.oled: return 0
+        try:
+            msg = str(data[data.find(',') + 1:]) or "Hello"
+            robot.oled.fill(0)
+            y_pos = 0
+            while msg and y_pos < 64:
+                robot.oled.text(msg[:16], 0, y_pos)
+                msg = msg[16:]; y_pos += 10
+            robot.oled.show()
+            return 1
+        except: return 0
+
+    def _handle_sleep(self, data):
+        try:
+            time.sleep(float(data.split(',')[1])); return 1
+        except: return 0
+
+    def _handle_dcmotor(self, data):
+        if not robot.dcmotor: return 0
+        try:
+            parts = data.split(',')
+            direction, speed = parts[1], max(0, min(100, int(float(parts[2]))))
+            pwm_val = int(speed * PWM_MAX / 100)
+            if direction == "FORWARD": robot.dcmotor.dc_forward(pwm_val)
+            elif direction == "BACKWARD": robot.dcmotor.dc_backward(pwm_val)
+            elif direction == "STOP": robot.dcmotor.dc_stop()
+            return 1
+        except: return 0
+
+    def _handle_timed_dcmotor(self, data):
+        if not robot.dcmotor: return 0
+        try:
+            parts = data.split(',')
+            direction, sec = parts[1], float(parts[2])
+            pwm_val = self._get_speed_pwm()
+            if direction == "FORWARD": robot.dcmotor.dc_forward(pwm_val)
+            elif direction == "BACKWARD": robot.dcmotor.dc_backward(pwm_val)
+            time.sleep(sec); robot.dcmotor.dc_stop()
+            return 1
+        except: return 0</code></pre>
+
+  <!-- A.2 시스템 관리 -->
+  <h3 id="appA2">A.2 시스템 관리</h3>
+
+  <div class="code-caption">hardware.py — 하드웨어 싱글톤 초기화</div>
+  <pre><code class="language-python"># ARES 로버 하드웨어 싱글톤
+
+from machine import I2C, Pin, UART
+from system_config import sys_config
+import time, gc, machine
+
+
+class RobotHardware:
+    """하드웨어 싱글톤 클래스"""
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(RobotHardware, cls).__new__(cls)
+            cls._instance._init_hardware()
+        return cls._instance
+
+    def _init_hardware(self):
+        self.temp_sensor = machine.ADC(4)
+        self.start_time = time.ticks_ms()
+        self.dcmotor = self.oled = self.i2c = self.buzzer = None
+        self.distance_sensor = self.wheel = self.mag_sensor = None
+        self.leds = self.gun = None
+
+        if sys_config.is_module_enabled('dcmotor'):
+            try:
+                from dcmotor import KSDCMotor
+                self.dcmotor = KSDCMotor(); self.dcmotor.dc_stop()
+                print("[HW] DC 모터 초기화 완료")
+            except Exception as e:
+                print(f"[HW] DC 모터 초기화 실패: {e}")
+
+        if sys_config.is_module_enabled('oled'):
+            try:
+                from ssd1306 import SSD1306_I2C
+                i2c_sda = sys_config.get('pin_i2c_sda')
+                i2c_scl = sys_config.get('pin_i2c_scl')
+                self.i2c = I2C(0, scl=Pin(i2c_scl), sda=Pin(i2c_sda), freq=400000)
+                self.oled = SSD1306_I2C(128, 64, scl_pin=i2c_scl, sda_pin=i2c_sda)
+                print("[HW] OLED 디스플레이 초기화 완료")
+            except Exception as e:
+                print(f"[HW] OLED 초기화 실패: {e}"); self.oled = None
+
+        if sys_config.is_module_enabled('buzzer'):
+            try:
+                from buzzer import KSBuzzer
+                self.buzzer = KSBuzzer(); print("[HW] 부저 초기화 완료")
+            except Exception as e:
+                print(f"[HW] 부저 초기화 실패: {e}")
+
+        if sys_config.is_module_enabled('distance'):
+            try:
+                from ultrasonic import KSDistance
+                self.distance_sensor = KSDistance(); print("[HW] 거리 센서 초기화 완료")
+            except Exception as e:
+                print(f"[HW] 거리 센서 초기화 실패: {e}")
+
+        if sys_config.is_module_enabled('wheel'):
+            try:
+                from wheel import KSWheel
+                self.wheel = KSWheel(); self.wheel.stop()
+                print("[HW] 서보 모터 초기화 완료")
+            except Exception as e:
+                print(f"[HW] 서보 모터 초기화 실패: {e}")
+
+        if sys_config.is_module_enabled('magsensor'):
+            try:
+                from magsensor import KSMagSensor
+                self.mag_sensor = KSMagSensor(); print("[HW] 자기장 센서 초기화 완료")
+            except Exception as e:
+                print(f"[HW] 자기장 센서 초기화 실패: {e}")
+
+        if sys_config.is_module_enabled('leds'):
+            try:
+                from leds import KSLeds
+                self.leds = KSLeds(); print("[HW] LED 초기화 완료")
+            except Exception as e:
+                print(f"[HW] LED 초기화 실패: {e}")
+
+        if sys_config.is_module_enabled('gun'):
+            try:
+                from gun import KSGun
+                self.gun = KSGun(); print("[HW] 총 초기화 완료")
+            except Exception as e:
+                print(f"[HW] 총 초기화 실패: {e}")
+
+        self._sync_bt_name()
+
+    def _sync_bt_name(self):
+        try:
+            from pins import UART_TX_PIN, UART_RX_PIN
+            target_name = sys_config.get('device_name')
+            uart = UART(0, baudrate=9600, tx=Pin(UART_TX_PIN), rx=Pin(UART_RX_PIN))
+            uart.write(f"AT+NAME{target_name}".encode('utf-8'))
+            time.sleep(0.1)
+            print(f"[HW] BT 이름 설정: {target_name}")
+        except Exception as e:
+            print(f"[HW] BT 이름 동기화 오류: {e}")
+
+    def get_temperature(self):
+        try:
+            reading = self.temp_sensor.read_u16() * (3.3 / 65535)
+            return round(27 - (reading - 0.706) / 0.001721, 1)
+        except: return 0
+
+    def get_battery_voltage(self):
+        return 100  # 미구현
+
+    def get_status_dict(self):
+        status = {
+            "dist": 0, "mag": 0,
+            "temp": self.get_temperature(),
+            "mem": gc.mem_free(),
+            "uptime": int(time.ticks_diff(time.ticks_ms(), self.start_time) / 1000)
+        }
+        try:
+            if self.distance_sensor: status["dist"] = self.distance_sensor.get_distance()
+        except: pass
+        try:
+            if self.mag_sensor: status["mag"] = self.mag_sensor.detect()
+        except: pass
+        return status
+
+    def stop_all(self):
+        if self.dcmotor:
+            try: self.dcmotor.dc_stop()
+            except Exception as e: print(f"[stop_all] DC모터 정지 오류: {e}")
+        if self.wheel:
+            try: self.wheel.stop()
+            except Exception as e: print(f"[stop_all] 휠 정지 오류: {e}")
+        if self.leds:
+            try: self.leds.leds_off()
+            except Exception as e: print(f"[stop_all] LED 정지 오류: {e}")
+        if self.buzzer:
+            try:
+                if hasattr(self.buzzer, 'is_playing') and self.buzzer.is_playing:
+                    self.buzzer.stop()
+            except Exception as e: print(f"[stop_all] 부저 정지 오류: {e}")
+        if self.gun:
+            try: self.gun.stop()
+            except Exception as e: print(f"[stop_all] 총 정지 오류: {e}")
+        print("[stop_all] 모든 하드웨어 정지 완료")
+
+
+robot = RobotHardware()</code></pre>
+
+  <div class="code-caption">system_config.py — 시스템 설정 관리</div>
+  <pre><code class="language-python"># 시스템 설정 관리
+
+import json, os
+
+CONFIG_FILE = 'system.json'
+LEGACY_CALIB_FILE = 'calibration.json'
+MAX_DEVICE_NAME_LENGTH = 10
+
+DEFAULT_CONFIG = {
+    "max_speed": 80, "collision_dist": 10, "auto_stop": 1, "device_name": "ARES",
+    "left_calibration": 100, "right_calibration": 100,
+    "enable_wheel": 1, "enable_dcmotor": 1, "enable_buzzer": 1,
+    "enable_distance": 1, "enable_magsensor": 1, "enable_leds": 1,
+    "enable_gun": 1, "enable_oled": 1,
+    "pin_wheel_left": 13, "pin_wheel_right": 12,
+    "pin_dcmotor_dir": 8, "pin_dcmotor_pwm": 9,
+    "pin_buzzer": 15, "pin_distance_trig": 6, "pin_distance_echo": 7,
+    "pin_magsensor": 26, "pin_gun": 22,
+    "pin_i2c_sda": 4, "pin_i2c_scl": 5,
+    "pin_leds": "20,19,18,17,16",
+}
+
+CONFIG_KEY_ORDER = ["max_speed","collision_dist","auto_stop","device_name",
+                    "left_calibration","right_calibration"]
+
+
+class SystemConfig:
+    """시스템 설정 싱글톤 클래스"""
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(SystemConfig, cls).__new__(cls)
+            cls._instance._init_config()
+        return cls._instance
+
+    def _init_config(self):
+        self.config = DEFAULT_CONFIG.copy()
+        self.load_config()
+
+    def load_config(self):
+        try:
+            if CONFIG_FILE in os.listdir():
+                with open(CONFIG_FILE, 'r') as f:
+                    self.config.update(json.load(f))
+            elif LEGACY_CALIB_FILE in os.listdir():
+                with open(LEGACY_CALIB_FILE, 'r') as f:
+                    cal = json.load(f)
+                    self.config['left_calibration'] = cal.get('left', 100)
+                    self.config['right_calibration'] = cal.get('right', 100)
+                self.save_all()
+                print("[Config] 레거시 파일에서 마이그레이션됨")
+        except Exception as e:
+            print(f"[Config] 로드 오류: {e}")
+
+    def save_config(self, max_speed, collision_dist, auto_stop, device_name):
+        try:
+            self.config.update({
+                "max_speed": int(max_speed), "collision_dist": int(collision_dist),
+                "auto_stop": int(auto_stop),
+                "device_name": str(device_name)[:MAX_DEVICE_NAME_LENGTH]
+            })
+            return self.save_all()
+        except Exception as e:
+            print(f"[Config] 저장 실패: {e}"); return False
+
+    def save_calibration(self, left, right):
+        try:
+            self.config["left_calibration"] = int(left)
+            self.config["right_calibration"] = int(right)
+            return self.save_all()
+        except: return False
+
+    def save_all(self):
+        """수동 JSON 포맷팅 (MicroPython 호환)"""
+        try:
+            lines = ["{"]
+            items_added = 0
+            total = len(self.config)
+            for key in CONFIG_KEY_ORDER:
+                if key in self.config:
+                    items_added += 1
+                    v = self.config[key]
+                    fv = f'"{v}"' if isinstance(v, str) else str(v)
+                    lines.append(f'    "{key}": {fv}{"," if items_added < total else ""}')
+            for key, v in self.config.items():
+                if key not in CONFIG_KEY_ORDER:
+                    items_added += 1
+                    fv = f'"{v}"' if isinstance(v, str) else str(v)
+                    lines.append(f'    "{key}": {fv}{"," if items_added < total else ""}')
+            lines.append("}")
+            with open(CONFIG_FILE, 'w') as f:
+                f.write("\n".join(lines))
+            return True
+        except Exception as e:
+            print(f"[Config] 저장 실패: {e}"); return False
+
+    def get(self, key, default=None):
+        return self.config.get(key, default)
+
+    def set_pin(self, pin_name, pin_number):
+        try:
+            n = int(pin_number)
+            if 0 <= n <= 28:
+                self.config[pin_name] = n; self.save_all(); return True
+        except: pass
+        return False
+
+    def enable_module(self, module_name, enable):
+        try:
+            self.config[f"enable_{module_name}"] = int(enable)
+            self.save_all(); return True
+        except: return False
+
+    def is_module_enabled(self, module_name):
+        return int(self.config.get(f'enable_{module_name}', 0)) == 1
+
+    def get_module_info(self):
+        modules = [("wheel","wheel_left/right"),("dcmotor","dcmotor_dir/pwm"),
+                   ("buzzer","buzzer"),("distance","distance_trig/echo"),
+                   ("magsensor","magsensor"),("leds","leds (5개)"),
+                   ("gun","gun"),("oled","i2c (sda/scl)")]
+        return {m: {"enabled": self.is_module_enabled(m), "description": d}
+                for m, d in modules}
+
+
+sys_config = SystemConfig()</code></pre>
+
+  <div class="code-caption">pins.py — GPIO 핀 설정</div>
+  <pre><code class="language-python"># ARES 로버 GPIO 핀 설정
+
+UART_TX_PIN = 0
+UART_RX_PIN = 1
+DCMOTOR_DIR_PIN = 8
+DCMOTOR_PWM_PIN = 9
+I2C_SDA_PIN = 4
+I2C_SCL_PIN = 5
+ULTRASONIC_TRIG_PIN = 6
+ULTRASONIC_ECHO_PIN = 7
+SERVO_RIGHT_PIN = 12
+SERVO_LEFT_PIN = 13
+BUZZER_PIN = 15
+LED_PINS = [20, 19, 18, 17, 16]   # LED0(왼쪽) ~ LED4(오른쪽)
+GUN_PIN = 22
+MAGSENSOR_PIN = 26
+MAIN_LED_PIN = 21
+RESERVED_PINS = [10, 11, 14, 27, 28]</code></pre>
+
+  <!-- A.3 하드웨어 드라이버 -->
+  <h3 id="appA3">A.3 하드웨어 드라이버</h3>
+
+  <div class="code-caption">wheel.py — 서보 모터 휠 드라이버</div>
+  <pre><code class="language-python">from machine import Pin, PWM
+from time import sleep
+from utime import sleep_ms
+from system_config import sys_config
+from pins import SERVO_RIGHT_PIN, SERVO_LEFT_PIN
+
+
+class KSWheel:
+    def __init__(self):
+        self.servo_pins = [SERVO_RIGHT_PIN, SERVO_LEFT_PIN]
+        self.neutral_duties = [5000, 5000]
+        self.servos = []
+        self.left_factor  = sys_config.get('left_calibration')
+        self.right_factor = sys_config.get('right_calibration')
+        for pin in self.servo_pins:
+            pwm = PWM(Pin(pin))
+            pwm.freq(50)
+            self.servos.append(pwm)
+        self.set_angle(0, 90); self.set_angle(1, 90)
+
+    def update_factors(self, left, right):
+        self.left_factor  = min(int(left),  100)
+        self.right_factor = min(int(right), 100)
+
+    def set_angle(self, wheel_idx, angle, speed=1.0):
+        min_duty, max_duty = 1000, 9000
+        neutral = self.neutral_duties[wheel_idx]
+        if angle == 90:
+            duty = neutral
+        else:
+            actual_speed = speed
+            if speed > 0:
+                if wheel_idx == 0: actual_speed = speed * (self.right_factor / 100.0)
+                else:              actual_speed = speed * (self.left_factor  / 100.0)
+            scaled_angle = 90 + (angle - 90) * actual_speed
+            duty = int(min_duty + (max_duty - min_duty) * scaled_angle / 180)
+        self.servos[wheel_idx].duty_u16(duty)
+
+    def forward(self, speed=0.1):
+        self.set_angle(0, 0, speed); self.set_angle(1, 180, speed)
+
+    def backward(self, speed=0.1):
+        self.set_angle(0, 180, speed); self.set_angle(1, 0, speed)
+
+    def turn_right(self, speed=0.1):
+        self.set_angle(0, 180, speed); self.set_angle(1, 180, speed)
+
+    def turn_left(self, speed=0.1):
+        self.set_angle(0, 0, speed); self.set_angle(1, 0, speed)
+
+    def stop(self):
+        self.set_angle(0, 90); self.set_angle(1, 90)</code></pre>
+
+  <div class="code-caption">buzzer.py — 부저 드라이버</div>
+  <pre><code class="language-python">from machine import Pin, PWM
+import utime
+from pins import BUZZER_PIN
+
+
+class KSBuzzer:
+    def __init__(self, pin_num=None):
+        self.buzzer = PWM(Pin(pin_num or BUZZER_PIN))
+        self.is_playing = False
+        self.end_time = 0
+        self.vol = 0
+
+    def play(self, freq=1000, duration=1, vol=1000):
+        self.start(freq=freq, duration=duration, vol=vol)
+        while self.is_playing:
+            self.update(); utime.sleep_ms(10)
+        self.stop()
+
+    def start(self, freq=1000, duration=1, vol=1000):
+        if self.is_playing: return False
+        try:
+            self.buzzer.freq(int(freq))
+            self.buzzer.duty_u16(int(vol))
+            self.is_playing = True
+            self.end_time = utime.ticks_ms() + int(duration * 1000)
+            self.vol = int(vol)
+            return True
+        except Exception as e:
+            self.is_playing = False; return False
+
+    def update(self):
+        if self.is_playing and utime.ticks_ms() >= self.end_time:
+            self.buzzer.duty_u16(0); self.is_playing = False
+
+    def stop(self):
+        try: self.buzzer.duty_u16(0); self.is_playing = False
+        except: pass
+
+    def boot_sound(self, short=False):
+        melody = [784, 262]; durations = [0.2, 0.9]
+        for note, dur in zip(melody, durations):
+            self.start(freq=note, duration=dur, vol=1000)
+            while self.is_playing: self.update(); utime.sleep_ms(10)
+            utime.sleep_ms(50)
+            if short: break
+
+    def halamadrid(self):
+        C4,D4,E4,F4,G4 = 262,294,330,349,392
+        C5,D5,E5,F5,G5 = 523,587,659,679,722
+        melody = [G4,C5,G4,D5,G4,E5,C5,C5,C5,F5,F5,E5,E5,C5,E5,D5,C5,D5]
+        rhythm = [1.0,1.5,0.5,1.0,1.0,3.0,1.0,1.0,1.0,3.0,
+                  1.0,1.5,0.5,1.0,1.0,1.5,0.5,4.0]
+        tempo = 0.4
+        for i in range(len(melody)):
+            dur = rhythm[i] * tempo if i < len(rhythm) else 0.4
+            self.start(freq=melody[i], duration=dur * 0.9, vol=20000)
+            while self.is_playing: self.update(); utime.sleep_ms(10)
+            utime.sleep_ms(50)</code></pre>
+
+  <div class="code-caption">ultrasonic.py — 초음파 거리 센서 드라이버</div>
+  <pre><code class="language-python">from machine import Pin, time_pulse_us
+import utime
+from pins import ULTRASONIC_TRIG_PIN, ULTRASONIC_ECHO_PIN
+
+
+class KSDistance:
+    def __init__(self):
+        self.trigger = Pin(ULTRASONIC_TRIG_PIN, Pin.OUT)
+        self.echo    = Pin(ULTRASONIC_ECHO_PIN,  Pin.IN)
+
+    def get_distance(self):
+        self.trigger.low()
+        utime.sleep_us(2)
+        self.trigger.high()
+        utime.sleep_us(10)
+        self.trigger.low()
+        # 타임아웃 30ms (약 5m)
+        duration = time_pulse_us(self.echo, 1, 30000)
+        distance_cm = (duration / 2) * 0.0343
+        if distance_cm < 0:
+            distance_cm = 1000000.0
+        return distance_cm</code></pre>
+
+  <div class="code-caption">magsensor.py — 자기장 센서 드라이버</div>
+  <pre><code class="language-python">from machine import Pin
+from pins import MAGSENSOR_PIN
+
+
+class KSMagSensor:
+    def __init__(self):
+        self.sensor = Pin(MAGSENSOR_PIN, Pin.IN, Pin.PULL_UP)
+
+    def detect(self):
+        # Active low: 자석 감지 시 0 → 1 반환
+        return 1 if self.sensor.value() == 0 else 0</code></pre>
+
+  <div class="code-caption">leds.py — LED 배열 드라이버</div>
+  <pre><code class="language-python">from machine import Pin, PWM
+from time import sleep
+from utime import sleep_ms
+from pins import LED_PINS, MAIN_LED_PIN
+
+
+class KSLeds:
+    def __init__(self):
+        self.led_pins = LED_PINS
+        self.leds = [PWM(Pin(pin, Pin.OUT)) for pin in self.led_pins]
+        for led in self.leds:
+            led.freq(20000)   # 깜빡임 방지 20 kHz
+        self.main_led = PWM(Pin(MAIN_LED_PIN, Pin.OUT))
+        self.main_led.freq(20000)
+        self.leds_off()
+
+    def leds_off(self):
+        for led in self.leds: led.duty_u16(0)
+        self.main_led.duty_u16(0)
+
+    def main_led_on(self, brightness=1.0):
+        brightness = max(0.0, min(1.0, brightness))
+        self.main_led.duty_u16(int(65535 * brightness))
+
+    def main_led_off(self):
+        self.main_led.duty_u16(0)
+
+    def swipe_effect(self):
+        for idx in [0,1,2,3,4,3,2,1,0]:
+            for i, led in enumerate(self.leds):
+                led.duty_u16(65535 if i == idx else 0)
+            sleep_ms(100)
+        self.leds_off()
+
+    def set_led_pattern(self, pattern):
+        if len(pattern) != len(self.leds):
+            print("패턴 길이는 5여야 합니다"); return
+        for i, brightness in enumerate(pattern):
+            if 0.0 <= brightness <= 1.0:
+                self.leds[i].duty_u16(int(65535 * brightness))
+            else:
+                self.leds[i].duty_u16(0)</code></pre>
+
+  <div class="code-caption">dcmotor.py — DC 모터 드라이버</div>
+  <pre><code class="language-python">from machine import Pin, PWM
+from pins import DCMOTOR_DIR_PIN, DCMOTOR_PWM_PIN
+
+PWM_FREQUENCY = 20000
+PWM_STOP = 0
+PWM_MAX  = 65535
+DEBUG_MOTOR = False
+
+
+class KSDCMotor:
+    def __init__(self):
+        self.DIR     = Pin(DCMOTOR_DIR_PIN, Pin.OUT, value=0, pull=Pin.PULL_DOWN)
+        self.PWM_PIN = PWM(Pin(DCMOTOR_PWM_PIN))
+        self.PWM_PIN.freq(PWM_FREQUENCY)
+        self.PWM_PIN.duty_u16(PWM_STOP)
+        self._is_running = False
+
+    def dc_forward(self, speed):
+        self.DIR.value(1); self.PWM_PIN.duty_u16(speed)
+        self._is_running = True
+
+    def dc_backward(self, speed):
+        self.DIR.value(0); self.PWM_PIN.duty_u16(speed)
+        self._is_running = True
+
+    def dc_stop(self):
+        self.PWM_PIN.duty_u16(PWM_STOP); self.DIR.value(0)
+        self._is_running = False
+
+    def is_running(self):
+        return self._is_running</code></pre>
+
+  <div class="code-caption">gun.py — BB탄 발사기 드라이버</div>
+  <pre><code class="language-python">from machine import Pin, PWM
+from time import sleep
+from pins import GUN_PIN
+
+
+class KSGun:
+    def __init__(self, pin_num=None):
+        self.gun = PWM(Pin(pin_num or GUN_PIN))
+        self.gun.freq(1000)
+
+    def power(self, value):
+        self.gun.duty_u16(value)
+
+    def stop(self):
+        self.gun.duty_u16(0)
+
+    def soft_start(self, target_power, duration_ms=150):
+        """목표 출력까지 부드럽게 램프업"""
+        steps = 8
+        step_delay = duration_ms / steps / 1000
+        for i in range(1, steps + 1):
+            self.power(int(target_power * (i / steps)))
+            sleep(step_delay)
+
+    def fire_once(self, power=50000, spin_time=0.22, cooldown_ms=250):
+        """한 발 발사"""
+        self.soft_start(power)   # 1단계: 램프업
+        sleep(spin_time)          # 2단계: 회전
+        self.stop()               # 3단계: 정지</code></pre>
+
+  <!-- A.4 서드파티 라이브러리 -->
+  <h3 id="appA4">A.4 서드파티 라이브러리</h3>
+
+  <div class="code-caption">ssd1306.py — SSD1306 OLED 디스플레이 드라이버</div>
+  <pre><code class="language-python">from machine import UART, Pin, I2C, PWM
+from micropython import const
+import framebuf
+from icon import *
+from pins import I2C_SDA_PIN, I2C_SCL_PIN
+
+SET_CONTRAST        = const(0x81)
+SET_ENTIRE_ON       = const(0xa4)
+SET_NORM_INV        = const(0xa6)
+SET_DISP            = const(0xae)
+SET_MEM_ADDR        = const(0x20)
+SET_COL_ADDR        = const(0x21)
+SET_PAGE_ADDR       = const(0x22)
+SET_DISP_START_LINE = const(0x40)
+SET_SEG_REMAP       = const(0xa0)
+SET_MUX_RATIO       = const(0xa8)
+SET_COM_OUT_DIR     = const(0xc0)
+SET_DISP_OFFSET     = const(0xd3)
+SET_COM_PIN_CFG     = const(0xda)
+SET_DISP_CLK_DIV    = const(0xd5)
+SET_PRECHARGE       = const(0xd9)
+SET_VCOM_DESEL      = const(0xdb)
+SET_CHARGE_PUMP     = const(0x8d)
+
+
+class SSD1306:
+    def __init__(self, width, height, external_vcc):
+        self.external_vcc = external_vcc
+        self.width  = width
+        self.height = height
+        self.pages  = self.height // 8
+        self.buffer = bytearray(self.width * self.pages)
+        self.framebuf = framebuf.FrameBuffer(
+            self.buffer, self.width, self.height, framebuf.MONO_VLSB)
+        self.init_display()
+        self.icon_rover = KSicon(cute_robot32x32, 32, 32, self)
+
+    def init_display(self):
+        for cmd in (
+            SET_DISP | 0x00, SET_MEM_ADDR, 0x00,
+            SET_DISP_START_LINE | 0x00, SET_SEG_REMAP | 0x01,
+            SET_MUX_RATIO, self.height - 1, SET_COM_OUT_DIR | 0x08,
+            SET_DISP_OFFSET, 0x00,
+            SET_COM_PIN_CFG, 0x02 if self.height == 32 else 0x12,
+            SET_DISP_CLK_DIV, 0x80,
+            SET_PRECHARGE, 0x22 if self.external_vcc else 0xf1,
+            SET_VCOM_DESEL, 0x30, SET_CONTRAST, 0xff,
+            SET_ENTIRE_ON, SET_NORM_INV,
+            SET_CHARGE_PUMP, 0x10 if self.external_vcc else 0x14,
+            SET_DISP | 0x01):
+            self.write_cmd(cmd)
+        self.fill(0); self.show()
+
+    def poweroff(self): self.write_cmd(SET_DISP | 0x00)
+    def poweron(self):  self.write_cmd(SET_DISP | 0x01)
+    def contrast(self, c): self.write_cmd(SET_CONTRAST); self.write_cmd(c)
+    def invert(self, i):   self.write_cmd(SET_NORM_INV | (i & 1))
+
+    def show(self):
+        self.write_cmd(SET_COL_ADDR);  self.write_cmd(0); self.write_cmd(self.width - 1)
+        self.write_cmd(SET_PAGE_ADDR); self.write_cmd(0); self.write_cmd(self.pages - 1)
+        self.write_data(self.buffer)
+
+    def fill(self, col):            self.framebuf.fill(col)
+    def pixel(self, x, y, col):    self.framebuf.pixel(x, y, col)
+    def scroll(self, dx, dy):       self.framebuf.scroll(dx, dy)
+    def text(self, s, x, y, col=1): self.framebuf.text(s, x, y, col)
+
+    def booting_msg(self):
+        self.fill(0)
+        self.text("Hello, Everyone!", 0, 0)
+        self.text("This is Ares",     0, 16)
+        self.text("Korea",           29, 32)
+        self.text("Science",         29, 40)
+        self.text(" +TU",            88, 40)
+        self.icon_rover.blit(0, 32)
+        self.show()
+
+
+class SSD1306_I2C(SSD1306):
+    def __init__(self, width, height, scl_pin=None, sda_pin=None, addr=0x3c, external_vcc=False):
+        scl_pin = scl_pin or I2C_SCL_PIN
+        sda_pin = sda_pin or I2C_SDA_PIN
+        self.i2c = I2C(0, scl=Pin(scl_pin), sda=Pin(sda_pin), freq=400000)
+        self.addr = addr
+        self.temp = bytearray(2)
+        self.write_list = [b'\x40', None]
+        super().__init__(width, height, external_vcc)
+
+    def write_cmd(self, cmd):
+        self.temp[0] = 0x80; self.temp[1] = cmd
+        self.i2c.writeto(self.addr, self.temp)
+
+    def write_data(self, buf):
+        self.write_list[1] = buf
+        self.i2c.writevto(self.addr, self.write_list)</code></pre>
+
+  <div class="code-caption">icon.py — OLED 아이콘 비트맵 및 렌더링</div>
+  <pre><code class="language-python">import framebuf
+
+# 화성 탐사선 32x32 비트맵
+mars_rover32x32 = bytearray([
+    0b00000000,0b00000000,0b00000000,0b00000000,
+    # ... (32행 × 4바이트)
+])
+
+# 귀여운 로봇 32x32 비트맵
+cute_robot32x32 = bytearray([
+    0b00000000,0b00000001,0b11000000,0b00000000,
+    0b00000000,0b00000001,0b11000000,0b00000000,
+    0b00000000,0b00000001,0b11000000,0b00000000,
+    0b00011111,0b11111111,0b11111111,0b11111000,
+    # ... (32행 × 4바이트)
+])
+
+
+class KSicon:
+    """아이콘 렌더링 클래스 (비트맵 → OLED)"""
+    def __init__(self, buff, w, h, oled):
+        self.w = w; self.h = h
+        self.buff = buff; self.oled = oled
+        # 수평 → 수직(MONO_VLSB) 포맷 변환
+        vertical_buff = bytearray(self.w * self.h // 8)
+        bytes_per_row  = self.w // 8
+        for row in range(self.h):
+            for byte_col in range(bytes_per_row):
+                byte = buff[row * bytes_per_row + byte_col]
+                for bit in range(8):
+                    if (byte >> (7 - bit)) & 1:
+                        px = byte_col * 8 + bit
+                        py = row
+                        vi = px + (py // 8) * self.w
+                        vertical_buff[vi] |= (1 << (py % 8))
+        self.fb = framebuf.FrameBuffer(vertical_buff, self.w, self.h, framebuf.MONO_VLSB)
+
+    def blit(self, x, y):
+        for i in range(self.w):
+            for j in range(self.h):
+                if self.fb.pixel(i, j):
+                    self.oled.pixel(x + i, y + j, 1)</code></pre>
+
+</section><!-- /appA -->
+
+
+<!-- ══════════════════════════════════════════════════
+     B. 웹 서비스 소스코드
+══════════════════════════════════════════════════ -->
+<section id="appB" class="appendix-section">
+  <div class="section-title">
+    <div class="section-num">B</div>
+    <h2>웹 서비스 소스코드 (Web Source)</h2>
+  </div>
+  <p>웹 서비스는 HTML, JavaScript, CSS로 구성되며, Web Bluetooth API를 통해 로버와 블루투스로 통신하고 Blockly 기반의 블록 코딩 인터페이스를 제공한다.</p>
+
+  <!-- B.1 HTML 페이지 -->
+  <h3 id="appB1">B.1 HTML 페이지</h3>
+
+  <div class="code-caption">index.html — 랜딩 페이지</div>
+  <pre><code class="language-xml">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;코리아사이언스 화성 탐사선&lt;/title&gt;
+    &lt;link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700
+        &amp;family=Roboto:wght@300;400&amp;display=swap" rel="stylesheet"&gt;
+    &lt;link rel="stylesheet" href="index.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="stars"&gt;&lt;/div&gt;
+    &lt;div class="container"&gt;
+        &lt;h1 class="intro-title"&gt;코리아사이언스 화성 탐사선&lt;/h1&gt;
+        &lt;p class="intro-desc"&gt;
+            아레스와 알비와 함께 미지의 화성을 탐험하세요!&lt;br&gt;
+            블록을 조합하여 탐사선을 제어하고, 우주의 비밀을 풀어보세요.
+        &lt;/p&gt;
+        &lt;a href="main.html"&gt;
+            &lt;button id="connectButton" class="start-btn"&gt;탐사선 연결&lt;/button&gt;
+        &lt;/a&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+  <div class="code-caption">main.html — 블록 코딩 메인 페이지 (핵심 구조)</div>
+  <pre><code class="language-xml">&lt;!DOCTYPE html&gt;
+&lt;html lang="ko"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;코리아사이언스 화성 탐사선 제어&lt;/title&gt;
+    &lt;link rel="stylesheet" href="styles.css"&gt;
+    &lt;script src="https://unpkg.com/blockly@11/blockly_compressed.js"&gt;&lt;/script&gt;
+    &lt;script src="https://unpkg.com/blockly@11/blocks_compressed.js"&gt;&lt;/script&gt;
+    &lt;script src="https://unpkg.com/blockly@11/python_compressed.js"&gt;&lt;/script&gt;
+    &lt;script type="module" src="main.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="container"&gt;
+        &lt;header class="header"&gt;
+            &lt;h1&gt;코리아사이언스 화성 탐사선 제어&lt;/h1&gt;
+            &lt;p class="subtitle"&gt;아레스와 알비의 화성 탐사선을 블록 코딩으로 제어하세요!&lt;/p&gt;
+        &lt;/header&gt;
+        &lt;section id="controls"&gt;
+            &lt;button id="connectButton"&gt;🔗 아레스 탐사선 찾기&lt;/button&gt;
+            &lt;button id="disconnectButton" disabled&gt;🔗 탐사선 교신 중단&lt;/button&gt;
+            &lt;button id="runButton"&gt;▶️ 명령 실행&lt;/button&gt;
+            &lt;button id="saveButton"&gt;💾 저장하기&lt;/button&gt;
+            &lt;button id="loadButton"&gt;📂 불러오기&lt;/button&gt;
+            &lt;button id="dashboardButton"&gt;📊 대시보드&lt;/button&gt;
+            &lt;button id="emergencyStopButton"&gt;🛑 비상 정지&lt;/button&gt;
+            &lt;button id="logToggleButton"&gt;📝 로그&lt;/button&gt;
+            &lt;input type="file" id="fileInput" accept=".xml" style="display:none"/&gt;
+            &lt;span id="status"&gt;탐사선 연결 대기 중&lt;/span&gt;
+            &lt;div id="deviceInfo"&gt;&lt;/div&gt;
+        &lt;/section&gt;
+        &lt;div class="main-content"&gt;
+            &lt;div id="blocklyDiv"&gt;&lt;/div&gt;
+            &lt;iframe id="dashboardFrame" src="dashboard.html"&gt;&lt;/iframe&gt;
+        &lt;/div&gt;
+        &lt;section id="logContainer"&gt;
+            &lt;div id="logHeader"&gt;
+                통신 로그
+                &lt;button id="clearLogBtn"&gt;로그 지우기&lt;/button&gt;
+            &lt;/div&gt;
+            &lt;div id="logContent"&gt;&lt;/div&gt;
+        &lt;/section&gt;
+    &lt;/div&gt;
+
+    &lt;xml id="toolbox" style="display:none"&gt;
+        &lt;category name="🚗 서보 모터" colour="#FF8C00"&gt;
+            &lt;block type="timed_forward"&gt;...&lt;/block&gt;
+            &lt;block type="timed_backward"&gt;...&lt;/block&gt;
+            &lt;block type="timed_left"&gt;...&lt;/block&gt;
+            &lt;block type="timed_right"&gt;...&lt;/block&gt;
+            &lt;block type="move_forward"&gt;&lt;/block&gt;
+            &lt;block type="move_backward"&gt;&lt;/block&gt;
+            &lt;block type="turn_left"&gt;&lt;/block&gt;
+            &lt;block type="turn_right"&gt;&lt;/block&gt;
+            &lt;block type="stop_moving"&gt;&lt;/block&gt;
+        &lt;/category&gt;
+        &lt;category name="⚡ DC 모터" colour="#FFCC00"&gt;...&lt;/category&gt;
+        &lt;category name="💡 LED" colour="#FF5555"&gt;...&lt;/category&gt;
+        &lt;category name="💡 메인 LED" colour="#FF33CC"&gt;...&lt;/category&gt;
+        &lt;category name="🖥️ 디스플레이" colour="#9966FF"&gt;...&lt;/category&gt;
+        &lt;category name="🔊 소리" colour="#00CCFF"&gt;...&lt;/category&gt;
+        &lt;category name="🔫 발사" colour="#FF4500"&gt;...&lt;/category&gt;
+        &lt;category name="📡 센서" colour="#5C81A6"&gt;...&lt;/category&gt;
+        &lt;category name="⏱️ 시간" colour="#5CA65C"&gt;...&lt;/category&gt;
+        &lt;category name="🔁 제어" colour="210"&gt;...&lt;/category&gt;
+        &lt;category name="📦 변수" colour="330" custom="VARIABLE"&gt;&lt;/category&gt;
+        &lt;category name="🔢 수학/논리" colour="230"&gt;...&lt;/category&gt;
+        &lt;category name="🔧 함수" colour="290" custom="PROCEDURE"&gt;&lt;/category&gt;
+    &lt;/xml&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+  <div class="code-caption">dashboard.html — 미션 컨트롤 대시보드 (JavaScript 로직)</div>
+  <pre><code class="language-javascript">// dashboard.html 내부 &lt;script&gt; 블록 — 대시보드 애플리케이션
+(function() {
+    'use strict';
+
+    const CONFIG = {
+        device_name: '', max_speed: 0, collision_distance: 0,
+        auto_stop: false, left_calibration: 0, right_calibration: 0,
+        connection_timeout: 20000
+    };
+
+    let lastUpdateTime = 0, isConnected = false;
+    const DOM = {};
+
+    function initDOMReferences() {
+        DOM.connectionStatus = document.getElementById('connection-status');
+        DOM.bleStatus        = document.getElementById('ble-status');
+        DOM.distanceValue    = document.getElementById('distance-value');
+        DOM.distBar          = document.getElementById('dist-bar');
+        DOM.magneticValue    = document.getElementById('magnetic-value');
+        DOM.deviceName       = document.getElementById('device-name');
+        DOM.maxSpeed         = document.getElementById('max-speed');
+        DOM.calibLeft        = document.getElementById('calib-left');
+        DOM.calibRight       = document.getElementById('calib-right');
+        // ... 기타 DOM 참조
+    }
+
+    function updateConnectionUI(connected) {
+        isConnected = connected;
+        if (DOM.connectionStatus)
+            DOM.connectionStatus.classList.toggle('connected', connected);
+        if (DOM.bleStatus)
+            DOM.bleStatus.textContent = connected ? '연결됨' : '연결 끊김';
+    }
+
+    function updateSensorData(rawData) {
+        // "STATUS,dist,mag,temp,mem,uptime" 파싱
+        const parts = rawData.split(',');
+        if (parts[0] !== 'STATUS' || parts.length < 6) return;
+        const dist = parseFloat(parts[1]);
+        if (DOM.distanceValue) DOM.distanceValue.textContent = `${dist.toFixed(1)} cm`;
+        if (DOM.distBar) DOM.distBar.style.width = `${Math.min(dist / 4, 100)}%`;
+        if (DOM.magneticValue) {
+            DOM.magneticValue.textContent = parts[2] === '1' ? '감지됨' : '없음';
+            DOM.magneticValue.style.color = parts[2] === '1'
+                ? 'var(--success-color)' : 'var(--text-dim)';
+        }
+        lastUpdateTime = Date.now();
+    }
+
+    function sendCommandToParent(cmd) {
+        window.parent.postMessage({ type: 'command', data: cmd }, '*');
+    }
+
+    function initCommandButtons() {
+        document.querySelectorAll('.action-btn[data-cmd]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const cmdMap = {
+                    forward: 'SERVO_FORWARD', stop: 'STOP_ALL',
+                    led: 'LED_PATTERN', left: 'SERVO_LEFT',
+                    right: 'SERVO_RIGHT', sound: 'SING'
+                };
+                const cmd = cmdMap[btn.dataset.cmd];
+                if (cmd) sendCommandToParent(cmd);
+            });
+        });
+    }
+
+    function initSettingsButtons() {
+        document.getElementById('btn-save-system')?.addEventListener('click', () => {
+            const name  = DOM.deviceName?.value || 'ARES';
+            const speed = DOM.maxSpeed?.value   || '80';
+            const dist  = document.getElementById('collision-distance')?.value || '10';
+            const stop  = document.getElementById('auto-stop')?.value === 'true' ? 1 : 0;
+            sendCommandToParent(`SYS_SET,${speed},${dist},${stop},${name}`);
+        });
+
+        document.getElementById('btn-calib-start')?.addEventListener('click', () =>
+            sendCommandToParent('CALIB_START'));
+
+        document.getElementById('btn-calib-apply')?.addEventListener('click', () => {
+            const l = DOM.calibLeft?.value  || '100';
+            const r = DOM.calibRight?.value || '100';
+            sendCommandToParent(`CALIB_SET,${l},${r}`);
+        });
+    }
+
+    function handleMessage(event) {
+        const data = event.data;
+        if (!data?.type) return;
+        switch (data.type) {
+            case 'connection_status':
+                updateConnectionUI(data.connected);
+                setDashboardInteractive(data.connected);
+                if (data.connected) {
+                    setTimeout(() => sendCommandToParent('GET_SYS'),  500);
+                    setTimeout(() => sendCommandToParent('GET_STATUS'), 700);
+                } else {
+                    resetDashboardValuesToZero();
+                }
+                break;
+            case 'status_update': updateSensorData(data.data); break;
+            case 'sys_values':
+                CONFIG.max_speed = parseInt(data.max_speed, 10) || 0;
+                CONFIG.collision_distance = parseInt(data.collision_dist, 10) || 0;
+                CONFIG.auto_stop = data.auto_stop == 1;
+                CONFIG.device_name = data.device_name || '';
+                updateSettingsUI();
+                break;
+        }
+    }
+
+    function init() {
+        initDOMReferences();
+        initTabs();
+        initCommandButtons();
+        initSettingsButtons();
+        resetDashboardValuesToZero();
+        setDashboardInteractive(false);
+        window.addEventListener('message', handleMessage);
+        startConnectionMonitor();
+    }
+
+    if (document.readyState === 'loading')
+        document.addEventListener('DOMContentLoaded', init);
+    else
+        init();
+})();</code></pre>
+
+  <!-- B.2 JavaScript 모듈 -->
+  <h3 id="appB2">B.2 JavaScript 모듈</h3>
+
+  <div class="code-caption">state.js — 애플리케이션 상태 관리</div>
+  <pre><code class="language-javascript">// 상태 관리
+
+export const DEBUG = false;
+
+export const state = {
+    // 블루투스 상태
+    bluetoothDevice: null,
+    bluetoothServer: null,
+    uartService: null,
+    characteristic: null,
+    notificationsEnabled: false,
+    readIntervalId: null,
+    isConnecting: false,
+    lastCommand: null,
+
+    // 실행 상태
+    isExecuting: false,
+
+    // 변수 저장소
+    variables: {},
+
+    // Promise 상태
+    pendingResolve: null,
+    pendingReject: null,
+    pendingTimeout: null
+};</code></pre>
+
+  <div class="code-caption">constants.js — 상수 및 설정값 정의</div>
+  <pre><code class="language-javascript">// 상수 정의
+
+export const BLUETOOTH_CONFIG = {
+    UART_SERVICE_UUID:        '0000ffe0-0000-1000-8000-00805f9b34fb',
+    UART_CHARACTERISTIC_UUID: '0000ffe1-0000-1000-8000-00805f9b34fb',
+    MAX_CHUNK_SIZE:    20,      // BLE 패킷당 최대 바이트
+    COMMAND_DELAY:    100,      // 명령 사이 딜레이 (ms)
+    CHUNK_DELAY:       50,      // BLE 청크 사이 딜레이 (ms)
+    READ_INTERVAL:    500,      // 주기적 읽기 간격 (ms)
+    RESPONSE_TIMEOUT: 5000      // 응답 타임아웃 (ms)
+};
+
+export const DEFAULT_SYSTEM_CONFIG = {
+    device_name: 'ARES-Rover',
+    max_speed: 80, collision_distance: 10, auto_stop_enabled: true,
+    left_calibration: 100, right_calibration: 100,
+    connection_timeout: 20000, reconnect_attempts: 3,
+    chunk_size: 20, command_delay: 100
+};
+
+export const STATUS_COLORS = {
+    GREEN: '#00ff9d', RED: '#ff0055', ORANGE: '#ffb800'
+};
+
+export const STORAGE_KEYS = { SYSTEM_CONFIG: 'ares-system-config' };</code></pre>
+
+  <div class="code-caption">elements.js — DOM 요소 참조</div>
+  <pre><code class="language-javascript">// DOM 요소 참조
+
+export const elements = {
+    status:            document.getElementById('status'),
+    deviceInfo:        document.getElementById('deviceInfo'),
+    connectButton:     document.getElementById('connectButton'),
+    disconnectButton:  document.getElementById('disconnectButton'),
+    runButton:         document.getElementById('runButton'),
+    saveButton:        document.getElementById('saveButton'),
+    loadButton:        document.getElementById('loadButton'),
+    fileInput:         document.getElementById('fileInput'),
+    logContent:        document.getElementById('logContent'),
+    logContainer:      document.getElementById('logContainer'),
+    clearLogBtn:       document.getElementById('clearLogBtn')
+};</code></pre>
+
+  <div class="code-caption">logger.js — 통신 로그 관리</div>
+  <pre><code class="language-javascript">// 로그 관리
+
+import { elements } from './elements.js';
+
+const MAX_COMPACT_LINES = 3;
+const MAX_ENTRIES = 500;
+const entries = [];
+
+function isExpanded() {
+    return elements.logContainer?.classList.contains('expanded');
+}
+
+function escapeHtml(str) {
+    return String(str)
+        .replaceAll('&', '&amp;').replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+}
+
+function render() {
+    const expanded = isExpanded();
+    const visible = expanded
+        ? entries
+        : entries.filter(e => !e.verbose).slice(-MAX_COMPACT_LINES);
+
+    elements.logContent.innerHTML = '';
+    for (const entry of visible) {
+        const el = document.createElement('div');
+        el.className = `log-entry log-${entry.type}`;
+        el.innerHTML = `
+            <span class="log-timestamp">${entry.timestamp}</span>
+            ${escapeHtml(entry.message)}
+            ${expanded && entry.detail
+                ? `<div class="log-detail">${escapeHtml(entry.detail)}</div>`
+                : ''}`;
+        elements.logContent.appendChild(el);
+    }
+    if (expanded) elements.logContent.scrollTop = elements.logContent.scrollHeight;
+}
+
+export const Logger = {
+    add(message, type = 'info', options = {}) {
+        entries.push({
+            timestamp: new Date().toLocaleTimeString(),
+            message, type,
+            verbose: !!options.verbose,
+            detail:  options.detail || ''
+        });
+        if (entries.length > MAX_ENTRIES) entries.shift();
+        render();
+    },
+    clear()   { entries.length = 0; elements.logContent.innerHTML = ''; },
+    refresh() { render(); }
+};</code></pre>
+
+  <div class="code-caption">bluetooth.js — Web Bluetooth API 통신 관리</div>
+  <pre><code class="language-javascript">// 블루투스 매니저
+
+import { state, DEBUG } from './state.js';
+import { elements } from './elements.js';
+import { Logger } from './logger.js';
+import { BLUETOOTH_CONFIG, STATUS_COLORS } from './constants.js';
+
+let receiveBuffer = '';
+
+export const BluetoothManager = {
+    async connect() {
+        if (state.isConnecting) { Logger.add('[경고] 이미 연결 시도 중', 'error'); return; }
+        state.isConnecting = true;
+        elements.connectButton.disabled = true;
+        this.updateStatus('아레스 탐색 중...', STATUS_COLORS.ORANGE);
+        try {
+            Logger.add('[BLE] 장치 검색 중...', 'info');
+            state.bluetoothDevice = await navigator.bluetooth.requestDevice({
+                filters: [{ name: 'PicoBLE' }, { name: 'HMSoft' }, { name: 'BT05' }],
+                optionalServices: [BLUETOOTH_CONFIG.UART_SERVICE_UUID]
+            });
+            state.bluetoothDevice.addEventListener(
+                'gattserverdisconnected', this.onDeviceDisconnected.bind(this));
+            state.bluetoothServer = await state.bluetoothDevice.gatt.connect();
+            await this.delay(2000);
+            state.uartService = await state.bluetoothServer.getPrimaryService(
+                BLUETOOTH_CONFIG.UART_SERVICE_UUID);
+            state.characteristic = await state.uartService.getCharacteristic(
+                BLUETOOTH_CONFIG.UART_CHARACTERISTIC_UUID);
+            try {
+                await state.characteristic.startNotifications();
+                state.characteristic.addEventListener(
+                    'characteristicvaluechanged', this.handleRxData.bind(this));
+                state.notificationsEnabled = true;
+                Logger.add('[BLE] 알림 모드 활성화', 'info');
+            } catch {
+                Logger.add('[BLE] 폴링 모드로 전환', 'info');
+                this.startPeriodicReads();
+            }
+            this.updateConnectionStatus(true);
+            Logger.add(`[연결] ${state.bluetoothDevice.name || 'Unknown'} 연결 완료`, 'success');
+        } catch (error) {
+            Logger.add(`[오류] 연결 실패: ${error.message}`, 'error');
+            await this.cleanup();
+            this.updateStatus(`❌ 연결 실패: ${error.message}`, STATUS_COLORS.RED);
+        }
+        state.isConnecting = false;
+        elements.connectButton.disabled = false;
+    },
+
+    async disconnect() {
+        try {
+            if (state.characteristic && state.notificationsEnabled) {
+                await state.characteristic.stopNotifications();
+            }
+            if (state.bluetoothDevice?.gatt.connected)
+                await state.bluetoothDevice.gatt.disconnect();
+            await this.cleanup();
+            this.updateConnectionStatus(false);
+            Logger.add('[연결] 해제 완료', 'info');
+        } catch (error) {
+            Logger.add(`[오류] 연결 해제 실패: ${error.message}`, 'error');
+        }
+    },
+
+    async cleanup() {
+        receiveBuffer = '';
+        if (state.readIntervalId) { clearInterval(state.readIntervalId); state.readIntervalId = null; }
+        state.characteristic = state.uartService = state.bluetoothServer = null;
+        state.bluetoothDevice = null;
+        state.notificationsEnabled = false;
+        if (state.pendingTimeout) {
+            clearTimeout(state.pendingTimeout);
+            state.pendingResolve = state.pendingReject = state.pendingTimeout = null;
+        }
+    },
+
+    handleRxData(event) {
+        const chunk = new TextDecoder('utf-8').decode(event.target.value);
+        receiveBuffer += chunk;
+        let idx;
+        while ((idx = receiveBuffer.indexOf('\n')) !== -1) {
+            const msg = receiveBuffer.substring(0, idx).trim();
+            receiveBuffer = receiveBuffer.substring(idx + 1);
+            if (msg) this.processReceivedData(msg);
+        }
+        if (receiveBuffer.length > 1024) {
+            const data = receiveBuffer.trim(); receiveBuffer = '';
+            if (data) this.processReceivedData(data);
+        }
+    },
+
+    processReceivedData(data) {
+        if (!data) return;
+        const iframe = document.getElementById('dashboardFrame');
+        if (data.startsWith('STATUS,')) {
+            iframe?.contentWindow?.postMessage({ type: 'status_update', data }, '*');
+            this._resolvePromise(data); return;
+        }
+        if (data.startsWith('SYS_VALUES,')) { this._handleSysValues(data); return; }
+        if (data.startsWith('CALIB_VALUES,')) { this._handleCalibValues(data); return; }
+        if (DEBUG) Logger.add(`[수신] ${data}`, 'info');
+        this._resolvePromise(data);
+        this._updateBlocklyVariable(data);
+    },
+
+    _resolvePromise(data) {
+        if (state.pendingResolve) {
+            if (state.pendingTimeout) clearTimeout(state.pendingTimeout);
+            const resolve = state.pendingResolve;
+            state.pendingResolve = state.pendingReject = state.pendingTimeout = null;
+            resolve(data);
+        }
+    },
+
+    _updateBlocklyVariable(data) {
+        const dm = data.match(/DIST[:\s]*([\d.]+)/i);
+        if (dm) state.variables['_last_distance'] = dm[1];
+        const mm = data.match(/MAG[:\s]*([\d]+)/i);
+        if (mm) state.variables['_last_magnetic'] = mm[1];
+    },
+
+    _handleSysValues(data) {
+        const parts = data.split(',');
+        const iframe = document.getElementById('dashboardFrame');
+        if (iframe?.contentWindow) {
+            iframe.contentWindow.postMessage({
+                type: 'sys_values',
+                max_speed: parts[1], collision_dist: parts[2],
+                auto_stop: parts[3], device_name: parts.slice(4, -2).join(','),
+                left_calibration: parts.at(-2), right_calibration: parts.at(-1),
+                connection_timeout: BLUETOOTH_CONFIG.RESPONSE_TIMEOUT
+            }, '*');
+        }
+        this._resolvePromise(data);
+        Logger.add('[수신] 시스템 설정값', 'success');
+    },
+
+    _handleCalibValues(data) {
+        const parts = data.split(',');
+        document.getElementById('dashboardFrame')?.contentWindow?.postMessage(
+            { type: 'calib_values', left: parts[1], right: parts[2] }, '*');
+        this._resolvePromise(data);
+    },
+
+    startPeriodicReads() {
+        if (!state.readIntervalId) {
+            state.readIntervalId = setInterval(
+                () => this.readCharacteristic(), BLUETOOTH_CONFIG.READ_INTERVAL);
+        }
+    },
+
+    async sendData(data, waitForResponse = false) {
+        if (!state.characteristic) throw new Error('BLE 장치에 연결되어 있지 않습니다.');
+        Logger.add(`[전송] ${data}`, 'send');
+        const encoded = new TextEncoder().encode(data + '\n');
+        state.lastCommand = data;
+        try {
+            for (let i = 0; i < encoded.length; i += BLUETOOTH_CONFIG.MAX_CHUNK_SIZE) {
+                await state.characteristic.writeValueWithResponse(
+                    encoded.slice(i, i + BLUETOOTH_CONFIG.MAX_CHUNK_SIZE));
+                await this.delay(BLUETOOTH_CONFIG.CHUNK_DELAY);
+            }
+        } catch (error) {
+            if (DEBUG) Logger.add(`전송 오류 무시됨: ${error.message}`, 'warning');
+        }
+        if (!waitForResponse) return 'OK';
+        return new Promise((resolve, reject) => {
+            state.pendingResolve = resolve;
+            state.pendingReject  = reject;
+            state.pendingTimeout = setTimeout(() => {
+                state.pendingResolve = state.pendingReject = state.pendingTimeout = null;
+                reject(new Error('응답 시간 초과'));
+            }, BLUETOOTH_CONFIG.RESPONSE_TIMEOUT);
+        });
+    },
+
+    updateConnectionStatus(connected) {
+        elements.connectButton.disabled    = connected || state.isConnecting;
+        elements.disconnectButton.disabled = !connected;
+        const iframe = document.getElementById('dashboardFrame');
+        iframe?.contentWindow?.postMessage({ type: 'connection_status', connected }, '*');
+        if (connected) {
+            elements.status.textContent = '✅ 아레스 연결됨';
+            elements.status.style.color = STATUS_COLORS.GREEN;
+            if (state.bluetoothDevice)
+                elements.deviceInfo.textContent = `장치: ${state.bluetoothDevice.name || 'Unknown'}`;
+        } else {
+            elements.status.textContent = state.isConnecting ? '연결 중...' : '❌ 연결 끊김';
+            elements.status.style.color = state.isConnecting ? STATUS_COLORS.ORANGE : STATUS_COLORS.RED;
+            elements.deviceInfo.textContent = '';
+        }
+    },
+
+    updateStatus(msg, color) {
+        elements.status.textContent = msg;
+        elements.status.style.color = color;
+    },
+
+    delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+};</code></pre>
+
+  <div class="code-caption">commandexecutor.js — Blockly 명령 실행기</div>
+  <pre><code class="language-javascript">import { BluetoothManager } from './bluetooth.js';
+import { state, DEBUG } from './state.js';
+import { elements } from './elements.js';
+import { Logger } from './logger.js';
+import { BLUETOOTH_CONFIG, STATUS_COLORS } from './constants.js';
+
+export const CommandExecutor = {
+    evaluateValueBlock(block) {
+        if (!block) return '0';
+        switch (block.type) {
+            case 'math_number':    return block.getFieldValue('NUM') || '0';
+            case 'text':           return block.getFieldValue('TEXT') || '';
+            case 'variables_get': {
+                const name = block.workspace.getVariableById(block.getFieldValue('VAR'))?.name || '';
+                return state.variables[name] || '0';
+            }
+            case 'math_arithmetic': {
+                const op = block.getFieldValue('OP');
+                const a = parseFloat(this.evaluateValueBlock(block.getInputTargetBlock('A')));
+                const b = parseFloat(this.evaluateValueBlock(block.getInputTargetBlock('B')));
+                switch (op) {
+                    case 'ADD':      return (a + b).toString();
+                    case 'MINUS':    return (a - b).toString();
+                    case 'MULTIPLY': return (a * b).toString();
+                    case 'DIVIDE':   return (b !== 0 ? a / b : 0).toString();
+                    default:         return '0';
+                }
+            }
+            case 'logic_compare': {
+                const op = block.getFieldValue('OP');
+                const a = parseFloat(this.evaluateValueBlock(block.getInputTargetBlock('A')));
+                const b = parseFloat(this.evaluateValueBlock(block.getInputTargetBlock('B')));
+                const map = { EQ:'===', NEQ:'!==', LT:'<', LTE:'<=', GT:'>', GTE:'>=' };
+                return eval(`${a} ${map[op]} ${b}`) ? 'true' : 'false';
+            }
+            case 'logic_boolean':
+                return block.getFieldValue('BOOL') === 'TRUE' ? 'true' : 'false';
+            case 'math_random_int': {
+                const from = parseInt(this.evaluateValueBlock(block.getInputTargetBlock('FROM'))) || 0;
+                const to   = parseInt(this.evaluateValueBlock(block.getInputTargetBlock('TO')))   || 100;
+                const mn = Math.min(from, to), mx = Math.max(from, to);
+                return (Math.floor(Math.random() * (mx - mn + 1)) + mn).toString();
+            }
+            default: return '0';
+        }
+    },
+
+    generateCommand(block) {
+        switch (block.type) {
+            case 'set_lamp': {
+                const lamps = [0,1,2,3,4].map(i =>
+                    parseFloat(this.evaluateValueBlock(block.getInputTargetBlock(`LAMP${i}`)) || '0').toFixed(1));
+                return `[${lamps.join(' ')}]`;
+            }
+            case 'led_on': {
+                const n  = Math.max(0, Math.min(4,
+                    parseInt(this.evaluateValueBlock(block.getInputTargetBlock('LED_NUM')), 10) - 1));
+                const br = this.evaluateValueBlock(block.getInputTargetBlock('BRIGHTNESS')) || '1';
+                return `LED_ON,${n},${br}`;
+            }
+            case 'led_off': {
+                const s = block.getFieldValue('LED_NUM') || '1';
+                if (s === 'ALL') return 'LED_OFF,ALL';
+                return `LED_OFF,${Math.max(0, Math.min(4, parseInt(s) - 1))}`;
+            }
+            case 'main_led_on':   return `MAIN_LED_ON,${this.evaluateValueBlock(block.getInputTargetBlock('BRIGHTNESS')) || '1'}`;
+            case 'main_led_off':  return 'MAIN_LED_OFF';
+            case 'send_message':  return `MSG,${this.evaluateValueBlock(block.getInputTargetBlock('Msg')) || 'Hello'}`;
+            case 'clear_display': return 'CLEAR_DISPLAY';
+            case 'buzzer_on': {
+                const freq = Math.trunc(parseFloat(this.evaluateValueBlock(block.getInputTargetBlock('FREQ')) || '262'));
+                const dur  = this.evaluateValueBlock(block.getInputTargetBlock('DURATION')) || '1';
+                return `BUZZER_ON,${freq},${dur}`;
+            }
+            case 'gun_fire':              return 'GUN_FIRE';
+            case 'timed_forward':         return `SERVO_tFORWARD,${this.evaluateValueBlock(block.getInputTargetBlock('SECONDS')) || '0'}`;
+            case 'timed_backward':        return `SERVO_tBACKWARD,${this.evaluateValueBlock(block.getInputTargetBlock('SECONDS')) || '0'}`;
+            case 'timed_right':           return `SERVO_tRIGHT,${this.evaluateValueBlock(block.getInputTargetBlock('SECONDS'))   || '0'}`;
+            case 'timed_left':            return `SERVO_tLEFT,${this.evaluateValueBlock(block.getInputTargetBlock('SECONDS'))    || '0'}`;
+            case 'move_forward':          return 'SERVO_FORWARD';
+            case 'move_backward':         return 'SERVO_BACKWARD';
+            case 'turn_left':             return 'SERVO_LEFT';
+            case 'turn_right':            return 'SERVO_RIGHT';
+            case 'stop_moving':           return 'SERVO_STOP';
+            case 'main_motor_forward_timed':  return `DC_tFORWARD,${this.evaluateValueBlock(block.getInputTargetBlock('SECONDS')) || '1'}`;
+            case 'main_motor_backward_timed': return `DC_tBACKWARD,${this.evaluateValueBlock(block.getInputTargetBlock('SECONDS')) || '1'}`;
+            case 'main_motor_forward':    return 'DC_FORWARD';
+            case 'main_motor_backward':   return 'DC_BACKWARD';
+            case 'main_motor_stop':       return 'DC_STOP';
+            case 'time_sleep':            return `SLEEP,${this.evaluateValueBlock(block.getInputTargetBlock('SECONDS')) || '0'}`;
+            case 'pico_check_device':     return 'PING';
+            case 'check_distance':        return 'DISTANCE';
+            case 'check_magnetic':        return 'MAGNET';
+            default: return null;
+        }
+    },
+
+    async processBlock(block) {
+        if (!block || !state.isExecuting) return;
+        const command = this.generateCommand(block);
+        if (command) await this.sendCommand(command);
+        await this.handleLogicBlock(block);
+        await this.processBlock(block.getNextBlock());
+    },
+
+    async sendCommand(command) {
+        if (!state.isExecuting) { Logger.add('[중단] 실행 중단', 'warning'); return; }
+        BluetoothManager.updateStatus('명령 실행 중...', STATUS_COLORS.ORANGE);
+        try {
+            await BluetoothManager.sendData(command, true);
+        } catch (error) {
+            if (error.message.includes('시간 초과')) Logger.add(`[경고] 응답 초과: ${command}`, 'warning');
+            else { Logger.add(`[오류] ${command}: ${error.message}`, 'error'); throw error; }
+        }
+        await new Promise(r => setTimeout(r, 100));
+    },
+
+    async handleLogicBlock(block) {
+        if (block.type === 'variables_set') {
+            const name = block.workspace.getVariableById(block.getFieldValue('VAR'))?.name || '';
+            state.variables[name] = this.evaluateValueBlock(block.getInputTargetBlock('VALUE'));
+        } else if (block.type === 'controls_if') {
+            const cond = this.evaluateValueBlock(block.getInputTargetBlock('IF0')) === 'true';
+            await this.processBlock(block.getInputTargetBlock(cond ? 'DO0' : 'ELSE'));
+        } else if (block.type === 'controls_whileUntil') {
+            const mode = block.getFieldValue('MODE');
+            let cond = this.evaluateValueBlock(block.getInputTargetBlock('BOOL')) === 'true';
+            let n = 0;
+            while ((mode === 'WHILE' ? cond : !cond) && n++ < 100 && state.isExecuting) {
+                await this.processBlock(block.getInputTargetBlock('DO'));
+                cond = this.evaluateValueBlock(block.getInputTargetBlock('BOOL')) === 'true';
+            }
+        } else if (block.type === 'controls_repeat_ext') {
+            const times = Math.min(parseInt(this.evaluateValueBlock(block.getInputTargetBlock('TIMES')) || '0'), 100);
+            for (let i = 0; i < times && state.isExecuting; i++)
+                await this.processBlock(block.getInputTargetBlock('DO'));
+        }
+    },
+
+    async executeWorkspace(workspace) {
+        state.isExecuting = true;
+        elements.runButton.disabled = true;
+        BluetoothManager.updateStatus('프로그램 실행 중...', STATUS_COLORS.ORANGE);
+        Logger.add('[실행] 프로그램 시작', 'info');
+        try {
+            for (const block of workspace.getTopBlocks(true)) {
+                if (!state.isExecuting) break;
+                if (block.type.startsWith('procedures_def')) continue;
+                await this.processBlock(block);
+            }
+            if (state.isExecuting) {
+                BluetoothManager.updateStatus('✅ 실행 완료!', STATUS_COLORS.GREEN);
+                Logger.add('[실행] 완료', 'info');
+            }
+        } catch (error) {
+            BluetoothManager.updateStatus(`❌ 실행 실패: ${error.message}`, STATUS_COLORS.RED);
+            Logger.add(`[오류] ${error.message}`, 'error');
+        }
+        state.isExecuting = false;
+        elements.runButton.disabled = !(state.bluetoothDevice?.gatt?.connected && state.characteristic);
+    }
+};</code></pre>
+
+  <div class="code-caption">blocklyconfig.js — Blockly 커스텀 블록 정의</div>
+  <pre><code class="language-javascript">// Blockly 블록 정의
+
+export const BlocklyConfig = {
+  blocks: [
+    // ── 서보 모터 블록 (주황색 #FF8C00) ──────────────────────────
+    { type:"timed_forward",  message0:"🚗 서보 전진 %1 초",
+      args0:[{type:"input_value",name:"SECONDS",check:"Number"}],
+      previousStatement:null, nextStatement:null, colour:"#FF8C00",
+      tooltip:"서보 모터로 지정한 시간(초)만큼 전진합니다." },
+    { type:"timed_backward", message0:"🚗 서보 후진 %1 초",
+      args0:[{type:"input_value",name:"SECONDS",check:"Number"}],
+      previousStatement:null, nextStatement:null, colour:"#FF8C00" },
+    { type:"timed_left",     message0:"🚗 서보 좌회전 %1 초",
+      args0:[{type:"input_value",name:"SECONDS",check:"Number"}],
+      previousStatement:null, nextStatement:null, colour:"#FF8C00" },
+    { type:"timed_right",    message0:"🚗 서보 우회전 %1 초",
+      args0:[{type:"input_value",name:"SECONDS",check:"Number"}],
+      previousStatement:null, nextStatement:null, colour:"#FF8C00" },
+    { type:"move_forward",   message0:"🚗 서보 전진 계속",
+      previousStatement:null, nextStatement:null, colour:"#FF8C00" },
+    { type:"move_backward",  message0:"🚗 서보 후진 계속",
+      previousStatement:null, nextStatement:null, colour:"#FF8C00" },
+    { type:"turn_left",      message0:"🚗 서보 좌회전 계속",
+      previousStatement:null, nextStatement:null, colour:"#FF8C00" },
+    { type:"turn_right",     message0:"🚗 서보 우회전 계속",
+      previousStatement:null, nextStatement:null, colour:"#FF8C00" },
+    { type:"stop_moving",    message0:"🚗 서보 정지",
+      previousStatement:null, nextStatement:null, colour:"#FF8C00" },
+
+    // ── DC 모터 블록 (노란색 #FFCC00) ────────────────────────────
+    { type:"main_motor_forward_timed",  message0:"⚡ DC 전진 %1 초",
+      args0:[{type:"input_value",name:"SECONDS",check:"Number"}],
+      previousStatement:null, nextStatement:null, colour:"#FFCC00" },
+    { type:"main_motor_backward_timed", message0:"⚡ DC 후진 %1 초",
+      args0:[{type:"input_value",name:"SECONDS",check:"Number"}],
+      previousStatement:null, nextStatement:null, colour:"#FFCC00" },
+    { type:"main_motor_forward",  message0:"⚡ DC 전진 계속",
+      previousStatement:null, nextStatement:null, colour:"#FFCC00" },
+    { type:"main_motor_backward", message0:"⚡ DC 후진 계속",
+      previousStatement:null, nextStatement:null, colour:"#FFCC00" },
+    { type:"main_motor_stop",     message0:"⚡ DC 정지",
+      previousStatement:null, nextStatement:null, colour:"#FFCC00" },
+
+    // ── LED 블록 (빨강 #FF5555) ───────────────────────────────────
+    { type:"led_on",
+      message0:"💡 LED %1 번 켜기 밝기 %2",
+      args0:[{type:"input_value",name:"LED_NUM",check:"Number"},
+             {type:"input_value",name:"BRIGHTNESS",check:"Number"}],
+      previousStatement:null, nextStatement:null, colour:"#FF5555",
+      tooltip:"LED 번호(1~5)와 밝기(0.0~1.0)를 설정합니다." },
+    { type:"led_off",
+      message0:"💡 LED %1 번 끄기",
+      args0:[{type:"field_dropdown",name:"LED_NUM",
+              options:[["1","1"],["2","2"],["3","3"],["4","4"],["5","5"],["전체","ALL"]]}],
+      previousStatement:null, nextStatement:null, colour:"#FF5555" },
+    { type:"set_lamp",
+      message0:"💡 LED패턴 [%1 %2 %3 %4 %5]",
+      args0:[{type:"input_value",name:"LAMP0",check:"Number"},
+             {type:"input_value",name:"LAMP1",check:"Number"},
+             {type:"input_value",name:"LAMP2",check:"Number"},
+             {type:"input_value",name:"LAMP3",check:"Number"},
+             {type:"input_value",name:"LAMP4",check:"Number"}],
+      inputsInline:true, previousStatement:null, nextStatement:null, colour:"#FF5555" },
+
+    // ── 메인 LED 블록 (#FF33CC) ───────────────────────────────────
+    { type:"main_led_on",  message0:"💡 메인LED 켜기 밝기 %1",
+      args0:[{type:"input_value",name:"BRIGHTNESS",check:"Number"}],
+      previousStatement:null, nextStatement:null, colour:"#FF33CC" },
+    { type:"main_led_off", message0:"💡 메인LED 끄기",
+      previousStatement:null, nextStatement:null, colour:"#FF33CC" },
+
+    // ── 디스플레이 블록 (#9966FF) ─────────────────────────────────
+    { type:"send_message",
+      message0:"🖥️ OLED 표시 %1",
+      args0:[{type:"input_value",name:"Msg"}],
+      previousStatement:null, nextStatement:null, colour:"#9966FF" },
+    { type:"clear_display", message0:"🖥️ OLED 지우기",
+      previousStatement:null, nextStatement:null, colour:"#9966FF" },
+
+    // ── 소리 블록 (#00CCFF) ───────────────────────────────────────
+    { type:"buzzer_on",
+      message0:"🔊 부저 주파수 %1 Hz %2 초",
+      args0:[{type:"input_value",name:"FREQ",check:"Number"},
+             {type:"input_value",name:"DURATION",check:"Number"}],
+      inputsInline:true, previousStatement:null, nextStatement:null, colour:"#00CCFF",
+      tooltip:"지정한 주파수(Hz)와 시간(초)으로 부저를 울립니다. 예: 262=도, 392=솔" },
+
+    // ── 발사 블록 (#FF4500) ───────────────────────────────────────
+    { type:"gun_fire", message0:"🔫 발사 실행",
+      previousStatement:null, nextStatement:null, colour:"#FF4500" },
+
+    // ── 센서 블록 (#5C81A6) ───────────────────────────────────────
+    { type:"pico_check_device", message0:"📡 연결 확인",
+      previousStatement:null, nextStatement:null, colour:"#5C81A6" },
+    { type:"check_distance",
+      message0:"📡 거리 측정 → %1",
+      args0:[{type:"field_variable",name:"VAR",variable:"거리값"}],
+      previousStatement:null, nextStatement:null, colour:"#5C81A6" },
+    { type:"check_magnetic",
+      message0:"📡 자기장 감지 → %1",
+      args0:[{type:"field_variable",name:"VAR",variable:"자기값"}],
+      previousStatement:null, nextStatement:null, colour:"#5C81A6" },
+
+    // ── 시간 블록 (#5CA65C) ───────────────────────────────────────
+    { type:"time_sleep",
+      message0:"⏱️ 기다리기 %1 초",
+      args0:[{type:"input_value",name:"SECONDS",check:"Number"}],
+      previousStatement:null, nextStatement:null, colour:"#5CA65C" }
+  ]
+};</code></pre>
+
+  <div class="code-caption">main.js — 메인 진입점 및 이벤트 초기화</div>
+  <pre><code class="language-javascript">import { state } from './state.js';
+import { elements } from './elements.js';
+import { Logger } from './logger.js';
+import { BluetoothManager } from './bluetooth.js';
+import { BlocklyConfig } from './blocklyconfig.js';
+import { CommandExecutor } from './commandexecutor.js';
+
+function initializeBlockly() {
+    if (!navigator.bluetooth) {
+        alert('이 브라우저는 Web Bluetooth API를 지원하지 않습니다. Chrome 56+ 또는 Edge 79+를 사용해주세요.');
+    }
+
+    Blockly.defineBlocksWithJsonArray(BlocklyConfig.blocks);
+
+    // 한글 메시지 오버라이드
+    Object.assign(Blockly.Msg, {
+        "CONTROLS_REPEAT_TITLE": "반복 %1 번",
+        "CONTROLS_REPEAT_INPUT_DO": "실행",
+        "CONTROLS_WHILEUNTIL_OPERATOR_WHILE": "참인 동안 반복",
+        "CONTROLS_WHILEUNTIL_OPERATOR_UNTIL": "참이 될 때까지 반복",
+        "CONTROLS_IF_MSG_IF": "만약", "CONTROLS_IF_MSG_THEN": "이면",
+        "CONTROLS_IF_MSG_ELSE": "아니면", "CONTROLS_IF_MSG_ELSEIF": "아니면 만약",
+        "VARIABLES_DEFAULT_NAME": "변수",
+        "VARIABLES_SET": "%1 을(를) %2 (으)로 설정",
+        "NEW_VARIABLE": "새 변수 생성...",
+        "LOGIC_BOOLEAN_TRUE": "참", "LOGIC_BOOLEAN_FALSE": "거짓",
+        "LOGIC_OPERATION_AND": "그리고", "LOGIC_OPERATION_OR": "또는",
+        "LOGIC_NEGATE_TITLE": "%1 이(가) 아니다",
+        "PROCEDURES_DEFNORETURN_TITLE": "함수",
+        "PROCEDURES_DEFRETURN_RETURN": "반환",
+        // ... (기타 한글 메시지 생략)
+    });
+
+    const workspace = Blockly.inject('blocklyDiv', {
+        toolbox: document.getElementById('toolbox'),
+        scrollbars: true, trashcan: true,
+        zoom: { controls: true, wheel: true, pinch: true,
+                startScale: 0.9, maxScale: 2.0, minScale: 0.3 }
+    });
+
+    Blockly.Python.init(workspace);
+    return workspace;
+}
+
+function isBleConnected() {
+    return !!state.bluetoothDevice?.gatt?.connected && !!state.characteristic;
+}
+
+function initializeEventListeners(workspace) {
+    elements.connectButton.addEventListener('click',    () => BluetoothManager.connect());
+    elements.disconnectButton.addEventListener('click', () => BluetoothManager.disconnect());
+    elements.clearLogBtn.addEventListener('click', () => { Logger.clear(); Logger.refresh(); });
+
+    document.getElementById('emergencyStopButton')?.addEventListener('click', async () => {
+        state.isExecuting = false;
+        if (isBleConnected()) {
+            try { await BluetoothManager.sendData('STOP_ALL', false); }
+            catch (e) { Logger.add(`[오류] 비상 정지 실패: ${e.message}`, 'error'); }
+        }
+    });
+
+    elements.runButton.addEventListener('click', async () => {
+        if (!isBleConnected()) { alert('먼저 Pico를 연결해주세요!'); return; }
+        if (state.isExecuting) { alert('이미 실행 중입니다.'); return; }
+        await CommandExecutor.executeWorkspace(workspace);
+    });
+
+    elements.saveButton.addEventListener('click', () => {
+        const xmlText = Blockly.utils.xml.domToText(Blockly.Xml.workspaceToDom(workspace));
+        const name = prompt("파일 이름:", "Ares_Workspace");
+        if (!name) return;
+        const link = Object.assign(document.createElement('a'), {
+            href: URL.createObjectURL(new Blob([xmlText], {type:'text/xml'})),
+            download: `${name}.xml`
+        });
+        link.click();
+    });
+
+    elements.loadButton.addEventListener('click', () => elements.fileInput.click());
+    elements.fileInput.addEventListener('change', (e) => {
+        const file = e.target.files?.[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            try {
+                workspace.clear();
+                Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(ev.target.result), workspace);
+                Logger.add(`[파일] ${file.name} 불러오기 완료`, 'info');
+            } catch { alert('유효한 XML 파일인지 확인해주세요.'); }
+        };
+        reader.readAsText(file);
+    });
+
+    document.getElementById('dashboardButton')?.addEventListener('click', () => {
+        const blocklyDiv = document.getElementById('blocklyDiv');
+        const dashFrame  = document.getElementById('dashboardFrame');
+        const btn        = document.getElementById('dashboardButton');
+        const isDash = dashFrame.style.display !== 'none' && dashFrame.style.display !== '';
+        blocklyDiv.style.display = isDash ? 'block' : 'none';
+        dashFrame.style.display  = isDash ? 'none'  : 'block';
+        btn.textContent = isDash ? '📊 대시보드' : '🧩 블록코딩';
+    });
+
+    window.addEventListener('message', async (event) => {
+        const data = event.data;
+        if (!data?.type) return;
+        if (data.type === 'command') {
+            const needsResp = ['GET_SYS','GET_STATUS'].includes(data.data);
+            try { await BluetoothManager.sendData(data.data, needsResp); }
+            catch (e) { Logger.add(`[오류] ${e.message}`, 'error'); }
+        }
+    });
+
+    window.addEventListener('beforeunload', () => {
+        if (state.bluetoothDevice?.gatt?.connected) BluetoothManager.disconnect();
+    });
+}
+
+function main() {
+    const workspace = initializeBlockly();
+    initializeEventListeners(workspace);
+    const logContainer = document.getElementById('logContainer');
+    if (logContainer) logContainer.classList.add('compact');
+    BluetoothManager.updateConnectionStatus(false);
+    Logger.add('[시작] ARES 준비 완료 — BLE 연결을 시작하세요', 'info');
+    Logger.refresh();
+}
+
+if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', main);
+else
+    main();</code></pre>
+
+</section><!-- /appB -->
+
+
+<div class="report-footer">
+  본 보고서는 (주)코리아사이언스의 용역에 따른 자문 결과로 작성되었습니다.<br>
+  ARES &bull; Autonomous Rover Exploration System &bull; Korea Science
+</div>
+
+</div><!-- /.page-wrap -->
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => { hljs.highlightAll(); });
+</script>
+
+</body>
+</html>

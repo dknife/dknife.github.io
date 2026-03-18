@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARES 자문 결과보고서</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Noto+Serif+KR:wght@400;700&display=swap">
+  <!-- 코드 하이라이팅: highlight.js -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+</head>
+<body>
+
+<!-- ── 고정 헤더 ───────────────────────────────────── -->
+<header class="site-header">
+  <div class="site-header-inner">
+    <span class="site-header-logo">ARES</span>
+    <span class="site-header-sub">Autonomous Rover Exploration System &nbsp;|&nbsp; 코리아사이언스 · 2026</span>
+  </div>
+</header>
+
+<div class="page-wrap">
+
+<!-- ══════════════════════════════════════════════════
+     표지
+══════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-topbar">
+    동명대학교 게임학부 - 강영민 / 신원 &nbsp;|&nbsp; 코리아사이언스 &nbsp;|&nbsp; 자문 결과보고서
+  </div>
+  <div class="cover-body">
+    <div class="cover-title-main">ARES</div>
+    <div class="cover-title-sub">Autonomous Rover Exploration System</div>
+    <hr class="cover-rule">
+    <div class="cover-title-full">
+      Pico 보드와 BLE 통신을 이용한<br>
+      프로그래밍 가능한 자율운행 교구 개발 기술<br>
+      <em>하드웨어 / 소프트웨어 개발 자문 결과보고서</em>
+    </div>
+    <div class="cover-meta">
+      <table>
+        <tr>
+          <td class="meta-label">프로젝트명</td>
+          <td class="meta-sep">:</td>
+          <td>Pico 보드와 BLE 통신을 이용한 ARES 교구 개발</td>
+        </tr>
+        <tr>
+          <td class="meta-label">자문 용역</td>
+          <td class="meta-sep">:</td>
+          <td>동명대학교 산학협력단 - 강영민 교수</td>
+        </tr>
+        <tr>
+          <td class="meta-label">과제 지원</td>
+          <td class="meta-sep">:</td>
+          <td>코리아사이언스</td>
+        </tr>
+        <tr>
+          <td class="meta-label">보고서 작성일</td>
+          <td class="meta-sep">:</td>
+          <td>2026년 2월 28일</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="cover-bottombar">
+    ARES &bull; Autonomous Rover Exploration System &bull; Korea Science
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     목차
+══════════════════════════════════════════════════ -->
+<nav class="toc-section">
+  <h2>목차</h2>
+  <ol>
+    <li><a href="#sec1">자문의 개요</a>
+      <ol>
+        <li><a href="#sec1-1">자문 배경 및 목적</a></li>
+        <li><a href="#sec1-2">자문 범위</a></li>
+        <li><a href="#sec1-3">자문 결과물</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec2">사용된 하드웨어의 기본 사양</a>
+      <ol>
+        <li><a href="#sec2-1">메인 제어 보드: Raspberry Pi Pico</a></li>
+        <li><a href="#sec2-2">무선 통신 모듈: BLE UART 모듈</a></li>
+        <li><a href="#sec2-3">구동계 하드웨어</a></li>
+        <li><a href="#sec2-4">센서류</a></li>
+        <li><a href="#sec2-5">출력 장치</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec3">코드 설계 전략</a>
+      <ol>
+        <li><a href="#sec3-1">전체 시스템 아키텍처</a></li>
+        <li><a href="#sec3-2">펌웨어 설계 전략</a></li>
+        <li><a href="#sec3-3">웹 UI 설계 전략</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec4">하드웨어 스펙과 핀 배치</a>
+      <ol>
+        <li><a href="#sec4-1">GPIO 핀 배치 전체 도표</a></li>
+        <li><a href="#sec4-2">핀 배치 다이어그램</a></li>
+        <li><a href="#sec4-3">시스템 설정 기본값</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec5">코드별 기능</a>
+      <ol>
+        <li><a href="#sec5-1">Pico 펌웨어 모듈</a></li>
+        <li><a href="#sec5-2">웹 UI 모듈</a></li>
+        <li><a href="#sec5-3">AI 어시스턴트 모듈</a></li>
+        <li><a href="#sec5-4">XML 프리셋</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec6">향후 개선 방향</a>
+      <ol>
+        <li><a href="#sec6-1">펌웨어 개선</a></li>
+        <li><a href="#sec6-2">웹 UI 개선</a></li>
+        <li><a href="#sec6-3">AI 어시스턴트 개선</a></li>
+        <li><a href="#sec6-4">중장기 기술 로드맵</a></li>
+        <li><a href="#sec6-5">표준화 및 생태계 전략</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec7">교구 개발 확장 전략</a>
+      <ol>
+        <li><a href="#sec7-1">난이도별 단계적 교육 커리큘럼</a></li>
+        <li><a href="#sec7-2">미션 기반 학습 시나리오</a></li>
+        <li><a href="#sec7-3">하드웨어 구성별 제품 라인업</a></li>
+        <li><a href="#sec7-4">교사 지원 도구 강화</a></li>
+        <li><a href="#sec7-5">글로벌 플랫폼 비교 및 차별성 분석</a></li>
+        <li><a href="#sec7-6">교육 정책 연계 가능성</a></li>
+        <li><a href="#sec7-7">오픈소스 생태계 참여</a></li>
+      </ol>
+    </li>
+    <li><a href="#sec8">결론</a></li>
+    <li><a href="#appendix">부록: 펌웨어 소스코드</a></li>
+  </ol>
+</nav>
+
+
+<!-- ══════════════════════════════════════════════════
+     1. 자문의 개요
+══════════════════════════════════════════════════ -->
+<section id="sec1">
+  <div class="section-title">
+    <div class="section-num">1</div>
+    <h2>자문의 개요</h2>
+  </div>
+
+  <h3 id="sec1-1">자문 배경 및 목적</h3>
+  <p>본 자문은 (주)코리아사이언스가 개발 중인 방과후 수업용 화성 탐사 로봇 교구(ARES)의 하드웨어 개발과 교육용 소프트웨어 설계 및 구현에 관한 기술 자문을 목적으로 한다.</p>
+
+  <h4>교육적·기술적 배경</h4>
+  <p>현행 교육 환경에서 텍스트 기반 코딩은 초보 학습자에게 높은 진입장벽으로 작용하며, 하드웨어와 소프트웨어를 연동하기 위해 별도 설치 및 복잡한 환경 설정이 필요하다. 국내에서도 SW 교육 의무화가 확대되고, 2025년부터 교육부의 AI 디지털교과서 도입이 추진되면서 <strong>직관적인 피지컬 컴퓨팅 교구</strong>에 대한 현장 수요가 빠르게 높아지고 있다. 아울러 글로벌 블록코딩 교육 시장에서 Scratch, MakeCode 등 기존 플랫폼은 실제 하드웨어와의 실시간 BLE 연동 기능이 제한적이어서, 브라우저 기반 비주얼 프로그래밍과 무선 하드웨어 제어를 통합하는 플랫폼의 공백이 존재한다.</p>
+
+  <h4>ARES의 기술적 차별성</h4>
+  <p>ARES 플랫폼은 다음과 같은 기술적 차별점을 통해 위의 공백을 해소한다.</p>
+  <ul>
+    <li><strong>완전 웹 기반(설치 불필요)</strong>: 별도 소프트웨어 설치 없이 Chrome·Edge 브라우저에서 즉시 실행되며, 교실 내 다양한 디바이스(PC·태블릿)를 지원한다.</li>
+    <li><strong>Web Bluetooth API 실시간 연동</strong>: BLE를 통해 블록 실행 결과가 Raspberry Pi Pico 로봇에 즉각 반영되어 코딩의 인과관계를 직관적으로 경험할 수 있다.</li>
+    <li><strong>한국어 특화 인터페이스</strong>: 모든 블록·메시지·AI 어시스턴트가 한국어로 제공되어 국내 초등교육 환경에 최적화되었다.</li>
+    <li><strong>오픈 하드웨어 구조</strong>: 선택적 모듈 로드와 동적 핀 설정을 통해 학교 예산에 따라 다양한 하드웨어 구성을 하나의 소프트웨어로 지원한다.</li>
+  </ul>
+  <p>ARES 프로젝트는 이러한 맥락에서 <strong>"화성 탐사"</strong>라는 흥미로운 주제를 통해 초등학생이 코딩과 로봇 제어를 즐겁게 익힐 수 있도록 기획되었다.</p>
+
+  <h3 id="sec1-2">자문 범위</h3>
+  <ul>
+    <li><strong>펌웨어 설계</strong>: Raspberry Pi Pico 기반 MicroPython 펌웨어 아키텍처 설계</li>
+    <li><strong>웹 UI 설계</strong>: Web Bluetooth API와 Google Blockly를 활용한 비주얼 프로그래밍 인터페이스 설계</li>
+    <li><strong>통신 프로토콜 설계</strong>: BLE(Bluetooth Low Energy) 기반 무선 명령·응답 프로토콜 정의</li>
+    <li><strong>AI 어시스턴트 설계</strong>: 초등학생 사용자 대상 한국어 LLM 기반 코딩 도우미 구조 설계</li>
+    <li><strong>코드 품질 개선</strong>: 레거시 코드 리팩토링 방향 및 모듈화 전략 자문</li>
+  </ul>
+
+  <h3 id="sec1-3">자문 결과물</h3>
+  <p>자문을 통해 산출된 소프트웨어 결과물의 구성은 아래와 같다.</p>
+  <pre><code>Developed_Software/
+|-- Web Source/        ← 브라우저 기반 제어 UI (현재 버전)
+|-- Pico Source/       ← Raspberry Pi Pico 펌웨어 (현재 버전)
+|-- AI/                ← AI 블록코딩 도우미 모듈
+|-- Web Legacy/        ← 이전 버전 웹 UI (참조용 보존)
+|-- Pico Legacy/       ← 이전 버전 펌웨어 (참조용 보존)
+|-- XML Presets/       ← 교육용 블록코딩 예제 프리셋
+`-- Document/          ← API 문서, 블록 가이드, 기술보고서</code></pre>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     2. 사용된 하드웨어의 기본 사양
+══════════════════════════════════════════════════ -->
+<section id="sec2">
+  <div class="section-title">
+    <div class="section-num">2</div>
+    <h2>사용된 하드웨어의 기본 사양</h2>
+  </div>
+
+  <h3 id="sec2-1">메인 제어 보드: Raspberry Pi Pico</h3>
+  <div class="table-wrap">
+    <table>
+      <caption>표 1. Raspberry Pi Pico 주요 사양</caption>
+      <thead><tr><th>항목</th><th>사양</th></tr></thead>
+      <tbody>
+        <tr><td>MCU</td><td>RP2040 (Dual-core ARM Cortex-M0+, 133 MHz)</td></tr>
+        <tr><td>플래시 메모리</td><td>2 MB</td></tr>
+        <tr><td>SRAM</td><td>264 KB</td></tr>
+        <tr><td>동작 전압</td><td>1.8 V ~ 5.5 V</td></tr>
+        <tr><td>GPIO 핀 수</td><td>26개 (GP0 ~ GP28)</td></tr>
+        <tr><td>PWM 채널</td><td>16채널 (8개 슬라이스)</td></tr>
+        <tr><td>I2C / SPI / UART</td><td>각 2개</td></tr>
+        <tr><td>ADC</td><td>4채널 (12 bit), 내장 온도 센서 포함</td></tr>
+        <tr><td>펌웨어 환경</td><td>MicroPython</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Raspberry Pi Pico는 저렴한 단가와 MicroPython 지원으로 교육용 로봇 플랫폼에 적합하다. RP2040 칩의 듀얼코어 구조와 충분한 GPIO 수는 서보 모터, DC 모터, 센서, LED 등 다양한 주변 장치를 동시에 제어하는 데 적합하다.</p>
+
+  <h3 id="sec2-2">무선 통신 모듈: BLE UART 모듈 (HMSoft / BT05)</h3>
+  <div class="table-wrap">
+    <table>
+      <caption>표 2. BLE UART 모듈 사양</caption>
+      <thead><tr><th>항목</th><th>사양</th></tr></thead>
+      <tbody>
+        <tr><td>통신 방식</td><td>Bluetooth Low Energy (BLE 4.x)</td></tr>
+        <tr><td>인터페이스</td><td>UART (AT 명령어 기반)</td></tr>
+        <tr><td>UART 속도</td><td>9,600 bps</td></tr>
+        <tr><td>서비스 UUID</td><td><code>0000ffe0-0000-1000-8000-00805f9b34fb</code></td></tr>
+        <tr><td>특성 UUID</td><td><code>0000ffe1-0000-1000-8000-00805f9b34fb</code></td></tr>
+        <tr><td>장치 이름</td><td>최대 10자 (BT 모듈 제한)</td></tr>
+        <tr><td>지원 장치명</td><td>PicoBLE, HMSoft, BT05</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>UART 기반 BLE 모듈은 Pico의 UART0(GP0/GP1)에 연결되며, 웹 브라우저의 Web Bluetooth API와 직접 통신한다. BLE의 특성상 단일 패킷의 최대 크기가 제한되어 <strong>20바이트 청킹 전송 방식</strong>을 채택하였다.</p>
+
+  <h3 id="sec2-3">구동계 하드웨어</h3>
+  <div class="table-wrap">
+    <table>
+      <caption>표 3. 구동계 하드웨어 구성</caption>
+      <thead><tr><th>구성 요소</th><th>사양</th></tr></thead>
+      <tbody>
+        <tr><td>서보 모터</td><td>360도 연속 회전 서보 모터 × 2개 (좌·우 구동 휠)</td></tr>
+        <tr><td>DC 모터</td><td>단일 DC 모터 (방향 + PWM 제어)</td></tr>
+        <tr><td>제어 방식</td><td>서보: PWM 신호 / DC: DIR 핀 + PWM</td></tr>
+        <tr><td>기본 최대 속도</td><td>80% (시스템 설정으로 조정 가능)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 id="sec2-4">센서류</h3>
+  <div class="table-wrap">
+    <table>
+      <caption>표 4. 탑재 센서 목록</caption>
+      <thead><tr><th>센서</th><th>모델/방식</th><th>측정 범위</th></tr></thead>
+      <tbody>
+        <tr><td>초음파 거리 센서</td><td>HC-SR04 (TRIG/ECHO 방식)</td><td>2 cm ~ 400 cm</td></tr>
+        <tr><td>자기장 센서</td><td>아날로그 홀 센서 (ADC 입력)</td><td>자석 유무 감지 (0 또는 1)</td></tr>
+        <tr><td>온도 센서</td><td>RP2040 내장 ADC (채널 4)</td><td>전자 온도 모니터링</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 id="sec2-5">출력 장치</h3>
+  <div class="table-wrap">
+    <table>
+      <caption>표 5. 출력 장치 사양</caption>
+      <thead><tr><th>장치</th><th>사양</th></tr></thead>
+      <tbody>
+        <tr><td>OLED 디스플레이</td><td>SSD1306 128×64 픽셀, I2C (400 kHz)</td></tr>
+        <tr><td>LED</td><td>단색 LED × 5개, PWM 밝기 제어 (0.0 ~ 1.0)</td></tr>
+        <tr><td>피에조 부저</td><td>PWM 주파수 제어, 가변 음량</td></tr>
+        <tr><td>BB탄 발사기</td><td>GPIO 신호 제어 (1회 발사 단위)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     3. 코드 설계 전략
+══════════════════════════════════════════════════ -->
+<section id="sec3">
+  <div class="section-title">
+    <div class="section-num">3</div>
+    <h2>코드 설계 전략</h2>
+  </div>
+
+  <h3 id="sec3-1">전체 시스템 아키텍처</h3>
+  <p>ARES 시스템은 웹 브라우저(제어 UI)와 Raspberry Pi Pico(로봇 하드웨어) 두 계층으로 구성되며, BLE를 통해 실시간으로 통신한다.</p>
+  <pre class="arch"><code>[웹 브라우저]                         [Raspberry Pi Pico]
++--------------------------+           +-------------------------+
+|  Google Blockly UI       |           |  main.py (AresRover)   |
+|  (블록 배치·실행)         |           |  +-- UART 수신 루프    |
++--------------------------+           |  +-- process_data.py   |
+|  CommandExecutor         |&lt;--BLE--&gt;  |  |   (CommandProcessor)|
+|  (블록 -&gt; 명령 변환)      |  20byte   |  +-- hardware.py       |
++--------------------------+  chunk    |  |   (RobotHardware)   |
+|  BluetoothManager        |           |  `-- system_config.py  |
+|  (Web Bluetooth API)     |           |      (SystemConfig)    |
++--------------------------+           +-------------------------+</code></pre>
+
+  <h3 id="sec3-2">펌웨어 설계 전략</h3>
+
+  <h4>클래스 기반 모듈화</h4>
+  <p>초기 절차적 스크립트 구조에서 클래스 기반 객체지향 구조로 전환하였다. 각 하드웨어 구성 요소는 독립적인 클래스(<code>KSWheel</code>, <code>KSDCMotor</code>, <code>KSBuzzer</code>, <code>KSLeds</code>, <code>KSGun</code>, <code>KSDistance</code>, <code>KSMagSensor</code>)로 캡슐화되어 있으며, 이를 <code>RobotHardware</code> 싱글톤이 통합 관리한다.</p>
+
+  <h4>싱글톤 패턴 적용</h4>
+  <p>MicroPython의 제한된 RAM(264 KB) 환경에서 하드웨어 인스턴스의 중복 생성을 방지하기 위해 <code>RobotHardware</code>와 <code>SystemConfig</code> 모두 싱글톤 패턴을 채택하였다.</p>
+  <div class="code-caption">전역 싱글톤 인스턴스 선언</div>
+  <pre><code class="language-python"># 전역 싱글톤 인스턴스 (모듈 로드 시 1회만 생성)
+robot = RobotHardware()
+sys_config = SystemConfig()</code></pre>
+
+  <h4>선택적 모듈 로드</h4>
+  <p>하드웨어가 연결되지 않은 모듈이 있어도 펌웨어가 안정적으로 동작하도록 설계하였다. 각 모듈은 <code>system.json</code>의 <code>enable_*</code> 플래그에 따라 활성화 여부가 결정되며, 초기화 실패 시 <code>None</code>으로 처리하고 명령 수신 시 조용히 무시한다.</p>
+  <div class="code-caption">선택적 모듈 로드 패턴</div>
+  <pre><code class="language-python">if sys_config.is_module_enabled('wheel'):
+    try:
+        from wheel import KSWheel
+        self.wheel = KSWheel()
+    except Exception as e:
+        self.wheel = None  # 실패해도 시스템은 계속 작동</code></pre>
+
+  <h4>설정의 런타임 변경</h4>
+  <p>핀 번호, 모듈 활성화, 최대 속도 등의 시스템 설정을 BLE 명령(<code>SET_PIN</code>, <code>SET_MODULE</code>, <code>SYS_SET</code>)으로 런타임에 변경하고 <code>system.json</code>에 영구 저장하는 구조를 채택하였다. 교사나 관리자가 재컴파일 없이 하드웨어 구성에 맞춰 소프트웨어를 조정할 수 있다.</p>
+
+  <h3 id="sec3-3">웹 UI 설계 전략</h3>
+
+  <h4>ES6 모듈 분리 구조</h4>
+  <p>단일 거대 파일 대신 기능 단위로 분리된 ES6 모듈 구조를 채택하였다.</p>
+  <div class="table-wrap">
+    <table>
+      <caption>표 6. 웹 UI 모듈 구조</caption>
+      <thead><tr><th>모듈</th><th>단일 책임</th></tr></thead>
+      <tbody>
+        <tr><td><code>state.js</code></td><td>전역 상태 저장소</td></tr>
+        <tr><td><code>constants.js</code></td><td>변경되지 않는 상수 집중 관리</td></tr>
+        <tr><td><code>elements.js</code></td><td>DOM 참조 집중 관리</td></tr>
+        <tr><td><code>logger.js</code></td><td>UI 로그 출력</td></tr>
+        <tr><td><code>bluetooth.js</code></td><td>BLE 연결·통신</td></tr>
+        <tr><td><code>commandexecutor.js</code></td><td>블록 해석 및 명령 실행</td></tr>
+        <tr><td><code>blocklyconfig.js</code></td><td>Blockly 커스텀 블록 정의</td></tr>
+        <tr><td><code>main.js</code></td><td>진입점 및 이벤트 리스너 등록</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>비동기 Promise 기반 통신</h4>
+  <p>BLE 통신의 비동기 특성을 처리하기 위해 <code>async/await</code> + Promise 패턴을 채택하였다. 명령 전송 후 응답 대기를 Promise로 처리하며, 20초 타임아웃 메커니즘을 통해 응답 없는 명령에 의한 UI 블로킹을 방지한다.</p>
+
+  <h4>블록 인터프리터 구조</h4>
+  <p>Blockly 워크스페이스의 블록들을 재귀적으로 순회하며 BLE 명령으로 변환하는 인터프리터(<code>CommandExecutor</code>)를 구현하였다. 값 블록 평가(<code>evaluateValueBlock</code>)와 명령 블록 실행(<code>processBlock</code>)을 분리하여 수식 계산과 하드웨어 제어 로직이 명확히 구분된다.</p>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     4. 하드웨어 스펙과 핀 배치
+══════════════════════════════════════════════════ -->
+<section id="sec4">
+  <div class="section-title">
+    <div class="section-num">4</div>
+    <h2>하드웨어 스펙과 핀 배치</h2>
+  </div>
+
+  <h3 id="sec4-1">GPIO 핀 배치 전체 도표</h3>
+  <p>ARES 로봇에 탑재된 Raspberry Pi Pico의 GPIO 핀 할당을 아래 표에 정리하였다. 각 핀은 BLE 통신, 구동계, 센서, 출력 장치 등 기능별로 구분되며, 화살표 방향(출력/입력)과 사용 프로토콜(UART, I2C, PWM, ADC, GPIO)을 함께 기재하였다. GP2, GP3, GP10, GP11, GP14, GP21, GP27, GP28번 핀은 현재 미사용 예비 핀으로, 향후 추가 모듈 확장에 활용할 수 있다.</p>
+  <div class="table-wrap">
+    <table>
+      <caption>표 7. Raspberry Pi Pico GPIO 핀 배치</caption>
+      <thead><tr><th>기능</th><th>GPIO</th><th>방향</th><th>프로토콜</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td>UART TX</td><td>GP0</td><td>출력</td><td>UART0</td><td>BLE 모듈 RX (Pico→BLE)</td></tr>
+        <tr><td>UART RX</td><td>GP1</td><td>입력</td><td>UART0</td><td>BLE 모듈 TX (BLE→Pico)</td></tr>
+        <tr><td>I2C SDA</td><td>GP4</td><td>양방향</td><td>I2C0</td><td>OLED SSD1306 데이터</td></tr>
+        <tr><td>I2C SCL</td><td>GP5</td><td>출력</td><td>I2C0</td><td>OLED 클럭 (400 kHz)</td></tr>
+        <tr><td>초음파 TRIG</td><td>GP6</td><td>출력</td><td>GPIO</td><td>HC-SR04 트리거</td></tr>
+        <tr><td>초음파 ECHO</td><td>GP7</td><td>입력</td><td>GPIO</td><td>HC-SR04 에코</td></tr>
+        <tr><td>DC DIR</td><td>GP8</td><td>출력</td><td>GPIO</td><td>DC모터 방향 제어</td></tr>
+        <tr><td>DC PWM</td><td>GP9</td><td>출력</td><td>PWM</td><td>DC모터 속도 제어</td></tr>
+        <tr><td>서보 모터 우</td><td>GP12</td><td>출력</td><td>PWM</td><td>우측 구동 휠</td></tr>
+        <tr><td>서보 모터 좌</td><td>GP13</td><td>출력</td><td>PWM</td><td>좌측 구동 휠</td></tr>
+        <tr><td>부저</td><td>GP15</td><td>출력</td><td>PWM</td><td>피에조 부저</td></tr>
+        <tr><td>LED 1~5번</td><td>GP16~GP20</td><td>출력</td><td>PWM</td><td>5개 LED (역순 배치)</td></tr>
+        <tr><td>BB탄 발사기</td><td>GP22</td><td>출력</td><td>GPIO</td><td>발사 트리거 신호</td></tr>
+        <tr><td>자기장 센서</td><td>GP26</td><td>입력</td><td>ADC</td><td>아날로그 홀 센서</td></tr>
+        <tr><td>내장 온도</td><td>ADC4</td><td>입력</td><td>ADC</td><td>RP2040 내장 센서</td></tr>
+        <tr><td>예비</td><td>GP2, 3, 10, 11, 14, 21, 27, 28</td><td>—</td><td>—</td><td>확장 예비 핀</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 id="sec4-2">핀 배치 다이어그램</h3>
+  <p>아래 다이어그램은 Raspberry Pi Pico 칩 핀 관점의 배치를 시각화한 것이다. <span style="color:#C0392B">붉은 화살표(→)</span>는 Pico에서 외부 장치로의 출력 신호, <span style="color:#4C97FF">파란 화살표(←)</span>는 외부 장치에서 Pico로의 입력 신호, 회색 선은 미사용 예비 핀을 의미한다.</p>
+
+  <div class="pin-diagram-wrap">
+    <svg viewBox="0 0 680 380" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%;font-family:'Noto Sans KR',sans-serif;">
+      <!-- 칩 본체 -->
+      <rect x="200" y="10" width="160" height="350" rx="8" ry="8" fill="#f5f5f5" stroke="#bbb" stroke-width="1.2"/>
+      <!-- 칩 제목 -->
+      <text x="280" y="6" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">Raspberry Pi Pico</text>
+      <!-- 구분선 -->
+      <line x1="280" y1="18" x2="280" y2="352" stroke="#ddd" stroke-width="0.8" stroke-dasharray="4,3"/>
+
+      <!-- 핀 정의: [행, 좌측 핀명, 좌 방향(out/in/none), 좌 레이블, 우측 핀명, 우 방향(out/in/none), 우 레이블] -->
+      <!-- 각 행 간격: 26px, 시작 y=30 -->
+
+      <!-- row 0: GP0=BLE TX(out) | GP28=(none) -->
+      <g transform="translate(0,30)">
+        <rect x="195" y="-5" width="10" height="10" fill="#aaa"/>
+        <rect x="355" y="-5" width="10" height="10" fill="#aaa"/>
+        <text x="208" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace">GP0</text>
+        <text x="352" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace" text-anchor="end">GP28</text>
+        <!-- 출력: 왼쪽으로 -->
+        <line x1="195" y1="0" x2="90" y2="0" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowR)"/>
+        <text x="85" y="4" font-size="10" fill="#444" text-anchor="end">BLE TX</text>
+        <!-- 예비: 오른쪽 -->
+        <line x1="365" y1="0" x2="470" y2="0" stroke="#bbb" stroke-width="0.8"/>
+        <text x="475" y="4" font-size="10" fill="#aaa">(예비)</text>
+      </g>
+
+      <!-- row 1: GP1=BLE RX(in) | GP27=(none) -->
+      <g transform="translate(0,56)">
+        <rect x="195" y="-5" width="10" height="10" fill="#aaa"/>
+        <rect x="355" y="-5" width="10" height="10" fill="#aaa"/>
+        <text x="208" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace">GP1</text>
+        <text x="352" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace" text-anchor="end">GP27</text>
+        <line x1="195" y1="0" x2="90" y2="0" stroke="#4C97FF" stroke-width="1.2" marker-start="url(#arrowL)"/>
+        <text x="85" y="4" font-size="10" fill="#444" text-anchor="end">BLE RX</text>
+        <line x1="365" y1="0" x2="470" y2="0" stroke="#bbb" stroke-width="0.8"/>
+        <text x="475" y="4" font-size="10" fill="#aaa">(예비)</text>
+      </g>
+
+      <!-- row 2: GP2=(none) | GP26=자기장(in) -->
+      <g transform="translate(0,82)">
+        <rect x="195" y="-5" width="10" height="10" fill="#aaa"/>
+        <rect x="355" y="-5" width="10" height="10" fill="#aaa"/>
+        <text x="208" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace">GP2</text>
+        <text x="352" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace" text-anchor="end">GP26</text>
+        <line x1="195" y1="0" x2="90" y2="0" stroke="#bbb" stroke-width="0.8"/>
+        <text x="85" y="4" font-size="10" fill="#aaa" text-anchor="end">(예비)</text>
+        <line x1="365" y1="0" x2="470" y2="0" stroke="#4C97FF" stroke-width="1.2" marker-start="url(#arrowRev)"/>
+        <text x="475" y="4" font-size="10" fill="#444">자기장 센서 (ADC)</text>
+      </g>
+
+      <!-- row 3: GP3=(none) | GP22=BB탄(out) -->
+      <g transform="translate(0,108)">
+        <rect x="195" y="-5" width="10" height="10" fill="#aaa"/>
+        <rect x="355" y="-5" width="10" height="10" fill="#aaa"/>
+        <text x="208" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace">GP3</text>
+        <text x="352" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace" text-anchor="end">GP22</text>
+        <line x1="195" y1="0" x2="90" y2="0" stroke="#bbb" stroke-width="0.8"/>
+        <text x="85" y="4" font-size="10" fill="#aaa" text-anchor="end">(예비)</text>
+        <line x1="365" y1="0" x2="470" y2="0" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowFwd)"/>
+        <text x="475" y="4" font-size="10" fill="#444">BB탄 발사기</text>
+      </g>
+
+      <!-- row 4: GP4=OLED SDA(out) | GP21=(none) -->
+      <g transform="translate(0,134)">
+        <rect x="195" y="-5" width="10" height="10" fill="#aaa"/>
+        <rect x="355" y="-5" width="10" height="10" fill="#aaa"/>
+        <text x="208" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace">GP4</text>
+        <text x="352" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace" text-anchor="end">GP21</text>
+        <line x1="195" y1="0" x2="90" y2="0" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowR)"/>
+        <text x="85" y="4" font-size="10" fill="#444" text-anchor="end">OLED SDA</text>
+        <line x1="365" y1="0" x2="470" y2="0" stroke="#bbb" stroke-width="0.8"/>
+        <text x="475" y="4" font-size="10" fill="#aaa">(예비)</text>
+      </g>
+
+      <!-- row 5: GP5=OLED SCL(out) | GP20=LED 1번(out) -->
+      <g transform="translate(0,160)">
+        <rect x="195" y="-5" width="10" height="10" fill="#aaa"/>
+        <rect x="355" y="-5" width="10" height="10" fill="#aaa"/>
+        <text x="208" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace">GP5</text>
+        <text x="352" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace" text-anchor="end">GP20</text>
+        <line x1="195" y1="0" x2="90" y2="0" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowR)"/>
+        <text x="85" y="4" font-size="10" fill="#444" text-anchor="end">OLED SCL</text>
+        <line x1="365" y1="0" x2="470" y2="0" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowFwd)"/>
+        <text x="475" y="4" font-size="10" fill="#444">LED 1번</text>
+      </g>
+
+      <!-- row 6: GP6=초음파 TRG(out) | GP19=LED 2번(out) -->
+      <g transform="translate(0,186)">
+        <rect x="195" y="-5" width="10" height="10" fill="#aaa"/>
+        <rect x="355" y="-5" width="10" height="10" fill="#aaa"/>
+        <text x="208" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace">GP6</text>
+        <text x="352" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace" text-anchor="end">GP19</text>
+        <line x1="195" y1="0" x2="90" y2="0" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowR)"/>
+        <text x="85" y="4" font-size="10" fill="#444" text-anchor="end">초음파 TRG</text>
+        <line x1="365" y1="0" x2="470" y2="0" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowFwd)"/>
+        <text x="475" y="4" font-size="10" fill="#444">LED 2번</text>
+      </g>
+
+      <!-- row 7: GP7=초음파 ECH(in) | GP18=LED 3번(out) -->
+      <g transform="translate(0,212)">
+        <rect x="195" y="-5" width="10" height="10" fill="#aaa"/>
+        <rect x="355" y="-5" width="10" height="10" fill="#aaa"/>
+        <text x="208" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace">GP7</text>
+        <text x="352" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace" text-anchor="end">GP18</text>
+        <line x1="195" y1="0" x2="90" y2="0" stroke="#4C97FF" stroke-width="1.2" marker-start="url(#arrowL)"/>
+        <text x="85" y="4" font-size="10" fill="#444" text-anchor="end">초음파 ECH</text>
+        <line x1="365" y1="0" x2="470" y2="0" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowFwd)"/>
+        <text x="475" y="4" font-size="10" fill="#444">LED 3번</text>
+      </g>
+
+      <!-- row 8: GP8=DC DIR(out) | GP17=LED 4번(out) -->
+      <g transform="translate(0,238)">
+        <rect x="195" y="-5" width="10" height="10" fill="#aaa"/>
+        <rect x="355" y="-5" width="10" height="10" fill="#aaa"/>
+        <text x="208" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace">GP8</text>
+        <text x="352" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace" text-anchor="end">GP17</text>
+        <line x1="195" y1="0" x2="90" y2="0" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowR)"/>
+        <text x="85" y="4" font-size="10" fill="#444" text-anchor="end">DC DIR</text>
+        <line x1="365" y1="0" x2="470" y2="0" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowFwd)"/>
+        <text x="475" y="4" font-size="10" fill="#444">LED 4번</text>
+      </g>
+
+      <!-- row 9: GP9=DC PWM(out) | GP16=LED 5번(out) -->
+      <g transform="translate(0,264)">
+        <rect x="195" y="-5" width="10" height="10" fill="#aaa"/>
+        <rect x="355" y="-5" width="10" height="10" fill="#aaa"/>
+        <text x="208" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace">GP9</text>
+        <text x="352" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace" text-anchor="end">GP16</text>
+        <line x1="195" y1="0" x2="90" y2="0" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowR)"/>
+        <text x="85" y="4" font-size="10" fill="#444" text-anchor="end">DC PWM</text>
+        <line x1="365" y1="0" x2="470" y2="0" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowFwd)"/>
+        <text x="475" y="4" font-size="10" fill="#444">LED 5번</text>
+      </g>
+
+      <!-- row 10: GP10=(none) | GP15=부저(out) -->
+      <g transform="translate(0,290)">
+        <rect x="195" y="-5" width="10" height="10" fill="#aaa"/>
+        <rect x="355" y="-5" width="10" height="10" fill="#aaa"/>
+        <text x="208" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace">GP10</text>
+        <text x="352" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace" text-anchor="end">GP15</text>
+        <line x1="195" y1="0" x2="90" y2="0" stroke="#bbb" stroke-width="0.8"/>
+        <text x="85" y="4" font-size="10" fill="#aaa" text-anchor="end">(예비)</text>
+        <line x1="365" y1="0" x2="470" y2="0" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowFwd)"/>
+        <text x="475" y="4" font-size="10" fill="#444">부저</text>
+      </g>
+
+      <!-- row 11: GP11=(none) | GP14=(none) -->
+      <g transform="translate(0,316)">
+        <rect x="195" y="-5" width="10" height="10" fill="#aaa"/>
+        <rect x="355" y="-5" width="10" height="10" fill="#aaa"/>
+        <text x="208" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace">GP11</text>
+        <text x="352" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace" text-anchor="end">GP14</text>
+        <line x1="195" y1="0" x2="90" y2="0" stroke="#bbb" stroke-width="0.8"/>
+        <text x="85" y="4" font-size="10" fill="#aaa" text-anchor="end">(예비)</text>
+        <line x1="365" y1="0" x2="470" y2="0" stroke="#bbb" stroke-width="0.8"/>
+        <text x="475" y="4" font-size="10" fill="#aaa">(예비)</text>
+      </g>
+
+      <!-- row 12: GP12=서보(우)(out) | GP13=서보(좌)(out) -->
+      <g transform="translate(0,342)">
+        <rect x="195" y="-5" width="10" height="10" fill="#aaa"/>
+        <rect x="355" y="-5" width="10" height="10" fill="#aaa"/>
+        <text x="208" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace">GP12</text>
+        <text x="352" y="3" font-size="8" fill="#777" font-weight="bold" font-family="monospace" text-anchor="end">GP13</text>
+        <line x1="195" y1="0" x2="90" y2="0" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowR)"/>
+        <text x="85" y="4" font-size="10" fill="#444" text-anchor="end">서보(우)</text>
+        <line x1="365" y1="0" x2="470" y2="0" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowFwd)"/>
+        <text x="475" y="4" font-size="10" fill="#444">서보(좌)</text>
+      </g>
+
+      <!-- 범례 -->
+      <text x="0" y="372" font-size="10" fill="#C0392B">→ 출력 (Pico→외부)</text>
+      <text x="160" y="372" font-size="10" fill="#4C97FF">← 입력 (외부→Pico)</text>
+      <text x="320" y="372" font-size="10" fill="#aaa">— 예비</text>
+
+      <!-- 화살표 마커 정의 -->
+      <defs>
+        <!-- 왼쪽 방향 끝 (출력: pico→외부, 라인은 왼쪽으로) -->
+        <marker id="arrowR" markerWidth="8" markerHeight="8" refX="8" refY="3" orient="auto">
+          <path d="M8,3 L0,0 L0,6 Z" fill="#C0392B"/>
+        </marker>
+        <!-- 왼쪽에서 시작하는 입력 화살표 (marker-start) -->
+        <marker id="arrowL" markerWidth="8" markerHeight="8" refX="0" refY="3" orient="auto">
+          <path d="M0,3 L8,0 L8,6 Z" fill="#4C97FF"/>
+        </marker>
+        <!-- 오른쪽으로 나가는 출력 -->
+        <marker id="arrowFwd" markerWidth="8" markerHeight="8" refX="0" refY="3" orient="auto">
+          <path d="M0,0 L8,3 L0,6 Z" fill="#C0392B"/>
+        </marker>
+        <!-- 오른쪽에서 들어오는 입력 (marker-start on right line) -->
+        <marker id="arrowRev" markerWidth="8" markerHeight="8" refX="8" refY="3" orient="auto">
+          <path d="M8,0 L0,3 L8,6 Z" fill="#4C97FF"/>
+        </marker>
+      </defs>
+    </svg>
+    <p style="font-size:12px;color:#888;margin-top:4px;">그림 1. Raspberry Pi Pico GPIO 핀 배치 다이어그램</p>
+  </div>
+
+  <h3 id="sec4-3">시스템 설정 기본값 (<code>system.json</code>)</h3>
+  <div class="table-wrap">
+    <table>
+      <caption>표 8. 시스템 설정 기본값</caption>
+      <thead><tr><th>설정 항목</th><th>기본값</th><th>설명</th></tr></thead>
+      <tbody>
+        <tr><td><code>max_speed</code></td><td>80</td><td>최대 속도 (0 ~ 100%)</td></tr>
+        <tr><td><code>collision_dist</code></td><td>10</td><td>충돌 감지 거리 (cm)</td></tr>
+        <tr><td><code>auto_stop</code></td><td>1</td><td>장애물 감지 시 자동 정지</td></tr>
+        <tr><td><code>device_name</code></td><td>"ARES"</td><td>BLE 장치 이름 (최대 10자)</td></tr>
+        <tr><td><code>left_calibration</code></td><td>100</td><td>좌측 서보 캘리브레이션 (%)</td></tr>
+        <tr><td><code>right_calibration</code></td><td>100</td><td>우측 서보 캘리브레이션 (%)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     5. 코드별 기능
+══════════════════════════════════════════════════ -->
+<section id="sec5">
+  <div class="section-title">
+    <div class="section-num">5</div>
+    <h2>코드별 기능</h2>
+  </div>
+
+  <h3 id="sec5-1">Pico 펌웨어 모듈</h3>
+
+  <h4><code>main.py</code> — 메인 애플리케이션 루프</h4>
+  <p><code>AresRover</code> 클래스로 구현된 메인 애플리케이션이다. 부팅 시퀀스에서 UART 버퍼 초기화 → 하드웨어 안전 정지 → 부팅 사운드 재생 → OLED "ARES READY" 메시지 출력을 순서대로 수행한다. 이후 10 ms 간격으로 메인 루프를 반복하며 UART로 수신된 명령을 처리한다.</p>
+  <ul>
+    <li>UART 수신 버퍼 관리 (최대 512바이트, 오버플로우 자동 초기화)</li>
+    <li><code>+</code>로 시작하는 BLE 모듈 상태 메시지 필터링</li>
+    <li>명령 처리 결과를 20바이트 단위로 분할 전송</li>
+  </ul>
+
+  <h4><code>process_data.py</code> — 명령 처리기</h4>
+  <p><code>CommandProcessor</code> 클래스가 UART로 수신된 텍스트 명령을 파싱하고 해당 하드웨어 동작을 실행한다. 레거시 명령어(<code>FORWARD</code>, <code>tFORWARD</code>)와 신규 명령어(<code>SERVO_FORWARD</code>, <code>SERVO_tFORWARD</code>) 양쪽을 모두 지원하여 이전 버전과의 호환성을 유지한다.</p>
+  <div class="table-wrap">
+    <table>
+      <caption>표 9. 지원 BLE 명령 분류</caption>
+      <thead><tr><th>분류</th><th>명령 예시</th><th>동작</th></tr></thead>
+      <tbody>
+        <tr><td>연결 확인</td><td><code>PING</code>, <code>READY</code></td><td>OLED 연결 상태 표시</td></tr>
+        <tr><td>비상 정지</td><td><code>STOP_ALL</code></td><td>모든 하드웨어 즉시 정지</td></tr>
+        <tr><td>서보 이동</td><td><code>SERVO_tFORWARD,1.5</code>, <code>FORWARD</code></td><td>시간 제한 또는 연속 이동</td></tr>
+        <tr><td>DC 모터</td><td><code>DC_tFORWARD,2.0</code>, <code>DC_FORWARD</code></td><td>시간 제한 또는 연속 구동</td></tr>
+        <tr><td>센서</td><td><code>DISTANCE</code>, <code>MAGNET</code></td><td>측정값 반환</td></tr>
+        <tr><td>LED</td><td><code>LED_ON,2,0.8</code>, <code>[1.0 0.5 ...]</code></td><td>개별 또는 일괄 제어</td></tr>
+        <tr><td>디스플레이</td><td><code>MSG,Hello</code>, <code>CLEAR_DISPLAY</code></td><td>OLED 텍스트 표시</td></tr>
+        <tr><td>부저</td><td><code>BUZZER_ON,440,2</code>, <code>SING</code></td><td>음 재생 또는 멜로디</td></tr>
+        <tr><td>전투</td><td><code>GUN_FIRE</code></td><td>BB탄 1발 발사</td></tr>
+        <tr><td>캘리브레이션</td><td><code>CALIB_START</code>, <code>CALIB_SET,...</code></td><td>서보 직진 조정</td></tr>
+        <tr><td>시스템</td><td><code>GET_STATUS</code>, <code>GET_SYS</code></td><td>설정 조회 및 변경</td></tr>
+        <tr><td>모듈 관리</td><td><code>GET_MODULES</code>, <code>SET_MODULE,...</code></td><td>모듈 활성화 제어</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4><code>hardware.py</code> — 하드웨어 싱글톤</h4>
+  <p><code>RobotHardware</code> 클래스는 모든 하드웨어 모듈의 초기화와 생애주기를 관리하는 싱글톤이다. 각 모듈을 <code>try-except</code>로 안전하게 초기화하며, 실패한 모듈은 <code>None</code>으로 남겨 이후 명령 수신 시 조용히 무시한다. <code>stop_all()</code> 메서드는 비상 시 모든 모터·LED·부저·발사기를 한 번에 정지시킨다.</p>
+  <ul>
+    <li>RP2040 내장 ADC 센서로 Pico 칩 온도 측정 및 반환</li>
+    <li>부팅 시 AT 명령(<code>AT+NAME</code>)으로 BLE 모듈 이름을 설정값과 자동 동기화</li>
+  </ul>
+
+  <h4><code>system_config.py</code> — 시스템 설정 관리</h4>
+  <p><code>SystemConfig</code> 싱글톤이 <code>system.json</code>을 통해 설정을 영구 저장·로드한다. MicroPython의 <code>json</code> 모듈이 들여쓰기를 지원하지 않는 한계를 극복하기 위해 수동 JSON 포맷팅(<code>save_all</code>)을 구현하였다. 레거시 <code>calibration.json</code> 파일의 자동 마이그레이션 기능도 포함한다.</p>
+
+  <h4>기타 하드웨어 드라이버 모듈</h4>
+  <ul>
+    <li><code>wheel.py</code>: 360도 연속 회전 서보 모터 2개를 PWM 제어. 캘리브레이션 값 적용으로 직진성 보정</li>
+    <li><code>buzzer.py</code>: PWM 주파수 제어로 임의 음계 재생. 비블로킹 <code>update()</code> 루프, 부팅 사운드 내장</li>
+    <li><code>ultrasonic.py</code>: HC-SR04 TRIG/ECHO 방식으로 전방 거리(cm) 측정</li>
+    <li><code>magsensor.py</code>: 아날로그 ADC 입력으로 자석 감지 (0/1 반환)</li>
+    <li><code>leds.py</code>: 5개 LED의 PWM 개별 밝기(0.0 ~ 1.0) 제어, 스와이프 효과 내장</li>
+    <li><code>dcmotor.py</code>: DIR 핀 + PWM으로 DC 모터 방향·속도 제어</li>
+    <li><code>gun.py</code>: GPIO 펄스 신호로 BB탄 발사기 1회 트리거</li>
+    <li><code>ssd1306.py</code>: SSD1306 OLED I2C 드라이버</li>
+  </ul>
+
+  <h3 id="sec5-2">웹 UI 모듈</h3>
+
+  <h4><code>bluetooth.js</code> — BLE 통신 관리</h4>
+  <p>Web Bluetooth API를 통해 BLE 장치 검색, GATT 서버 연결, UART 서비스 및 특성 획득, 알림 구독을 처리한다. 알림(Notification)을 지원하지 않는 장치에서는 1초 간격 폴링 모드로 자동 전환한다.</p>
+  <pre class="arch"><code>BluetoothManager.sendData()
+  -> UTF-8 인코딩
+  -> 20바이트 청킹 전송 (청크 간 100ms 대기)
+  -> Promise 대기 (최대 20초)
+  -> characteristicvaluechanged
+     -> processReceivedData() -> resolve</code></pre>
+
+  <h4><code>commandexecutor.js</code> — 블록 인터프리터</h4>
+  <p>Blockly 블록 트리를 재귀적으로 순회하며 BLE 명령으로 변환·실행한다. <code>evaluateValueBlock()</code>은 숫자·텍스트·변수·사칙연산·비교 연산 블록을 재귀 평가하고, <code>processBlock()</code>은 블록 타입에 따라 BLE 명령을 생성·전송하거나 조건문·반복문 제어 흐름을 처리한다. <code>while</code> 반복문은 무한 루프 방지를 위해 최대 100회로 제한한다.</p>
+
+  <h4><code>blocklyconfig.js</code> — 커스텀 블록 정의</h4>
+  <div class="table-wrap">
+    <table>
+      <caption>표 10. Blockly 커스텀 블록 분류</caption>
+      <thead><tr><th>블록 범주</th><th>블록 수</th><th>대표 블록</th></tr></thead>
+      <tbody>
+        <tr><td>이동 (서보)</td><td>9종</td><td>전진/후진/좌우회전/정지</td></tr>
+        <tr><td>이동 (DC모터)</td><td>5종</td><td>DC모터 전진/후진/정지</td></tr>
+        <tr><td>LED</td><td>3종</td><td>LED 켜기/끄기/패턴</td></tr>
+        <tr><td>디스플레이</td><td>2종</td><td>메시지 표시/화면 지우기</td></tr>
+        <tr><td>소리</td><td>1종</td><td>부저 울리기</td></tr>
+        <tr><td>전투</td><td>1종</td><td>총 발사</td></tr>
+        <tr><td>센서</td><td>3종</td><td>거리·자기장 측정, 연결 확인</td></tr>
+        <tr><td>시간</td><td>1종</td><td>기다리기</td></tr>
+        <tr><td colspan="1"><strong>합계</strong></td><td><strong>25종</strong></td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 id="sec5-3">AI 어시스턴트 모듈</h3>
+  <p>LG AI Research의 한국어 특화 LLM <code>EXAONE-3.5-2.4B-Instruct</code> 모델을 활용한 블록코딩 도우미다. 초등학생의 질문에 쉬운 언어로 답변을 생성하며, 스트리밍 출력(<code>TextIteratorStreamer</code>)으로 즉각적인 피드백을 제공한다.</p>
+  <div class="table-wrap">
+    <table>
+      <caption>표 11. AI 어시스턴트 모듈 사양</caption>
+      <thead><tr><th>항목</th><th>내용</th></tr></thead>
+      <tbody>
+        <tr><td>사용 모델</td><td>EXAONE-3.5-2.4B-Instruct (bfloat16)</td></tr>
+        <tr><td>대상 사용자</td><td>초등학생 (초급 코딩 학습자)</td></tr>
+        <tr><td>출력 방식</td><td>스트리밍 (<code>TextIteratorStreamer</code>)</td></tr>
+        <tr><td>최대 출력 토큰</td><td>2,048 토큰</td></tr>
+        <tr><td>생성 파라미터</td><td>temperature=0.6, top_p=0.95</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 id="sec5-4">XML 프리셋</h3>
+  <p>교육 현장에서 바로 활용할 수 있는 예제 프리셋 2종이 포함되어 있다.</p>
+  <div class="table-wrap">
+    <table>
+      <caption>표 12. XML 프리셋 목록</caption>
+      <thead><tr><th>파일</th><th>내용</th></tr></thead>
+      <tbody>
+        <tr><td><code>Launch Rocket.xml</code></td><td>로켓 발사 시퀀스 (LED 카운트다운 + 부저 + 이동)</td></tr>
+        <tr><td><code>Test All Hardware.xml</code></td><td>모든 하드웨어 순차 점검 루틴</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     6. 향후 개선 방향
+══════════════════════════════════════════════════ -->
+<section id="sec6">
+  <div class="section-title">
+    <div class="section-num">6</div>
+    <h2>향후 개선 방향</h2>
+  </div>
+
+  <h3 id="sec6-1">펌웨어 개선</h3>
+
+  <div class="alert alert-danger">
+    <div class="alert-title">버그 수정 필요 — <code>_handle_sys_set</code></div>
+    <p><code>process_data.py</code>의 <code>_handle_set_module()</code> 메서드 내부에 <code>_handle_sys_set()</code>의 코드가 잘못 삽입되어 있어 <code>SYS_SET</code> 명령이 동작하지 않는 버그가 존재한다. 해당 코드 블록을 별도 메서드로 올바르게 분리해야 한다.</p>
+  </div>
+
+  <div class="alert alert-warn">
+    <div class="alert-title">미구현 — 배터리 잔량 모니터링</div>
+    <p>현재 <code>get_battery_voltage()</code> 메서드는 항상 100을 반환하는 미구현 상태이다. ADC로 실제 배터리 전압을 측정하고, 저전압 시 자동 정지 또는 경고음 기능을 추가해야 한다.</p>
+  </div>
+
+  <div class="alert alert-warn">
+    <div class="alert-title">미구현 — 장애물 자동 회피</div>
+    <p><code>system.json</code>에 <code>collision_dist</code>·<code>auto_stop</code> 설정이 정의되어 있으나, 현재 펌웨어에서 이를 활용하는 자동 정지 로직이 구현되어 있지 않다. 메인 루프에서 초음파 센서를 주기적으로 폴링하여 설정 거리 이내 장애물 감지 시 자동 정지 또는 회피 기동을 수행하는 기능이 필요하다.</p>
+  </div>
+
+  <div class="alert alert-info">
+    <div class="alert-title">개선 제안 — 비동기 모터 제어</div>
+    <p>현재 시간 제한 이동 명령(<code>tFORWARD</code> 등)은 <code>time.sleep()</code> 블로킹 호출을 사용하므로, 이동 중 다른 명령을 수신할 수 없다. MicroPython의 <code>uasyncio</code> 라이브러리를 활용한 비동기 태스크 방식으로 전환하면 동시 제어가 가능해진다.</p>
+  </div>
+
+  <h3 id="sec6-2">웹 UI 개선</h3>
+
+  <div class="alert alert-warn">
+    <div class="alert-title">미구현 — 대시보드 기능 완성</div>
+    <p>현재 대시보드의 빠른 제어 버튼(<code>quickCommand</code>), 진단 실행(<code>runDiagnostic</code>), 캘리브레이션(<code>startCalibration</code>) 기능은 로그 출력만 구현된 시뮬레이션 상태이다. 실제 BLE 명령과 연동하는 기능 구현이 필요하다.</p>
+  </div>
+
+  <div class="alert alert-info">
+    <div class="alert-title">개선 제안 — 자동 재연결 및 모바일 대응</div>
+    <p>BLE 연결 중단 시 자동 재연결 로직(지수 백오프 방식)을 <code>gattserverdisconnected</code> 이벤트 핸들러에 추가해야 한다. 또한 Android Chrome에서의 모바일 뷰포트 최적화를 통해 교실 내 태블릿 활용성을 높여야 한다.</p>
+  </div>
+
+  <div class="alert alert-info">
+    <div class="alert-title">개선 제안 — 블록 한글화 확장</div>
+    <p>현재 일부 Blockly 내장 블록(반복문, 조건문 등)에 대한 한글 번역만 구현되어 있다. 변수·수학·논리 블록 전체에 대한 완전한 한글화와 한국어 툴팁 추가가 필요하다.</p>
+  </div>
+
+  <h3 id="sec6-3">AI 어시스턴트 개선</h3>
+
+  <div class="alert alert-info">
+    <div class="alert-title">개선 제안 — 웹 UI 통합 및 서버 배포</div>
+    <p>현재 AI 모듈은 독립 Python 스크립트로만 존재한다. EXAONE 2.4B 모델은 GPU 환경을 요구하므로, FastAPI 등을 활용하여 AI 추론 서버를 구성하고 웹 UI에서 REST API 또는 WebSocket으로 호출하는 구조가 실용적이다. 자연어 입력 → 블록 XML 자동 생성 기능도 중장기 과제로 권고한다.</p>
+  </div>
+
+  <h3 id="sec6-4">중장기 기술 로드맵</h3>
+
+  <div class="alert alert-info">
+    <div class="alert-title">PWA (Progressive Web App) 전환</div>
+    <p>현재 웹 앱을 PWA로 전환하면 홈 화면에 아이콘 추가, 오프라인 캐싱, 빠른 로딩이 가능해진다. 별도 앱 스토어 배포 없이 교사가 학생 태블릿에 즉시 배포할 수 있어 교실 운영 편의성이 크게 향상된다.</p>
+  </div>
+
+  <div class="alert alert-info">
+    <div class="alert-title">OTA (Over-The-Air) 펌웨어 업데이트</div>
+    <p>현재는 펌웨어 업데이트를 위해 USB 케이블 연결이 필요하다. BLE 또는 Wi-Fi를 통한 OTA 방식 업데이트를 도입하면 다수의 ARES 로봇을 교실에서 일괄 업그레이드할 수 있어 현장 유지보수 부담이 크게 줄어든다.</p>
+  </div>
+
+  <div class="alert alert-info">
+    <div class="alert-title">적응형 학습 분석 시스템</div>
+    <p>학생들의 블록 조합 패턴, 오류 발생 빈도, AI 어시스턴트 질의 내용을 수집·분석하면 개인 맞춤형 피드백과 수준별 블록 제안이 가능해진다. 장기적으로 학습 데이터 기반의 <strong>적응형(adaptive) 블록코딩 커리큘럼</strong>으로 발전시킬 수 있다.</p>
+  </div>
+
+  <div class="alert alert-info">
+    <div class="alert-title">VR/AR 확장 가능성</div>
+    <p>"화성 탐사" 테마와 증강·가상현실 기술의 결합은 자연스러운 확장 방향이다. ARES 로봇의 실시간 센서 데이터를 AR 오버레이로 시각화하거나, VR 환경에서 탐사 미션을 시뮬레이션하는 형태로 발전시키면 몰입형 STEAM 교육 경험을 제공할 수 있다.</p>
+  </div>
+
+  <h3 id="sec6-5">표준화 및 생태계 전략</h3>
+  <ul>
+    <li><strong>웹 표준 준수</strong>: W3C Web Bluetooth API 표준 및 ECMAScript 최신 스펙 기반 개발을 유지하여 플랫폼 독립성을 확보한다.</li>
+    <li><strong>교육 콘텐츠 표준(SCORM)</strong>: XML 프리셋 및 학습 콘텐츠를 SCORM(Sharable Content Object Reference Model) 호환 방식으로 구성하면 다양한 LMS(학습관리시스템)에서의 재활용이 가능하다.</li>
+    <li><strong>TTA 표준 연계</strong>: 한국정보통신기술협회(TTA)의 교육용 IoT 제어 표준을 검토하여 국내 공교육 시스템과의 호환성을 강화한다.</li>
+    <li><strong>오픈소스 생태계</strong>: 핵심 Blockly 블록 정의, 펌웨어, 예제 XML 프리셋을 GitHub에 오픈소스로 공개하여 교사·개발자 커뮤니티의 자발적 콘텐츠 생산을 유도한다.</li>
+  </ul>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     7. 교구 개발 확장 전략
+══════════════════════════════════════════════════ -->
+<section id="sec7">
+  <div class="section-title">
+    <div class="section-num">7</div>
+    <h2>교구 개발 확장 전략</h2>
+  </div>
+
+  <h3 id="sec7-1">난이도별 단계적 교육 커리큘럼</h3>
+  <p>ARES 플랫폼의 블록코딩 환경은 다음과 같이 3단계 난이도의 커리큘럼으로 구조화할 수 있다.</p>
+  <div class="table-wrap">
+    <table>
+      <caption>표 13. 단계별 교육 커리큘럼</caption>
+      <thead><tr><th>단계</th><th>수준</th><th>주요 활동</th><th>사용 블록</th></tr></thead>
+      <tbody>
+        <tr><td>입문</td><td>초등 3~4학년</td><td>순서대로 로봇 움직이기, LED 켜기</td><td>이동, 시간, LED</td></tr>
+        <tr><td>초급</td><td>초등 4~5학년</td><td>반복 이동 패턴, 소리 신호</td><td>이동, 반복, 부저</td></tr>
+        <tr><td>중급</td><td>초등 5~6학년</td><td>센서 기반 조건 분기, 변수 활용</td><td>센서, 조건문, 변수, 수학</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>입문 단계에서는 미리 제공되는 XML 프리셋을 수정하는 방식으로 코딩의 즉각적 결과를 경험하게 하고, 단계가 올라갈수록 빈 워크스페이스에서 직접 구성하는 비율을 높이는 것이 권고된다.</p>
+
+  <h3 id="sec7-2">미션 기반 학습 시나리오</h3>
+  <p>화성 탐사 내러티브를 활용하여 미션 달성형 학습 시나리오를 구성할 수 있다.</p>
+  <ul>
+    <li><strong>미션 1 (탐색)</strong>: 정해진 경로를 자율적으로 주행하여 목적지 도달</li>
+    <li><strong>미션 2 (탐지)</strong>: 자기장 센서로 '화성 광물(자석)'을 탐지하고 LED로 신호 발신</li>
+    <li><strong>미션 3 (회피)</strong>: 초음파 센서로 장애물을 감지하고 우회 경로로 복귀</li>
+    <li><strong>미션 4 (전투)</strong>: 자기장 센서로 목표물 탐지 후 BB탄 발사</li>
+    <li><strong>미션 5 (통합)</strong>: 위 기능을 모두 조합한 자율 탐사 프로그램 작성</li>
+  </ul>
+  <p>미션 결과를 OLED에 표시하고 부저로 성공 알림을 출력하는 방식으로 즉각적인 성취감을 제공한다.</p>
+
+  <h3 id="sec7-3">하드웨어 구성별 제품 라인업</h3>
+  <p>선택적 모듈 로드 구조(<code>enable_*</code>)와 동적 핀 설정(<code>SET_PIN</code>) 기능을 활용하여 교구 구성을 유연하게 변경할 수 있다.</p>
+  <ul>
+    <li><strong>기본형</strong>: 이동 + 센서 (가장 저렴한 구성)</li>
+    <li><strong>표준형</strong>: 이동 + 센서 + LED + 부저 + OLED</li>
+    <li><strong>완전형</strong>: 모든 모듈 포함 (BB탄 발사기 포함)</li>
+  </ul>
+  <p>학교 예산과 교육 목표에 따라 동일 소프트웨어로 다양한 하드웨어 구성을 지원할 수 있다.</p>
+
+  <h3 id="sec7-4">교사 지원 도구 강화</h3>
+  <p>현재 대시보드 기능을 확장하여 교사 전용 관리 패널을 구현하면 수업 운영 효율이 크게 향상된다.</p>
+  <ul>
+    <li><strong>다중 로봇 관리</strong>: 여러 ARES 로봇의 연결 상태를 한 화면에서 모니터링</li>
+    <li><strong>학습 진도 추적</strong>: 학생이 저장한 XML 파일을 수집·분석하여 블록 사용 패턴 파악</li>
+    <li><strong>미션 배포</strong>: 교사가 XML 프리셋을 학생 장치에 무선으로 배포하는 기능</li>
+    <li><strong>AI 어시스턴트 통계</strong>: 학생들이 자주 묻는 질문 패턴 분석</li>
+  </ul>
+
+  <h3 id="sec7-5">글로벌 플랫폼 비교 및 차별성 분석</h3>
+  <div class="table-wrap">
+    <table>
+      <caption>표 14. 주요 블록코딩 플랫폼 비교</caption>
+      <thead><tr><th>플랫폼</th><th>강점</th><th>약점</th><th>ARES 대비 특징</th></tr></thead>
+      <tbody>
+        <tr><td>Scratch (MIT)</td><td>방대한 커뮤니티, 오픈소스, 창의적 프로젝트 생성</td><td>실제 HW 연동 기능 제한</td><td>소프트웨어 중심, 피지컬 컴퓨팅 직접 연결 어려움</td></tr>
+        <tr><td>Blockly (Google)</td><td>다국어·다플랫폼 지원, 뛰어난 확장성</td><td>교육 커리큘럼 특화 기능 부족</td><td>라이브러리 수준이며 완성형 교구 솔루션 아님</td></tr>
+        <tr><td>MakeCode (MS)</td><td>micro:bit 등 특정 보드 강력 지원</td><td>Microsoft 생태계 의존, 지원 보드 한정</td><td>특정 보드 의존적, 완전 웹 기반 아님</td></tr>
+        <tr><td>엔트리 (네이버)</td><td>국내 공교육 채택, 한국어 최적화</td><td>신규 하드웨어 연동 기능 제한</td><td>기성 하드웨어 의존, Web Bluetooth 미지원</td></tr>
+        <tr>
+          <td><strong>ARES</strong></td>
+          <td colspan="3"><strong>완전 웹 기반(설치 불필요)</strong> + <strong>Web Bluetooth 실시간 피지컬 컴퓨팅</strong> + <strong>한국어 특화 블록·AI 어시스턴트</strong> + <strong>오픈 하드웨어 구조(다중 구성 지원)</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>기존 플랫폼들이 소프트웨어 중심 또는 특정 하드웨어에 종속된 것과 달리, ARES는 <strong>브라우저 하나로 실제 로봇을 즉시 제어</strong>하는 경험을 제공한다는 점에서 명확한 차별성을 가진다.</p>
+
+  <h3 id="sec7-6">교육 정책 연계 가능성</h3>
+  <ul>
+    <li><strong>AI 디지털교과서 도입</strong>: 교육부는 2025년부터 초3·4, 중1, 고1 대상으로 AI 디지털교과서를 도입하고 있다. ARES의 웹 기반 블록코딩 환경은 디지털 교수·학습 인프라와 자연스럽게 연계된다.</li>
+    <li><strong>SW·AI 교육 강화</strong>: 2022 개정 교육과정에서 정보·SW 교육이 강화되고 피지컬 컴퓨팅 실습 비중이 확대되고 있다. ARES는 코딩과 하드웨어를 통합한 실습 환경을 즉시 제공한다.</li>
+    <li><strong>STEAM 융합교육</strong>: <strong>"화성 탐사"</strong>라는 스토리텔링 주제는 과학(행성·궤도)·기술(로봇 제어)·공학(회로·센서)·수학(좌표·비율)을 자연스럽게 융합하는 STEAM 교육 모델에 직접 부합한다.</li>
+    <li><strong>방과후학교 및 메이커교육</strong>: 코딩학원·메이커스페이스·방과후학교 등 비정규 교육 시장에서 실제 하드웨어를 제어하는 체험형 교구는 텍스트 기반 강의 대비 높은 학습 몰입도를 제공한다.</li>
+  </ul>
+
+  <h3 id="sec7-7">오픈소스 생태계 참여</h3>
+  <p>ARES 플랫폼의 Blockly 블록 정의, 펌웨어, 예제 XML 프리셋을 오픈소스로 공개하면 교육 커뮤니티의 콘텐츠 생산을 유도할 수 있다. GitHub을 통한 교사·학생 커뮤니티 형성, 다른 로봇 플랫폼과의 블록 호환 표준 제안 등도 장기 전략으로 검토할 수 있다.</p>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     8. 결론
+══════════════════════════════════════════════════ -->
+<section id="sec8">
+  <div class="section-title">
+    <div class="section-num">8</div>
+    <h2>결론</h2>
+  </div>
+
+  <p>본 자문을 통해 ARES 화성 탐사 로봇 교육 플랫폼의 소프트웨어 전반에 걸친 설계와 구현이 이루어졌다. 주요 성과를 요약하면 다음과 같다.</p>
+
+  <div class="alert alert-blue">
+    <div class="alert-title">아키텍처 완성도</div>
+    <p>Raspberry Pi Pico 펌웨어는 클래스 기반 모듈화, 싱글톤 패턴, 선택적 모듈 로드, JSON 기반 설정 영구화를 통해 교육용 임베디드 시스템으로서 높은 안정성과 유연성을 갖추었다. 웹 UI는 ES6 모듈 분리, 비동기 Promise 통신, 재귀적 블록 인터프리터를 통해 Google Blockly와 Web Bluetooth를 효과적으로 통합한다.</p>
+  </div>
+
+  <div class="alert alert-orange">
+    <div class="alert-title">교육적 설계</div>
+    <p>초등학생 수준의 학습자를 위한 한글화 Blockly 인터페이스, 단순한 아이콘·색상 기반 블록 분류, 한국어 LLM 기반 AI 질의응답 모듈은 코딩 입문자의 접근성을 높이는 데 기여한다.</p>
+  </div>
+
+  <div class="alert alert-orange">
+    <div class="alert-title">확장성</div>
+    <p>동적 핀 설정과 모듈 활성화 기능은 다양한 하드웨어 구성을 하나의 소프트웨어로 지원하며, XML 프리셋과 AI 어시스턴트는 교사의 수업 준비 부담을 낮춘다.</p>
+  </div>
+
+  <div class="alert alert-warn">
+    <div class="alert-title">향후 과제</div>
+    <p><code>_handle_sys_set</code> 버그 수정, 배터리 모니터링 구현, 장애물 자동 회피 로직 완성, AI 어시스턴트의 웹 통합이 단기 과제로 남아 있다. 중장기적으로는 미션 기반 커리큘럼 콘텐츠 확충과 교사 지원 관리 도구 강화를 통해 학교 현장 적용성을 높여 나갈 것을 권고한다.</p>
+  </div>
+
+  <div class="alert alert-ok">
+    <div class="alert-title">현장 검증 — 대한민국교육박람회 (2026년 1월, COEX)</div>
+    <p>자문 과정에서 개발된 ARES 시제품은 2026년 1월 서울 코엑스에서 개최된 <strong>대한민국교육박람회</strong>에 전시되었다. 전국 교육청·학교 관계자·교육 전문가 등 다양한 교육계 인사로부터 <strong>우수한 교육적 가치를 인정</strong>받았으며, 일부 지역 교육기관에서는 완제품 출시 시 공급 요청을 접수하는 성과를 거두었다. 이는 본 자문을 통해 개발된 소프트웨어 플랫폼이 실제 교육 현장의 수요에 부합함을 현장에서 직접 검증한 결과이다.</p>
+  </div>
+
+  <div class="alert alert-ok">
+    <div class="alert-title">최종 평가</div>
+    <p>ARES 플랫폼은 하드웨어와 소프트웨어 모두 교육적 맥락에 맞게 설계된 완성도 높은 코딩 교육 교구이다. 완전 웹 기반 아키텍처와 BLE 실시간 연동이라는 기술적 차별성, 한국어 특화 인터페이스와 AI 어시스턴트를 통한 접근성, 그리고 교육박람회를 통해 확인된 현장 수요를 고려할 때, 향후 추가 개선을 통해 국내 초등 SW 교육 현장에 의미 있는 기여를 할 수 있을 것으로 평가한다. 특히 교육부의 AI 디지털교과서 도입 및 SW 교육 강화 기조와의 정합성이 높아, STEAM 융합교육 교구로서의 시장 확장 가능성 또한 충분한 것으로 판단된다.</p>
+  </div>
+
+  <div class="report-footer">
+    본 보고서는 (주)코리아사이언스의 용역에 따른 자문 결과로 작성되었습니다.<br>
+    ARES &bull; Autonomous Rover Exploration System &bull; Korea Science
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     부록: 펌웨어 소스코드
+══════════════════════════════════════════════════ -->
+<section id="appendix" class="appendix-section">
+  <div class="appendix-header">부록</div>
+
+  <div style="text-align:center; margin-bottom: 32px;">
+    <a href="appendix.html"
+       style="display:inline-block; background:var(--mars-red); color:#fff;
+              font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:15px;
+              padding:12px 32px; border-radius:4px; text-decoration:none;
+              letter-spacing:0.03em;">
+      전체 소스코드 보기 →
+    </a>
+    <p style="margin-top:10px; font-size:13px; color:var(--muted-text); font-family:'Noto Sans KR',sans-serif;">
+      펌웨어 14개 모듈 · 웹 클라이언트 11개 파일 전체 수록
+    </p>
+  </div>
+
+  <div class="section-title">
+    <div class="section-num">A</div>
+    <h2>펌웨어 소스코드 (Pico Source)</h2>
+  </div>
+
+  <p>펌웨어는 MicroPython으로 작성되었으며, Raspberry Pi Pico W 보드에서 실행된다. UART 블루투스 통신, 하드웨어 드라이버, 시스템 설정 관리 등의 모듈로 구성된다.</p>
+
+  <h3>핵심 애플리케이션</h3>
+
+  <div class="code-caption">main.py — 메인 애플리케이션 루프</div>
+  <pre><code class="language-python"># ARES 로버 메인 애플리케이션
+
+from machine import UART, Pin
+import utime
+from process_data import CommandProcessor
+from hardware import robot
+from pins import UART_TX_PIN, UART_RX_PIN
+
+# UART 설정
+UART_ID = 0
+UART_BAUDRATE = 9600
+
+# 루프 설정
+MAIN_LOOP_DELAY_MS = 10
+RECEIVE_TIMEOUT_MS = 50
+MAX_BUFFER_SIZE = 512
+
+
+class AresRover:
+    """ARES 로버 메인 애플리케이션 클래스"""
+
+    def __init__(self):
+        # UART 초기화 (블루투스 통신)
+        self.uart = UART(
+            UART_ID,
+            baudrate=UART_BAUDRATE,
+            tx=Pin(UART_TX_PIN),
+            rx=Pin(UART_RX_PIN)
+        )
+        # 명령 프로세서 초기화
+        self.processor = CommandProcessor()
+        # 하드웨어 싱글톤 참조
+        self.robot = robot
+        # 실행 상태
+        self.is_running = False
+        # 수신 버퍼
+        self.rx_buffer = ""
+
+    def boot(self):
+        """부팅 시퀀스 실행"""
+        if self.uart.any():
+            print("Cleaning UART buffer...")
+            while self.uart.any():
+                self.uart.read()
+        self.rx_buffer = ""
+
+        self._safe_stop_all_motors()
+        self.robot.buzzer.boot_sound()
+
+        self.robot.oled.fill(0)
+        self.robot.oled.text("ARES READY", 0, 0)
+        self.robot.oled.show()
+
+        print("ARES Rover: Waiting for data...")
+        self.is_running = True
+
+    def _safe_stop_all_motors(self):
+        """모든 하드웨어 안전 정지"""
+        self.robot.stop_all()
+
+    def _read_uart_line(self):
+        """UART에서 완전한 라인 읽기"""
+        if not self.uart.any():
+            return None
+
+        while self.uart.any():
+            chunk = self.uart.read()
+            if chunk:
+                self.rx_buffer += chunk.decode('utf-8', 'ignore')
+
+            if len(self.rx_buffer) > MAX_BUFFER_SIZE:
+                print("[UART] 버퍼 오버플로우, 초기화")
+                self.rx_buffer = ""
+                return None
+
+            utime.sleep_ms(5)
+
+        utime.sleep_ms(RECEIVE_TIMEOUT_MS)
+
+        while self.uart.any():
+            chunk = self.uart.read()
+            if chunk:
+                self.rx_buffer += chunk.decode('utf-8', 'ignore')
+
+        if '\n' in self.rx_buffer:
+            newline_idx = self.rx_buffer.index('\n')
+            complete_line = self.rx_buffer[:newline_idx].strip()
+            self.rx_buffer = self.rx_buffer[newline_idx + 1:]
+            return complete_line
+
+        if self.rx_buffer:
+            data = self.rx_buffer.strip()
+            if data and not data.endswith(','):
+                self.rx_buffer = ""
+                return data
+
+        return None
+
+    def _is_status_message(self, data):
+        """블루투스 상태 메시지 확인"""
+        return data.startswith('+')
+
+    def _send_response(self, response):
+        """UART로 응답 전송 (20바이트 청킹)"""
+        data = response.encode('utf-8') + b'\n'
+        CHUNK_SIZE = 20
+
+        for i in range(0, len(data), CHUNK_SIZE):
+            chunk = data[i:i + CHUNK_SIZE]
+            self.uart.write(chunk)
+            utime.sleep_ms(10)
+
+    def _process_command(self, data):
+        """명령 처리 및 응답 반환"""
+        try:
+            print(f"[CMD] {data}")
+            result = self.processor.process(data)
+            return f"{result}"
+        except Exception as e:
+            print(f"처리 오류: {e}")
+            return "ERROR"
+
+    def run(self):
+        """메인 루프 실행"""
+        self.boot()
+
+        while self.is_running:
+            try:
+                data = self._read_uart_line()
+
+                if not data:
+                    pass
+                elif self._is_status_message(data):
+                    print(f"BT 상태: {data}")
+                else:
+                    response = self._process_command(data)
+                    self._send_response(response)
+
+            except Exception as e:
+                print(f"UART 오류: {e}")
+
+            utime.sleep_ms(MAIN_LOOP_DELAY_MS)
+
+
+if __name__ == "__main__":
+    app = AresRover()
+    app.run()</code></pre>
+
+  <h3>명령 처리 및 하드웨어 관리</h3>
+
+  <div class="code-caption">process_data.py — UART 명령 파싱 및 실행 (핵심 부분)</div>
+  <pre><code class="language-python"># ARES 로버 명령 처리기
+
+import utime
+import time
+from hardware import robot
+from system_config import sys_config
+
+PWM_MAX = 65535
+
+
+class CommandProcessor:
+    """UART 명령 파싱 및 실행 클래스"""
+
+    def __init__(self):
+        pass
+
+    def _get_speed_pwm(self):
+        """설정된 max_speed에서 PWM 값 계산"""
+        spd = sys_config.get('max_speed') / 100.0
+        return int(spd * PWM_MAX)
+
+    def process(self, data):
+        """명령 처리 및 결과 반환"""
+
+        if data == "PING":
+            return self._handle_ping()
+        elif data == "READY":
+            return "READY"
+        elif data == "STOP_ALL":
+            return self._handle_stop_all()
+        elif data == "GET_STATUS":
+            return self._handle_get_status()
+        elif data == "GET_SYS":
+            return self._handle_get_sys()
+        elif data == "GET_MODULES":
+            return self._handle_get_modules()
+        elif data.startswith("SYS_SET"):
+            return self._handle_sys_set(data)
+        elif data.startswith("SET_PIN"):
+            return self._handle_set_pin(data)
+        elif data.startswith("SET_MODULE"):
+            return self._handle_set_module(data)
+        elif data.startswith("BUZZER_ON"):
+            return self._handle_buzzer_on(data)
+        elif data.startswith("SING"):
+            return self._handle_sing()
+        elif data == "DISTANCE":
+            if robot.distance_sensor:
+                dist = robot.distance_sensor.get_distance()
+                return f"DIST:{dist}"
+            return "DIST:ERROR"
+        elif data == "MAGNET":
+            if robot.mag_sensor:
+                mag = robot.mag_sensor.detect()
+                return f"MAG:{mag}"
+            return "MAG:ERROR"
+        # ... (서보/DC 모터/LED/디스플레이 명령 핸들러 생략)
+
+        return 0</code></pre>
+
+  <div class="code-caption">hardware.py — 하드웨어 싱글톤 초기화</div>
+  <pre><code class="language-python"># ARES 로버 하드웨어 싱글톤
+
+from machine import I2C, Pin, UART
+from system_config import sys_config
+import time
+import gc
+import machine
+
+
+class RobotHardware:
+    """하드웨어 싱글톤 클래스"""
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(RobotHardware, cls).__new__(cls)
+            cls._instance._init_hardware()
+        return cls._instance
+
+    def _init_hardware(self):
+        """하드웨어 초기화 - 모듈별 선택적 로드"""
+        self.temp_sensor = machine.ADC(4)
+        self.start_time = time.ticks_ms()
+
+        # 모든 모듈을 None으로 초기화
+        self.dcmotor = self.oled = self.i2c = self.buzzer = None
+        self.distance_sensor = self.wheel = self.mag_sensor = None
+        self.leds = self.gun = None
+
+        # 각 모듈을 enable_* 플래그에 따라 선택적으로 로드
+        if sys_config.is_module_enabled('dcmotor'):
+            try:
+                from dcmotor import KSDCMotor
+                self.dcmotor = KSDCMotor()
+                self.dcmotor.dc_stop()
+            except Exception as e:
+                print(f"[HW] DC 모터 초기화 실패: {e}")
+
+        if sys_config.is_module_enabled('oled'):
+            try:
+                from ssd1306 import SSD1306_I2C
+                i2c_sda = sys_config.get('pin_i2c_sda')
+                i2c_scl = sys_config.get('pin_i2c_scl')
+                self.oled = SSD1306_I2C(128, 64, scl_pin=i2c_scl, sda_pin=i2c_sda)
+            except Exception as e:
+                print(f"[HW] OLED 초기화 실패: {e}")
+
+        if sys_config.is_module_enabled('wheel'):
+            try:
+                from wheel import KSWheel
+                self.wheel = KSWheel()
+                self.wheel.stop()
+            except Exception as e:
+                print(f"[HW] 서보 모터 초기화 실패: {e}")
+
+        # ... (나머지 모듈 초기화 생략)
+
+        self._sync_bt_name()
+
+    def get_status_dict(self):
+        """시스템 상태 딕셔너리 반환"""
+        status = {
+            "dist": 0, "mag": 0,
+            "temp": self.get_temperature(),
+            "mem": gc.mem_free(),
+            "uptime": int(time.ticks_diff(time.ticks_ms(), self.start_time) / 1000)
+        }
+        if self.distance_sensor:
+            try: status["dist"] = self.distance_sensor.get_distance()
+            except: pass
+        if self.mag_sensor:
+            try: status["mag"] = self.mag_sensor.detect()
+            except: pass
+        return status
+
+    def stop_all(self):
+        """모든 하드웨어 안전 정지"""
+        for hw, stop_fn in [
+            (self.dcmotor, lambda: self.dcmotor.dc_stop()),
+            (self.wheel,   lambda: self.wheel.stop()),
+            (self.leds,    lambda: self.leds.leds_off()),
+        ]:
+            if hw:
+                try: stop_fn()
+                except Exception as e: print(f"[stop_all] 오류: {e}")
+
+
+# 전역 싱글톤 인스턴스
+robot = RobotHardware()</code></pre>
+
+  <div class="code-caption">system_config.py — 시스템 설정 관리</div>
+  <pre><code class="language-python"># 시스템 설정 관리
+
+import json
+import os
+
+CONFIG_FILE = 'system.json'
+LEGACY_CALIB_FILE = 'calibration.json'
+
+DEFAULT_CONFIG = {
+    "max_speed": 80,
+    "collision_dist": 10,
+    "auto_stop": 1,
+    "device_name": "ARES",
+    "left_calibration": 100,
+    "right_calibration": 100,
+    # 모듈 활성화 (1=활성화, 0=비활성화)
+    "enable_wheel": 1,
+    "enable_dcmotor": 1,
+    "enable_buzzer": 1,
+    "enable_distance": 1,
+    "enable_magsensor": 1,
+    "enable_leds": 1,
+    "enable_gun": 1,
+    "enable_oled": 1,
+    # 모듈별 핀 설정
+    "pin_wheel_left": 13,
+    "pin_wheel_right": 12,
+    "pin_dcmotor_dir": 8,
+    "pin_dcmotor_pwm": 9,
+    "pin_buzzer": 15,
+    "pin_distance_trig": 6,
+    "pin_distance_echo": 7,
+    "pin_magsensor": 26,
+    "pin_gun": 22,
+    "pin_i2c_sda": 4,
+    "pin_i2c_scl": 5,
+    "pin_leds": [20, 19, 18, 17, 16],
+}
+
+
+class SystemConfig:
+    """시스템 설정 싱글톤"""
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(SystemConfig, cls).__new__(cls)
+            cls._instance._load()
+        return cls._instance
+
+    def _load(self):
+        try:
+            with open(CONFIG_FILE, 'r') as f:
+                self.config = json.load(f)
+            # 누락된 기본값 채우기
+            for key, value in DEFAULT_CONFIG.items():
+                if key not in self.config:
+                    self.config[key] = value
+        except:
+            self.config = dict(DEFAULT_CONFIG)
+            self._migrate_legacy()
+            self.save_all()
+
+    def get(self, key, default=None):
+        return self.config.get(key, default)
+
+    def is_module_enabled(self, module_name):
+        return bool(self.config.get(f'enable_{module_name}', 0))
+
+    def save_all(self):
+        """수동 JSON 포맷팅으로 저장 (MicroPython 호환)"""
+        try:
+            with open(CONFIG_FILE, 'w') as f:
+                f.write('{\n')
+                items = list(self.config.items())
+                for i, (k, v) in enumerate(items):
+                    comma = ',' if i < len(items) - 1 else ''
+                    if isinstance(v, str):
+                        f.write(f'  "{k}": "{v}"{comma}\n')
+                    elif isinstance(v, list):
+                        f.write(f'  "{k}": {json.dumps(v)}{comma}\n')
+                    else:
+                        f.write(f'  "{k}": {v}{comma}\n')
+                f.write('}\n')
+        except Exception as e:
+            print(f"설정 저장 오류: {e}")
+
+
+# 전역 싱글톤
+sys_config = SystemConfig()</code></pre>
+
+</section>
+
+</div><!-- /.page-wrap -->
+
+<script>
+  // highlight.js 초기화
+  document.addEventListener('DOMContentLoaded', () => {
+    hljs.highlightAll();
+  });
+</script>
+
+</body>
+</html>
