@@ -1,30 +1,1456 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Young-Min Kang</title>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Young-Min Kang | Professor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #eee;
+            --text-muted: #aab;
+            --card-bg: rgba(255,255,255,0.04);
+            --card-border: rgba(255,255,255,0.08);
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/github-dark.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>Dknife.GitHub.io</h1>
-      </header>
-	<section>
-    	
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background: var(--primary);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.7;
+        }
 
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bg-animation .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: float 20s infinite ease-in-out;
+        }
+        .bg-animation .orb:nth-child(1) {
+            width: 600px; height: 600px;
+            background: #667eea;
+            top: -200px; left: -100px;
+            animation-delay: 0s;
+        }
+        .bg-animation .orb:nth-child(2) {
+            width: 400px; height: 400px;
+            background: #e94560;
+            top: 50%; right: -100px;
+            animation-delay: -7s;
+            animation-duration: 25s;
+        }
+        .bg-animation .orb:nth-child(3) {
+            width: 500px; height: 500px;
+            background: #764ba2;
+            bottom: -200px; left: 30%;
+            animation-delay: -14s;
+            animation-duration: 30s;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -50px) scale(1.1); }
+            50% { transform: translate(-30px, 30px) scale(0.95); }
+            75% { transform: translate(40px, 20px) scale(1.05); }
+        }
 
-	<h1><a href="https://github.com/dknife/dknife.github.io/wiki">Click Here to Move to Young-Min's Homepage!</a></h1>
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 0 2rem;
+            background: rgba(26, 26, 46, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
+            transition: all 0.3s;
+        }
+        nav.scrolled {
+            padding: 0 2rem;
+            background: rgba(26, 26, 46, 0.95);
+        }
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 64px;
+        }
+        .nav-logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .nav-links { display: flex; gap: 0.5rem; list-style: none; }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: #fff;
+            background: rgba(255,255,255,0.08);
+        }
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--text);
+            transition: all 0.3s;
+        }
 
-    
-  </body>
+        /* Main content */
+        main { position: relative; z-index: 1; }
+
+        section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+        }
+
+        /* Hero */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 64px;
+        }
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        .hero-text h1 span {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-text .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .research-sphere {
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            position: relative;
+            animation: pulse 4s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .research-sphere::before {
+            content: '';
+            position: absolute;
+            inset: 4px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+        .research-sphere .inner {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 2rem;
+        }
+        .research-sphere .inner .icon {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+        }
+        .research-sphere .inner p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 40px rgba(102, 126, 234, 0.3); }
+            50% { box-shadow: 0 0 80px rgba(102, 126, 234, 0.5); }
+        }
+
+        .hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        .tag {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid var(--card-border);
+            background: var(--card-bg);
+            color: var(--text-muted);
+            transition: all 0.3s;
+        }
+        .tag:hover {
+            border-color: rgba(102, 126, 234, 0.5);
+            background: rgba(102, 126, 234, 0.1);
+            color: #fff;
+        }
+
+        /* Section titles */
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .section-header h2 span {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Research cards */
+        .research-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+        .research-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .research-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            border-radius: 16px 16px 0 0;
+        }
+        .research-card:nth-child(1)::before { background: var(--gradient-1); }
+        .research-card:nth-child(2)::before { background: var(--gradient-2); }
+        .research-card:nth-child(3)::before { background: var(--gradient-3); }
+        .research-card:nth-child(4)::before { background: var(--gradient-4); }
+        .research-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.06);
+        }
+        .research-card .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .research-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        .research-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        /* Publications */
+        .pub-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .pub-tab {
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid var(--card-border);
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .pub-tab.active, .pub-tab:hover {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: rgba(102, 126, 234, 0.4);
+            color: #fff;
+        }
+
+        .pub-list { display: flex; flex-direction: column; gap: 1rem; }
+        .pub-item {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        .pub-item:hover {
+            border-color: rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.06);
+        }
+        .pub-item .pub-year {
+            display: inline-block;
+            padding: 0.2rem 0.7rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        .pub-item .pub-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+            line-height: 1.5;
+        }
+        .pub-item .pub-authors {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+        .pub-item .pub-venue {
+            color: #667eea;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .pub-hidden { display: none; }
+
+        .show-more-btn {
+            display: block;
+            margin: 1.5rem auto 0;
+            padding: 0.7rem 2rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid var(--card-border);
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .show-more-btn:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: rgba(102, 126, 234, 0.4);
+            color: #fff;
+        }
+
+        /* Books */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        .book-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s;
+        }
+        .book-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255,255,255,0.15);
+        }
+        .book-card .book-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .book-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .book-card .book-authors {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+        .book-card .book-publisher {
+            font-size: 0.8rem;
+            color: #667eea;
+        }
+        .book-card .book-badge {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            background: rgba(233, 69, 96, 0.15);
+            color: #e94560;
+        }
+
+        /* Lectures */
+        .lectures-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+        .lecture-semester {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        .lecture-semester:hover {
+            border-color: rgba(255,255,255,0.12);
+        }
+        .lecture-semester h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+        .lecture-semester h3 .semester-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+            margin-right: 0.5rem;
+        }
+        .lecture-list { list-style: none; }
+        .lecture-list li {
+            padding: 0.4rem 0;
+        }
+        .lecture-list a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .lecture-list a:hover { color: #667eea; }
+        .lecture-list a::before {
+            content: '→';
+            font-size: 0.8rem;
+            color: #667eea;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .lecture-list a:hover::before { opacity: 1; }
+
+        /* Stats */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--card-border);
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        /* Scroll animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .hero-content { grid-template-columns: 1fr; text-align: center; }
+            .hero-text h1 { font-size: 2.5rem; }
+            .hero-visual { order: -1; }
+            .research-sphere { width: 260px; height: 260px; }
+            .research-grid { grid-template-columns: 1fr; }
+            .books-grid { grid-template-columns: 1fr; }
+            .lectures-container { grid-template-columns: 1fr; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .hero-tags { justify-content: center; }
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 64px; left: 0; right: 0;
+                flex-direction: column;
+                background: rgba(26, 26, 46, 0.98);
+                padding: 1rem;
+                border-bottom: 1px solid var(--card-border);
+            }
+            .nav-links.open { display: flex; }
+            .hamburger { display: flex; }
+            .hero-text h1 { font-size: 2rem; }
+            section { padding: 3rem 1.5rem; }
+            .pub-tabs { gap: 0.3rem; }
+            .pub-tab { padding: 0.5rem 1rem; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-animation">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+</div>
+
+<nav id="navbar">
+    <div class="nav-inner">
+        <div class="nav-logo">Y.M. Kang</div>
+        <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links">
+            <li><a href="#hero" class="active">Home</a></li>
+            <li><a href="#research">Research</a></li>
+            <li><a href="#publications">Publications</a></li>
+            <li><a href="#books">Books</a></li>
+            <li><a href="#lectures">Lectures</a></li>
+            <li><a href="#bookmarks">Resources</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main>
+
+<!-- Hero Section -->
+<section id="hero">
+    <div class="hero-content">
+        <div class="hero-text">
+            <h1>안녕하세요,<br><span>강영민</span> 교수입니다</h1>
+            <p class="subtitle">
+                동명대학교 게임공학과 교수<br>
+                컴퓨터 그래픽스, 물리 기반 시뮬레이션,<br>
+                GPU 병렬 처리, 머신러닝 연구
+            </p>
+            <div class="hero-tags">
+                <span class="tag">Real-time Rendering</span>
+                <span class="tag">Cloth Simulation</span>
+                <span class="tag">GPU Computing</span>
+                <span class="tag">Machine Learning</span>
+                <span class="tag">Computer Graphics</span>
+                <span class="tag">Game Development</span>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="research-sphere">
+                <div class="inner">
+                    <div class="icon">🎓</div>
+                    <p>Ph.D. 부산대학교<br>Computer Graphics<br>& Simulation</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats -->
+<section style="padding-top: 0;">
+    <div class="stats-bar reveal">
+        <div class="stat-item">
+            <div class="stat-number">14</div>
+            <div class="stat-label">International Journals</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">23</div>
+            <div class="stat-label">International Conferences</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">5</div>
+            <div class="stat-label">Published Books</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">20+</div>
+            <div class="stat-label">Years of Teaching</div>
+        </div>
+    </div>
+</section>
+
+<!-- Research -->
+<section id="research">
+    <div class="section-header reveal">
+        <h2>Research <span>Areas</span></h2>
+        <p>주요 연구 분야</p>
+    </div>
+    <div class="research-grid">
+        <div class="research-card reveal">
+            <div class="card-icon">🖥️</div>
+            <h3>Real-time Rendering</h3>
+            <p>이방성 반사 모델, 미세면 분포 함수 변형, 직물 및 금속의 사실적 실시간 렌더링 기술 연구. BRDF 모델링과 GPU 기반 셰이딩 기법을 통한 고품질 실시간 그래픽스.</p>
+        </div>
+        <div class="research-card reveal">
+            <div class="card-icon">👕</div>
+            <h3>Physically-based Animation</h3>
+            <p>질량-스프링 모델 기반의 실시간 옷감, 종이, 연체 객체 시뮬레이션. 수치 안정성과 물리적 타당성을 보장하는 조화진동 모델 및 효율적 수치 적분 기법 연구.</p>
+        </div>
+        <div class="research-card reveal">
+            <div class="card-icon">⚡</div>
+            <h3>GPU-based Optimization</h3>
+            <p>대규모 레이더 신호 분석, 유전 알고리즘 기반 TSP 최적화 등 GPU 병렬 처리를 활용한 고성능 컴퓨팅. 대규모 그래프의 도달 가능성 행렬 연산 기술.</p>
+        </div>
+        <div class="research-card reveal">
+            <div class="card-icon">📡</div>
+            <h3>Radar Signal Processing</h3>
+            <p>대규모 레이더 신호 데이터의 실시간 분석을 위한 GPU 기반 객체 추출 및 식별 기법. 고성능 병렬 처리를 통한 실시간 신호 처리 시스템 연구.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Publications -->
+<section id="publications">
+    <div class="section-header reveal">
+        <h2><span>Publications</span></h2>
+        <p>학술 논문 및 연구 성과</p>
+    </div>
+
+    <div class="pub-tabs reveal">
+        <button class="pub-tab active" onclick="showPubTab('intl-journal')">International Journals</button>
+        <button class="pub-tab" onclick="showPubTab('intl-conf')">International Conferences</button>
+        <button class="pub-tab" onclick="showPubTab('dom-journal')">국내 저널</button>
+        <button class="pub-tab" onclick="showPubTab('dom-conf')">국내 학회</button>
+    </div>
+
+    <!-- International Journals -->
+    <div id="intl-journal" class="pub-list pub-section">
+        <div class="pub-item reveal">
+            <span class="pub-year">2021</span>
+            <div class="pub-title">AORM: Fast Incremental Arbitrary-Order Reachability Matrix Computation for Massive Graphs</div>
+            <div class="pub-authors">Kim, S.-S., Kim, Y.-K., & Kang, Y.-M.</div>
+            <div class="pub-venue">IEEE Access, 9, 69539-69558</div>
+        </div>
+        <div class="pub-item reveal">
+            <span class="pub-year">2016</span>
+            <div class="pub-title">GPU-based object identification in large-scale images for real-time radar signal analysis</div>
+            <div class="pub-authors">Kang, Y.-M., Kim, S.-S., & Nam, G.-T.</div>
+            <div class="pub-venue">Int'l Journal of New Computer Architecture and their Applications, 6(4):140-149</div>
+        </div>
+        <div class="pub-item reveal">
+            <span class="pub-year">2016</span>
+            <div class="pub-title">GPU-based parallel genetic approach to large-scale travelling salesman problem</div>
+            <div class="pub-authors">Kang, S., Kim, S.-S., Won, J., & Kang, Y.-M.</div>
+            <div class="pub-venue">Journal of Supercomputing, 72(11):4399-4414</div>
+        </div>
+        <div class="pub-item reveal">
+            <span class="pub-year">2015</span>
+            <div class="pub-title">Multipeak anisotropic microfacet model for iridescent surfaces</div>
+            <div class="pub-authors">Kang, Y.-M., Lee, D.-H., & Cho, H.-G.</div>
+            <div class="pub-venue">Multimedia Tools and Applications, 74(16):6229-6242</div>
+        </div>
+        <div class="pub-item reveal">
+            <span class="pub-year">2014</span>
+            <div class="pub-title">GPU-driven Parallel Processing for Realtime Creation of Tree Animation</div>
+            <div class="pub-authors">Song, S.-M., Kang, Y.-M., Lee, K.-H., & Ok, S.-Y.</div>
+            <div class="pub-venue">Int'l Journal of Software Engineering and Its Applications, 8(6):183-194</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2012</span>
+            <div class="pub-title">Photorealistic Cloth in Realtime Applications</div>
+            <div class="pub-authors">Kang, Y.-M. & Cho, C.-S.</div>
+            <div class="pub-venue">Computer Animation and Virtual Worlds, DOI:10.1002/cav.1456</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2012</span>
+            <div class="pub-title">Automatic Music Generation and Machine Learning Based Evaluation</div>
+            <div class="pub-authors">Kang, S., Ok, S.-Y., & Kang, Y.-M.</div>
+            <div class="pub-venue">Communications in Computer and Information Science, 346:436-443</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2012</span>
+            <div class="pub-title">An Efficient and Stable Water Surface Animation for Interactive Applications</div>
+            <div class="pub-authors">Song, S.-M., Kang, Y.-M., & Ok, S.-Y.</div>
+            <div class="pub-venue">Communications in Computer and Information Science, 346:483-490</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2012</span>
+            <div class="pub-title">Tree Animation Based on Hierarchical Shape Matching</div>
+            <div class="pub-authors">Song, S.-M., Kang, Y.-M., Lee, E.-J., & Ok, S.-Y.</div>
+            <div class="pub-venue">Communications in Computer and Information Science, 346:475-482</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2011</span>
+            <div class="pub-title">Plausible and Realtime Rendering of Scratched Metal by Deforming MDF of Normal Mapped Anisotropic Surface</div>
+            <div class="pub-authors">Kang, Y.-M., Cho, H.-G., & Kim, S.-S.</div>
+            <div class="pub-venue">Journal of WSCG, 19(3):101-110</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2010</span>
+            <div class="pub-title">Realtime Rendering of Realistic Fabric with Alternation of Deformed Anisotropy</div>
+            <div class="pub-authors">Kang, Y.-M.</div>
+            <div class="pub-venue">LNCS, 6459:301-312</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2004</span>
+            <div class="pub-title">Real-time Animation of Complex Virtual Cloth with Physical Plausibility and Numerical Stability</div>
+            <div class="pub-authors">Kang, Y.-M. & Cho, H.-G.</div>
+            <div class="pub-venue">PRESENCE - Teleoperators and Virtual Environments, 13(6):668-680</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2001</span>
+            <div class="pub-title">An Efficient Animation of Wrinkled Cloth with Approximate Implicit Integration</div>
+            <div class="pub-authors">Kang, Y.-M., Choi, J.-H., Cho, H.-G., & Lee, D.-H.</div>
+            <div class="pub-venue">The Visual Computer Journal, 17(3):147-157</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">1999</span>
+            <div class="pub-title">An Efficient Control over Human Running Animation with Extension of Planar Hopper Model</div>
+            <div class="pub-authors">Kang, Y.-M., Cho, H.-G., & Lee, E.-T.</div>
+            <div class="pub-venue">Journal of Visualization and Computer Animation, 10(4):215-224</div>
+        </div>
+        <button class="show-more-btn" onclick="togglePubs(this)">Show All (14 papers)</button>
+    </div>
+
+    <!-- International Conferences -->
+    <div id="intl-conf" class="pub-list pub-section" style="display:none;">
+        <div class="pub-item reveal">
+            <span class="pub-year">2022</span>
+            <div class="pub-title">Sparsity-Aware Reachability Computation for Massive Graphs</div>
+            <div class="pub-authors">Kim, S.-S., Kang, Y.-M., & Kim, Y.-K.</div>
+            <div class="pub-venue">BigComp 2022, Daegu, Korea</div>
+        </div>
+        <div class="pub-item reveal">
+            <span class="pub-year">2017</span>
+            <div class="pub-title">Explicit but Stable Spring-Damper Model with Harmonic Oscillation</div>
+            <div class="pub-authors">Kang, Y.-M.</div>
+            <div class="pub-venue">ICESS 2017, Japan</div>
+        </div>
+        <div class="pub-item reveal">
+            <span class="pub-year">2016</span>
+            <div class="pub-title">A Parallel Approach to Object Identification in Large-scale Images</div>
+            <div class="pub-authors">Kang, Y.-M., Kim, S.-S., & Nam, G.-T.</div>
+            <div class="pub-venue">ICESS 2016, Japan</div>
+        </div>
+        <div class="pub-item reveal">
+            <span class="pub-year">2015</span>
+            <div class="pub-title">Bidirectional Constructive Crossover for Evolutionary Approach to Travelling Salesman Problem</div>
+            <div class="pub-authors">Kang, S., Kim, S.-S., Won, J., & Kang, Y.-M.</div>
+            <div class="pub-venue">ICITCS 2015, Kuala Lumpur</div>
+        </div>
+        <div class="pub-item reveal">
+            <span class="pub-year">2012</span>
+            <div class="pub-title">Photorealistic Cloth in Realtime Applications</div>
+            <div class="pub-authors">Kang, Y.-M. & Cho, C.-S.</div>
+            <div class="pub-venue">CASA 2012, Singapore</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2014</span>
+            <div class="pub-title">An Improved Sequential Constructive Crossover for Evolutionary Approach to TSP</div>
+            <div class="pub-authors">Kang, S., Kim, S.-S., & Kang, Y.-M.</div>
+            <div class="pub-venue">ICOCE 2014, Shenzhen</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2014</span>
+            <div class="pub-title">An Efficient Simulation of Massive Crowd with Navigation and Affordance Fields</div>
+            <div class="pub-authors">Kim, T.-H., Kang, Y.-M., & Ok, S.-Y.</div>
+            <div class="pub-venue">ICOCE 2014, Shenzhen</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2012</span>
+            <div class="pub-title">Automatic Music Generation and Machine Learning Based Evaluation</div>
+            <div class="pub-authors">Kang, S., Ok, S.-Y., & Kang, Y.-M.</div>
+            <div class="pub-venue">CMSP 2012, Shanghai</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2012</span>
+            <div class="pub-title">An Efficient and Stable Water Surface Animation for Interactive Applications</div>
+            <div class="pub-authors">Song, S.-M., Kang, Y.-M., & Ok, S.-Y.</div>
+            <div class="pub-venue">CMSP 2012, Shanghai</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2011</span>
+            <div class="pub-title">Plausible and Realtime Rendering of Scratched Metal by Deforming MDF</div>
+            <div class="pub-authors">Kang, Y.-M., Cho, H.-G., & Kim, S.-S.</div>
+            <div class="pub-venue">WSCG 2011, Plzen, Czech</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2010</span>
+            <div class="pub-title">Realtime Rendering of Realistic Fabric with Alternation of Deformed Anisotropy</div>
+            <div class="pub-authors">Kang, Y.-M.</div>
+            <div class="pub-venue">Motion in Games 2010, Netherlands</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2009</span>
+            <div class="pub-title">Imaginary Wall Model for Efficient Animation of Wheeled Vehicle in Racing Games</div>
+            <div class="pub-authors">Kang, Y.-M. & Cho, H.-G.</div>
+            <div class="pub-venue">CASA 2009, Amsterdam</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2009</span>
+            <div class="pub-title">Plausible Virtual Paper for Real-time Applications</div>
+            <div class="pub-authors">Kang, Y.-M., Zhang, H.-G., & Cho, H.-G.</div>
+            <div class="pub-venue">CASA 2009, Amsterdam</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2008</span>
+            <div class="pub-title">A Simple and Effective Model for Interactive Paper Folding</div>
+            <div class="pub-authors">Kang, Y.-M. & Cho, H.-G.</div>
+            <div class="pub-venue">Pacific Graphics 2008, Tokyo</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2002</span>
+            <div class="pub-title">Complex Deformable Objects in Virtual Reality</div>
+            <div class="pub-authors">Kang, Y.-M. & Cho, H.-G.</div>
+            <div class="pub-venue">ACM VRST 2002, Hongkong</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2002</span>
+            <div class="pub-title">Bilayered Approach for efficient animation of cloth with realistic wrinkles</div>
+            <div class="pub-authors">Kang, Y.-M. & Cho, H.-G.</div>
+            <div class="pub-venue">Computer Animation 2002, Geneva</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2000</span>
+            <div class="pub-title">Fast and stable Animation of Cloth with Approximated Implicit Method</div>
+            <div class="pub-authors">Kang, Y.-M., Choi, J.-H., Cho, H.-G., & Park, C.-J.</div>
+            <div class="pub-venue">CGI 2000, Geneva</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2000</span>
+            <div class="pub-title">Real-time Animation Technique for Flexible and Thin Objects</div>
+            <div class="pub-authors">Kang, Y.-M., Choi, J.-H., Lee, D.-H., Park, C.-J., & Cho, H.-G.</div>
+            <div class="pub-venue">WSCG 2000, Plzen, Czech</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">1998</span>
+            <div class="pub-title">An Efficient Control over Human Running Animation with Extension of Planar Hopper Model</div>
+            <div class="pub-authors">Kang, Y.-M., Park, S.-J., Cho, H.-G., & Lee, E.-T.</div>
+            <div class="pub-venue">Pacific Graphics 98, Singapore</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">1997</span>
+            <div class="pub-title">Expressive Character Animation with Energy Constraints</div>
+            <div class="pub-authors">Park, J.-K., Kang, Y.-M., Kim, S.-S., & Cho, H.-G.</div>
+            <div class="pub-venue">CompuGraphics'97, Portugal</div>
+        </div>
+        <button class="show-more-btn" onclick="togglePubs(this)">Show All (20 papers)</button>
+    </div>
+
+    <!-- Domestic Journals -->
+    <div id="dom-journal" class="pub-list pub-section" style="display:none;">
+        <div class="pub-item reveal">
+            <span class="pub-year">2022</span>
+            <div class="pub-title">객체 탐지 기법과 기계학습 라이브러리를 활용한 단감 등급 선별 알고리즘</div>
+            <div class="pub-authors">노승희, 강은영, 박동규, 강영민</div>
+            <div class="pub-venue">멀티미디어학회논문지, 25(6):769-782</div>
+        </div>
+        <div class="pub-item reveal">
+            <span class="pub-year">2018</span>
+            <div class="pub-title">GPU를 활용한 고성능 연체 객체 시뮬레이션을 위한 조화진동 모델과 야코비 반복법 기반 수치 적분 기술</div>
+            <div class="pub-authors">강영민</div>
+            <div class="pub-venue">한국게임학회 논문지, 18(5):123-132</div>
+        </div>
+        <div class="pub-item reveal">
+            <span class="pub-year">2016</span>
+            <div class="pub-title">대규모 레이더 신호 데이터의 실시간 분석을 위한 GPU 기반 객체 추출 기법</div>
+            <div class="pub-authors">강영민</div>
+            <div class="pub-venue">한국멀티미디어학회 논문지, 19(8):1297-1309</div>
+        </div>
+        <div class="pub-item reveal">
+            <span class="pub-year">2010</span>
+            <div class="pub-title">미세면 분포 함수 변형을 통한 고품질 실시간 금속 렌더링</div>
+            <div class="pub-authors">강영민</div>
+            <div class="pub-venue">한국게임학회 논문지, 10(6):169-178</div>
+        </div>
+        <div class="pub-item reveal">
+            <span class="pub-year">2010</span>
+            <div class="pub-title">이방성 반사의 변형을 통한 실시간 옷감 렌더링</div>
+            <div class="pub-authors">강영민</div>
+            <div class="pub-venue">한국게임학회논문지, 10(4):81-90</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2010</span>
+            <div class="pub-title">절차적 범프 매핑을 이용한 직물표면의 사실적 렌더링</div>
+            <div class="pub-authors">강영민</div>
+            <div class="pub-venue">한국게임학회논문지, 10(3):103-120</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2009</span>
+            <div class="pub-title">실시간 종이 구김 시뮬레이션을 위한 적응적 메쉬 구조</div>
+            <div class="pub-authors">강영민</div>
+            <div class="pub-venue">한국게임학회논문지, 9(4):97-105</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2008</span>
+            <div class="pub-title">게임 캐릭터를 위한 자동동작생성기의 개발과 응용</div>
+            <div class="pub-authors">옥수열, 강영민</div>
+            <div class="pub-venue">한국해양정보통신학회논문지, 12(8):1363-1369</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2008</span>
+            <div class="pub-title">실시간 환경에서의 사실적 종이 시뮬레이션</div>
+            <div class="pub-authors">강영민, 조환규</div>
+            <div class="pub-venue">한국콘텐츠학회지, 6(1):47-53</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2007</span>
+            <div class="pub-title">모바일 사용자 작업 예측 모델 및 정확도 평가 기법</div>
+            <div class="pub-authors">강영민, 옥수열</div>
+            <div class="pub-venue">한국해양정보통신학회논문지, 11(9):1742-1748</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2007</span>
+            <div class="pub-title">실시간 옷감 애니메이션과 LOD 제어를 위한 계층적 시뮬레이션</div>
+            <div class="pub-authors">강영민</div>
+            <div class="pub-venue">한국해양정보통신학회논문지, 11(3):479-485</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2006</span>
+            <div class="pub-title">가상 벽과 충격 모델에 기반한 레이싱 게임용 차량 바퀴 시뮬레이션 기법</div>
+            <div class="pub-authors">강영민</div>
+            <div class="pub-venue">한국해양정보통신학회논문지, 10(10):1758-1764</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2005</span>
+            <div class="pub-title">안정적이고 병렬화가 용이한 옷감 애니메이션 기법</div>
+            <div class="pub-authors">강영민</div>
+            <div class="pub-venue">한국해양정보통신학회논문지, 9(5):995-1001</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2004</span>
+            <div class="pub-title">게임환경에서 동작하는 실시간 불 애니메이션을 위한 잡음 기반 텍스쳐 생성 기법</div>
+            <div class="pub-authors">황원택, 강영민</div>
+            <div class="pub-venue">한국컴퓨터게임학회논문지, 1(4):36-44</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">1999</span>
+            <div class="pub-title">비정형 물체의 실시간 애니메이션을 위한 안정적 질량-스프링 모델</div>
+            <div class="pub-authors">강영민, 조환규, 박찬종</div>
+            <div class="pub-venue">한국컴퓨터그래픽스학회논문지, 5(1):27-33</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">1998</span>
+            <div class="pub-title">한 발 뜀뛰기 모델을 이용한 사실적인 달리기 애니메이션</div>
+            <div class="pub-authors">강영민, 박선진, 조환규</div>
+            <div class="pub-venue">한국컴퓨터그래픽스학회 논문지, 4(2):1-13</div>
+        </div>
+        <button class="show-more-btn" onclick="togglePubs(this)">Show All (16 papers)</button>
+    </div>
+
+    <!-- Domestic Conferences -->
+    <div id="dom-conf" class="pub-list pub-section" style="display:none;">
+        <div class="pub-item reveal">
+            <span class="pub-year">2011</span>
+            <div class="pub-title">조화진동 모델을 통한 대규모 질량-스프링 시뮬레이션의 수치안정성 개선 및 병렬처리</div>
+            <div class="pub-authors">강영민</div>
+            <div class="pub-venue">한국융합소프트웨어학회 추계학술발표대회</div>
+        </div>
+        <div class="pub-item reveal">
+            <span class="pub-year">2011</span>
+            <div class="pub-title">무리 이동 개체의 군집 형태 제어 기법</div>
+            <div class="pub-authors">강영민, 조창식</div>
+            <div class="pub-venue">한국게임학회 추계 학술발표대회</div>
+        </div>
+        <div class="pub-item reveal">
+            <span class="pub-year">2011</span>
+            <div class="pub-title">집단 행동 제어를 위한 가이드 에이전트 모델 🏆 우수논문상</div>
+            <div class="pub-authors">강세민, 강영민, 조창식</div>
+            <div class="pub-venue">한국게임학회 추계 학술발표대회</div>
+        </div>
+        <div class="pub-item reveal">
+            <span class="pub-year">2009</span>
+            <div class="pub-title">직조 기반 비등방 반사를 이용한 의류 렌더링</div>
+            <div class="pub-authors">강영민, 김성수, 남승우</div>
+            <div class="pub-venue">한국게임학회 추계학술대회</div>
+        </div>
+        <div class="pub-item reveal">
+            <span class="pub-year">2009</span>
+            <div class="pub-title">의류객체의 사실적인 렌더링 기법</div>
+            <div class="pub-authors">강영민, 강정훈, 김성수</div>
+            <div class="pub-venue">한국컴퓨터그래픽스학회 추계학술대회</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2007</span>
+            <div class="pub-title">고수준 매개 변수를 이용한 자동 동작 생성 도구 개발</div>
+            <div class="pub-authors">강정훈, 전주희, 강영민, 옥수열</div>
+            <div class="pub-venue">한국멀티미디어학회 추계학술발표대회</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2007</span>
+            <div class="pub-title">계층적 매개함수를 이용한 캐릭터 보행 동작 자동 생성 🏆 우수논문상</div>
+            <div class="pub-authors">옥수열, 강영민, 이응주, 추영열</div>
+            <div class="pub-venue">한국멀티미디어학회 추계학술발표대회</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2007</span>
+            <div class="pub-title">자동 동작 생성 엔진을 이용한 게임 개발</div>
+            <div class="pub-authors">송지훈, 박창준, 강영민, 옥수열</div>
+            <div class="pub-venue">한국멀티미디어학회 추계학술발표대회</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2006</span>
+            <div class="pub-title">효율적인 모바일 서비스를 위한 적응적 사용자 인터페이스 기술</div>
+            <div class="pub-authors">강영민</div>
+            <div class="pub-venue">한국콘텐츠학회추계종합학술대회</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2003</span>
+            <div class="pub-title">효율적인 옷감 애니메이션 및 충돌 처리 기법 🏆 우수논문발표상</div>
+            <div class="pub-authors">강영민</div>
+            <div class="pub-venue">컴퓨터소사이어티 추계학술대회</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2003</span>
+            <div class="pub-title">실시간 환경에서의 사실적인 옷감 애니메이션</div>
+            <div class="pub-authors">강영민, 조환규</div>
+            <div class="pub-venue">한국정보과학회 춘계 학술발표</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">2000</span>
+            <div class="pub-title">서열정보의 유사성 검사를 위한 가시화 도구</div>
+            <div class="pub-authors">황미녕, 강영민, 조환규</div>
+            <div class="pub-venue">한국정보과학회 학술발표</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">1999</span>
+            <div class="pub-title">안정적인 질량-스프링 모델을 이용한 빠르고 사실적인 옷감 애니메이션 🏆 우수논문상</div>
+            <div class="pub-authors">강영민, 배경수, 조환규, 박찬종</div>
+            <div class="pub-venue">한국컴퓨터그래픽스학회 학술대회</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">1998</span>
+            <div class="pub-title">한 발 뜀뛰기 모델을 이용한 사실적인 달리기 애니메이션</div>
+            <div class="pub-authors">강영민, 박선진, 조환규</div>
+            <div class="pub-venue">한국컴퓨터그래픽스학회 학술대회</div>
+        </div>
+        <div class="pub-item pub-hidden">
+            <span class="pub-year">1997</span>
+            <div class="pub-title">에너지 제한조건을 이용한 캐릭터 애니메이션 기법</div>
+            <div class="pub-authors">박재권, 강영민, 김성수, 조환규</div>
+            <div class="pub-venue">한국정보과학회 학술대회</div>
+        </div>
+        <button class="show-more-btn" onclick="togglePubs(this)">Show All (15 papers)</button>
+    </div>
+</section>
+
+<!-- Books -->
+<section id="books">
+    <div class="section-header reveal">
+        <h2>Books & <span>Writings</span></h2>
+        <p>저서 및 역서</p>
+    </div>
+    <div class="books-grid">
+        <div class="book-card reveal">
+            <div class="book-icon">📘</div>
+            <h3>으뜸 머신러닝</h3>
+            <div class="book-authors">강영민, 박동규, 김성수</div>
+            <div class="book-publisher">생능출판사, 2021</div>
+        </div>
+        <div class="book-card reveal">
+            <div class="book-icon">📗</div>
+            <h3>으뜸 파이썬</h3>
+            <div class="book-authors">박동규, 강영민</div>
+            <div class="book-publisher">생능출판사, 2020</div>
+            <div class="book-badge">세종도서 학술부문 선정</div>
+        </div>
+        <div class="book-card reveal">
+            <div class="book-icon">📕</div>
+            <h3>따라하며 배우는 파이썬과 데이터 과학</h3>
+            <div class="book-authors">천인국, 박동규, 강영민</div>
+            <div class="book-publisher">생능출판사, 2020</div>
+        </div>
+        <div class="book-card reveal">
+            <div class="book-icon">📙</div>
+            <h3>게임 개발자를 위한 수학과 OpenGL 프로그래밍</h3>
+            <div class="book-authors">강영민</div>
+            <div class="book-publisher">GS인터비전, 2015</div>
+        </div>
+        <div class="book-card reveal">
+            <div class="book-icon">📖</div>
+            <h3>OpenGL을 이용한 컴퓨터 그래픽스 5판 (번역)</h3>
+            <div class="book-authors">구자영, 강영민 외</div>
+            <div class="book-publisher">사이텍미디어, 2009</div>
+        </div>
+    </div>
+
+    <!-- Thesis -->
+    <div style="margin-top: 3rem;">
+        <h3 style="text-align:center; margin-bottom:1.5rem; color: var(--text-muted); font-weight: 500;">학위 논문</h3>
+        <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+            <div class="pub-item reveal">
+                <span class="pub-year">Ph.D. 2003</span>
+                <div class="pub-title">Real-time Cloth Animation with Physical Plausibility and Numerical Stability</div>
+                <div class="pub-venue">부산대학교 박사학위논문</div>
+            </div>
+            <div class="pub-item reveal">
+                <span class="pub-year">M.S. 1999</span>
+                <div class="pub-title">평면 뜀뛰기 모델과 에너지 제한 조건을 이용한 효율적인 인간 주행 동작 생성을 위한 제어 기법</div>
+                <div class="pub-venue">부산대학교 석사학위논문</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Lectures -->
+<section id="lectures">
+    <div class="section-header reveal">
+        <h2>Lecture <span>Archive</span></h2>
+        <p>강의 아카이브</p>
+    </div>
+
+    <div class="pub-item reveal" style="text-align:center; margin-bottom:2rem; background: rgba(102,126,234,0.08); border-color: rgba(102,126,234,0.2);">
+        <p style="color: #667eea; font-weight: 500;">📢 2026년 1학기부터는 동명대학교 E-Campus 사이트에서 수업을 관리합니다</p>
+    </div>
+
+    <div class="lectures-container">
+        <div class="lecture-semester reveal">
+            <h3><span class="semester-badge">2025-2</span>2학기</h3>
+            <ul class="lecture-list">
+                <li><a href="https://github.com/dknife/2025_2_Python">파이썬으로 문제해결 하기</a></li>
+                <li><a href="https://github.com/dknife/2025_2_GameEngine">게임엔진 기초</a></li>
+                <li><a href="https://github.com/dknife/2025_2_Graphics">3D 그래픽스 프로그래밍</a></li>
+                <li><a href="https://github.com/dknife/2025_2_Capstone">캡스톤 디자인</a></li>
+            </ul>
+        </div>
+        <div class="lecture-semester reveal">
+            <h3><span class="semester-badge">2025-1</span>1학기</h3>
+            <ul class="lecture-list">
+                <li><a href="https://github.com/dknife/2025_2DGame">2D 게임 프로그래밍 (Unity)</a></li>
+                <li><a href="https://github.com/dknife/2025_ML">머신러닝 기초 실습</a></li>
+                <li><a href="https://github.com/dknife/2025_GameMath">게임수학</a></li>
+                <li><a href="https://github.com/dknife/2025_Mentoring">멘토링</a></li>
+            </ul>
+        </div>
+        <div class="lecture-semester reveal">
+            <h3><span class="semester-badge">2024-2</span>2학기</h3>
+            <ul class="lecture-list">
+                <li><a href="https://github.com/dknife/2024Graphics">3D 그래픽스 프로그래밍</a></li>
+                <li><a href="https://github.com/dknife/2024WebProgramming">웹프로그래밍</a></li>
+                <li><a href="https://github.com/dknife/2024GameMath">게임수학</a></li>
+                <li><a href="https://github.com/dknife/2024Mentoring">멘토링 2/4</a></li>
+            </ul>
+        </div>
+        <div class="lecture-semester reveal">
+            <h3><span class="semester-badge">2024-1</span>1학기</h3>
+            <ul class="lecture-list">
+                <li><a href="https://github.com/dknife/2024Web">웹프로그래밍</a></li>
+                <li><a href="https://github.com/dknife/2024MachineLearning">머신러닝 Basics</a></li>
+                <li><a href="https://github.com/dknife/2024DiscreteMath">Discrete Math</a></li>
+            </ul>
+        </div>
+        <div class="lecture-semester reveal">
+            <h3><span class="semester-badge">2023-2</span>2학기</h3>
+            <ul class="lecture-list">
+                <li><a href="https://github.com/dknife/2023Web">웹프로그래밍</a></li>
+                <li><a href="https://github.com/dknife/2023Graphics">3D 그래픽스 프로그래밍</a></li>
+                <li><a href="https://github.com/dknife/2023GMath">게임수학</a></li>
+                <li><a href="https://github.com/dknife/2023Capstone2">Capstone Design</a></li>
+            </ul>
+        </div>
+        <div class="lecture-semester reveal">
+            <h3><span class="semester-badge">2023-1</span>1학기</h3>
+            <ul class="lecture-list">
+                <li><a href="https://github.com/dknife/2023ML">머신러닝 Basics</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Older lectures collapsible -->
+    <details style="margin-top: 2rem;" class="reveal">
+        <summary style="cursor:pointer; text-align:center; padding: 1rem; color: var(--text-muted); font-size: 0.9rem; border: 1px solid var(--card-border); border-radius: 12px; background: var(--card-bg);">
+            이전 강의 보기 (2015 ~ 2022)
+        </summary>
+        <div class="lectures-container" style="margin-top: 1.5rem;">
+            <div class="lecture-semester">
+                <h3><span class="semester-badge">2022</span></h3>
+                <ul class="lecture-list">
+                    <li><a href="https://github.com/dknife/2022Graphics">3D Computer Graphics (2학기)</a></li>
+                    <li><a href="https://github.com/dknife/2022MLClass">머신러닝 (1학기)</a></li>
+                </ul>
+            </div>
+            <div class="lecture-semester">
+                <h3><span class="semester-badge">2021</span></h3>
+                <ul class="lecture-list">
+                    <li><a href="https://github.com/dknife/2021Graphics">3D Computer Graphics (2학기)</a></li>
+                </ul>
+            </div>
+            <div class="lecture-semester">
+                <h3><span class="semester-badge">2019-2</span></h3>
+                <ul class="lecture-list">
+                    <li><a href="https://github.com/dknife/2019_3D_Graphics/wiki">3D Graphics</a></li>
+                    <li><a href="https://github.com/dknife/2019_2_GameMath/wiki">게임수학</a></li>
+                    <li><a href="https://github.com/dknife/2019Capstone/wiki">Capstone Design</a></li>
+                </ul>
+            </div>
+            <div class="lecture-semester">
+                <h3><span class="semester-badge">2019-1</span></h3>
+                <ul class="lecture-list">
+                    <li><a href="https://github.com/dknife/OOP2019/wiki">Java Programming</a></li>
+                    <li><a href="https://github.com/dknife/PBM2019/wiki">Physics-based Modeling</a></li>
+                </ul>
+            </div>
+            <div class="lecture-semester">
+                <h3><span class="semester-badge">2018-2</span></h3>
+                <ul class="lecture-list">
+                    <li><a href="https://github.com/dknife/201802_GameMath/wiki">게임수학</a></li>
+                    <li><a href="https://github.com/dknife/201802_Graphics/wiki">Graphics</a></li>
+                    <li><a href="https://github.com/dknife/201802_GPUProgramming/wiki">GPU Programming</a></li>
+                </ul>
+            </div>
+            <div class="lecture-semester">
+                <h3><span class="semester-badge">2018-1</span></h3>
+                <ul class="lecture-list">
+                    <li><a href="https://github.com/dknife/TUGameOOP2018/wiki">Java Programming</a></li>
+                    <li><a href="https://github.com/dknife/PBM2018/wiki">Physics-based Modeling</a></li>
+                </ul>
+            </div>
+            <div class="lecture-semester">
+                <h3><span class="semester-badge">2017-2</span></h3>
+                <ul class="lecture-list">
+                    <li><a href="https://github.com/dknife/GameMath2017/wiki">Math for Game Programming</a></li>
+                    <li><a href="https://github.com/dknife/Graphics2017/wiki">3D 그래픽스 프로그래밍</a></li>
+                </ul>
+            </div>
+            <div class="lecture-semester">
+                <h3><span class="semester-badge">2017-1</span></h3>
+                <ul class="lecture-list">
+                    <li><a href="https://github.com/dknife/OOP2017Java/wiki">Java Programming</a></li>
+                    <li><a href="https://github.com/dknife/PBM2017/wiki">Physics-based Modeling</a></li>
+                </ul>
+            </div>
+            <div class="lecture-semester">
+                <h3><span class="semester-badge">2016-2</span></h3>
+                <ul class="lecture-list">
+                    <li><a href="https://github.com/dknife/201602_GameMath/wiki">Math for Game Programming</a></li>
+                    <li><a href="https://github.com/dknife/201602_Graphics/wiki">3D 그래픽스 프로그래밍</a></li>
+                </ul>
+            </div>
+            <div class="lecture-semester">
+                <h3><span class="semester-badge">2016-1</span></h3>
+                <ul class="lecture-list">
+                    <li><a href="https://github.com/dknife/2016LecOOPJava/wiki">Java Programming</a></li>
+                    <li><a href="https://github.com/dknife/2016LecPBM/wiki">Physics-based Modeling</a></li>
+                </ul>
+            </div>
+            <div class="lecture-semester">
+                <h3><span class="semester-badge">2015-2</span></h3>
+                <ul class="lecture-list">
+                    <li><a href="https://github.com/dknife/201502_GameMath/wiki">Math for Game Programming</a></li>
+                    <li><a href="https://github.com/dknife/201502_Graphics/wiki">3D 그래픽스 프로그래밍</a></li>
+                </ul>
+            </div>
+            <div class="lecture-semester">
+                <h3><span class="semester-badge">2015-1</span></h3>
+                <ul class="lecture-list">
+                    <li><a href="https://github.com/dknife/201501LEC_OOP_JAVA/wiki">Java Programming</a></li>
+                    <li><a href="https://github.com/dknife/201501Lec_GamePhysics/wiki">Physics-based Modeling</a></li>
+                </ul>
+            </div>
+        </div>
+    </details>
+</section>
+
+<!-- Bookmarks / Resources -->
+<section id="bookmarks">
+    <div class="section-header reveal">
+        <h2>Useful <span>Resources</span></h2>
+        <p>유용한 도구 및 참고 자료</p>
+    </div>
+    <div class="research-grid">
+        <div class="research-card reveal">
+            <div class="card-icon">🤖</div>
+            <h3>AI Research Tools</h3>
+            <p>
+                <a href="https://www.perplexity.ai" style="color:#667eea; text-decoration:none;">Perplexity AI</a> - 질문 기반 보고서<br>
+                <a href="https://www.connectedpapers.com" style="color:#667eea; text-decoration:none;">Connected Papers</a> - 논문 인용 관계<br>
+                <a href="https://elicit.org" style="color:#667eea; text-decoration:none;">Elicit</a> - 논문 탐색<br>
+                <a href="https://typeset.io" style="color:#667eea; text-decoration:none;">Typeset.io</a> - 논문 Copilot<br>
+                <a href="https://scite.ai" style="color:#667eea; text-decoration:none;">Scite.ai</a> - 스마트 인용
+            </p>
+        </div>
+        <div class="research-card reveal">
+            <div class="card-icon">📚</div>
+            <h3>Learning Resources</h3>
+            <p>
+                <a href="https://d2l.ai" style="color:#667eea; text-decoration:none;">Dive into Deep Learning</a><br>
+                <a href="https://www.learnpython.org" style="color:#667eea; text-decoration:none;">Learn Python</a><br>
+                <a href="https://numpy.org/doc/stable/" style="color:#667eea; text-decoration:none;">Numpy Manual</a><br>
+                Deep Learning Cheat Sheet
+            </p>
+        </div>
+        <div class="research-card reveal">
+            <div class="card-icon">🎨</div>
+            <h3>Design & Presentation</h3>
+            <p>
+                <a href="https://www.allppt.com" style="color:#667eea; text-decoration:none;">AllPPT</a> - PPT 템플릿<br>
+                <a href="https://www.presentationgo.com" style="color:#667eea; text-decoration:none;">PresentationGo</a><br>
+                <a href="https://color.adobe.com" style="color:#667eea; text-decoration:none;">Adobe Color</a><br>
+                <a href="https://colorbrewer2.org" style="color:#667eea; text-decoration:none;">ColorBrewer</a>
+            </p>
+        </div>
+        <div class="research-card reveal">
+            <div class="card-icon">🔗</div>
+            <h3>Projects & Demos</h3>
+            <p>
+                <a href="http://dknife.github.io/JSExample/WGL02_MoonPhase/index.html" style="color:#667eea; text-decoration:none;">Moon Phase Viewer</a> - WebGL 달 위상<br>
+                <a href="https://github.com/dknife" style="color:#667eea; text-decoration:none;">GitHub Profile</a> - 코드 저장소
+            </p>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<footer>
+    <p>&copy; 2025 Young-Min Kang. <a href="https://github.com/dknife">GitHub</a></p>
+</footer>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Navbar scroll
+window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// Active nav link
+const sections = document.querySelectorAll('section[id]');
+window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+        const top = section.offsetTop - 100;
+        if (scrollY >= top) current = section.getAttribute('id');
+    });
+    document.querySelectorAll('.nav-links a').forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+});
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+            document.querySelector('.nav-links').classList.remove('open');
+        }
+    });
+});
+
+// Publication tabs
+function showPubTab(id) {
+    document.querySelectorAll('.pub-section').forEach(s => s.style.display = 'none');
+    document.getElementById(id).style.display = 'flex';
+    document.querySelectorAll('.pub-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+}
+
+// Show more publications
+function togglePubs(btn) {
+    const list = btn.parentElement;
+    const hidden = list.querySelectorAll('.pub-hidden');
+    const isShowing = hidden[0] && hidden[0].style.display !== 'block';
+    hidden.forEach(item => {
+        item.style.display = isShowing ? 'block' : 'none';
+    });
+    btn.textContent = isShowing ? 'Show Less' : btn.dataset.originalText || btn.textContent;
+    if (!btn.dataset.originalText) btn.dataset.originalText = btn.textContent;
+    if (!isShowing) btn.textContent = btn.dataset.originalText;
+}
+</script>
+
+</body>
 </html>
