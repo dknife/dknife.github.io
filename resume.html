@@ -3,416 +3,484 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>이력서 | 강영민 Young-Min Kang</title>
+    <title>Curriculum Vitae — Young-Min Kang</title>
+    <meta name="description" content="강영민 교수 이력서 · 학력, 경력, 학내 보직, 국고사업, 외부 위원회, 수상, 집필, 언론 활동">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #1a1a2e;
-            --secondary: #16213e;
-            --accent: #0f3460;
-            --highlight: #e94560;
-            --text: #eee;
-            --text-muted: #aab;
-            --text-dim: #889;
-            --card-bg: rgba(255,255,255,0.04);
-            --card-border: rgba(255,255,255,0.08);
-            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --bg: #F8F8F8;
+            --bg-alt: #FFFFFF;
+            --bg-soft: #EDEDED;
+            --bg-dark: #111111;
+            --text: #222222;
+            --text-muted: #555555;
+            --text-dim: #888888;
+            --border: #e5e5e5;
+            --border-soft: #f0f0f0;
+            --accent: #FA5D29;
+            --accent-soft: rgba(250, 93, 41, 0.08);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+            --easing: cubic-bezier(0.25, 1, 0.5, 1);
+            --max-width: 1300px;
+            --gutter: 52px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
 
         body {
-            font-family: 'Inter', 'Noto Sans KR', sans-serif;
-            background: var(--primary);
+            font-family: 'Inter Tight', 'Noto Sans KR', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
             color: var(--text);
-            overflow-x: hidden;
-            line-height: 1.7;
+            line-height: 1.6;
+            font-size: 15px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Animated background */
-        .bg-animation {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 0;
-            overflow: hidden;
-        }
-        .bg-animation .orb {
+        a { color: inherit; text-decoration: none; }
+
+        .skip-link {
             position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.15;
-            animation: float 20s infinite ease-in-out;
+            top: -100px; left: var(--gutter);
+            padding: 10px 18px;
+            background: var(--text);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 9999;
+            border-radius: 6px;
         }
-        .bg-animation .orb:nth-child(1) {
-            width: 600px; height: 600px;
-            background: #667eea;
-            top: -200px; left: -100px;
-        }
-        .bg-animation .orb:nth-child(2) {
-            width: 400px; height: 400px;
-            background: #e94560;
-            top: 50%; right: -100px;
-            animation-delay: -7s;
-            animation-duration: 25s;
-        }
-        .bg-animation .orb:nth-child(3) {
-            width: 500px; height: 500px;
-            background: #764ba2;
-            bottom: -200px; left: 30%;
-            animation-delay: -14s;
-            animation-duration: 30s;
-        }
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(50px, -50px) scale(1.1); }
-            50% { transform: translate(-30px, 30px) scale(0.95); }
-            75% { transform: translate(40px, 20px) scale(1.05); }
+        .skip-link:focus {
+            top: 12px;
+            outline: 2px solid var(--accent);
         }
 
         /* Navigation */
-        nav {
+        .top-nav {
             position: fixed;
             top: 0; left: 0; right: 0;
-            z-index: 1000;
-            padding: 0 2rem;
-            background: rgba(26, 26, 46, 0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--card-border);
-            transition: all 0.3s;
-        }
-        nav.scrolled { background: rgba(26, 26, 46, 0.95); }
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             height: 64px;
+            background: rgba(248, 248, 248, 0.75);
+            backdrop-filter: saturate(180%) blur(14px);
+            -webkit-backdrop-filter: saturate(180%) blur(14px);
+            border-bottom: 1px solid transparent;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        .top-nav.scrolled {
+            background: rgba(255, 255, 255, 0.92);
+            border-bottom-color: var(--border);
+        }
+        .nav-inner {
+            height: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--gutter);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
         .nav-logo {
+            font-size: 16px;
             font-weight: 700;
-            font-size: 1.1rem;
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            letter-spacing: -0.03em;
+        }
+        .nav-logo::after {
+            content: '.';
+            color: var(--accent);
         }
         .nav-links {
-            display: flex;
             list-style: none;
-            gap: 2rem;
+            display: flex;
+            gap: 36px;
         }
         .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 13px;
             font-weight: 500;
-            transition: color 0.2s;
+            color: var(--text);
+            transition: color 0.3s ease;
             position: relative;
         }
-        .nav-links a:hover, .nav-links a.active { color: var(--text); }
-        .nav-links a.active::after {
+        .nav-links a:hover { color: var(--accent); }
+        .nav-links a.active { color: var(--accent); }
+        .nav-links a.active::before {
             content: '';
             position: absolute;
-            bottom: -6px; left: 0; right: 0;
-            height: 2px;
-            background: var(--highlight);
+            left: -10px; top: 50%;
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: var(--accent);
+            transform: translateY(-50%);
         }
         .hamburger {
             display: none;
             background: none;
             border: none;
+            width: 36px; height: 36px;
             cursor: pointer;
             flex-direction: column;
-            gap: 4px;
+            justify-content: center;
+            gap: 5px;
         }
         .hamburger span {
-            width: 24px;
-            height: 2px;
+            display: block;
+            width: 22px; height: 1.5px;
             background: var(--text);
-        }
-
-        main {
-            position: relative;
-            z-index: 1;
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 2rem;
         }
 
         /* Hero */
         .resume-hero {
-            padding: 8rem 0 3rem;
-            text-align: center;
+            padding: 180px var(--gutter) 80px;
+            max-width: var(--max-width);
+            margin: 0 auto;
         }
-        .resume-hero h1 {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-bottom: 0.5rem;
-        }
-        .resume-hero h1 span {
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .resume-hero .name-kr {
-            font-size: 1.4rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            margin-bottom: 1.25rem;
-        }
-        .resume-hero .contact {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 0.5rem 1.5rem;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 2rem;
-        }
-        .resume-hero .contact a {
-            color: var(--text);
-            text-decoration: none;
-            border-bottom: 1px dashed var(--card-border);
-        }
-        .resume-hero .contact a:hover { border-color: var(--highlight); }
-
-        .download-row {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-        }
-        .download-btn {
+        .eyebrow {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1.2rem;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 999px;
-            color: var(--text);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.2s;
+            gap: 14px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 36px;
         }
-        .download-btn:hover {
-            border-color: var(--highlight);
-            background: rgba(233, 69, 96, 0.08);
-            transform: translateY(-2px);
+        .eyebrow::before {
+            content: '';
+            width: 36px; height: 1px;
+            background: var(--text);
+        }
+        .resume-hero h1 {
+            font-family: 'Inter Tight', sans-serif;
+            font-size: clamp(56px, 11vw, 140px);
+            font-weight: 800;
+            line-height: 0.95;
+            letter-spacing: -0.045em;
+            margin-bottom: 56px;
+        }
+        .resume-hero h1 .line {
+            display: block;
+            overflow: hidden;
+        }
+        .resume-hero h1 .line > span {
+            display: inline-block;
+            transform: translateY(1.15em);
+            transition: transform 1.2s var(--easing);
+        }
+        .resume-hero h1 .line.visible > span { transform: translateY(0); }
+        .resume-hero h1 .accent { color: var(--accent); }
+        .hero-meta {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 60px;
+            max-width: 960px;
+        }
+        .hero-name {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .hero-name .kr {
+            display: block;
+            margin-top: 6px;
+            font-family: 'Noto Sans KR', sans-serif;
+            color: var(--text);
+            font-size: 14px;
+            letter-spacing: 0.02em;
+            text-transform: none;
+            font-weight: 500;
+        }
+        .hero-meta .contact {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.9;
+        }
+        .hero-meta .contact a {
+            color: var(--text);
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+        .hero-meta .contact a:hover {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
         }
 
-        /* Section-tabs (sub-navigation for jumping to sections) */
+        /* Section tabs (sticky chip row) */
         .section-tabs {
             position: sticky;
             top: 64px;
             z-index: 50;
-            background: rgba(26, 26, 46, 0.92);
-            backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--card-border);
-            margin: 0 -2rem 3rem;
-            padding: 0 2rem;
+            background: rgba(248, 248, 248, 0.92);
+            backdrop-filter: saturate(180%) blur(12px);
+            -webkit-backdrop-filter: saturate(180%) blur(12px);
+            border-bottom: 1px solid var(--border);
         }
         .section-tabs-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 14px var(--gutter);
             display: flex;
-            gap: 0.4rem;
+            gap: 8px;
             overflow-x: auto;
-            padding: 0.7rem 0;
             scrollbar-width: thin;
-            scrollbar-color: var(--card-border) transparent;
+            scrollbar-color: var(--border) transparent;
         }
-        .section-tabs-inner::-webkit-scrollbar { height: 4px; }
-        .section-tabs-inner::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 2px; }
+        .section-tabs-inner::-webkit-scrollbar { height: 3px; }
+        .section-tabs-inner::-webkit-scrollbar-thumb { background: var(--border); }
         .section-tab {
             flex-shrink: 0;
-            padding: 0.45rem 1rem;
+            padding: 8px 18px;
             background: transparent;
-            border: 1px solid var(--card-border);
+            border: 1px solid var(--border);
             border-radius: 999px;
             color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.82rem;
+            font-size: 12.5px;
             font-weight: 500;
-            transition: all 0.2s;
-            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
         }
-        .section-tab:hover,
-        .section-tab.active {
+        .section-tab:hover {
             color: var(--text);
-            border-color: var(--highlight);
-            background: rgba(233, 69, 96, 0.08);
+            border-color: var(--text-dim);
+        }
+        .section-tab.active {
+            background: var(--text);
+            color: #fff;
+            border-color: var(--text);
         }
 
-        /* Sections */
-        section.cv-section {
-            padding: 2.5rem 0;
-            scroll-margin-top: 130px;
+        /* CV Sections */
+        main { position: relative; }
+        .cv-section {
+            padding: 80px var(--gutter);
+            scroll-margin-top: 140px;
+            max-width: var(--max-width);
+            margin: 0 auto;
         }
-        .section-title {
-            display: flex;
+        .cv-section.alt-bg { background: var(--bg-alt); max-width: none; padding-left: 0; padding-right: 0; }
+        .cv-section.alt-bg > .inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--gutter);
+        }
+
+        .cv-head {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 60px;
+            margin-bottom: 56px;
             align-items: baseline;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--card-border);
         }
-        .section-title h2 {
-            font-size: 1.6rem;
+        .cv-head .num {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+        }
+        .cv-head .num::before {
+            content: '';
+            display: inline-block;
+            width: 24px; height: 1px;
+            background: var(--accent);
+            vertical-align: middle;
+            margin-right: 12px;
+        }
+        .cv-head h2 {
+            font-family: 'Inter Tight', sans-serif;
+            font-size: clamp(30px, 3.8vw, 44px);
             font-weight: 700;
-            letter-spacing: -0.01em;
+            line-height: 1.1;
+            letter-spacing: -0.025em;
         }
-        .section-title .en {
+        .cv-head h2 .en {
+            display: block;
+            margin-top: 6px;
+            font-size: 14px;
+            font-weight: 500;
             color: var(--text-dim);
-            font-size: 1rem;
-            font-weight: 400;
+            letter-spacing: 0.02em;
         }
 
-        /* Timeline layout */
+        /* Subsection divider */
+        .sub-label {
+            font-size: 11.5px;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin: 48px 0 20px;
+            padding-left: 12px;
+            border-left: 3px solid var(--accent);
+        }
+        .sub-label:first-child { margin-top: 0; }
+
+        /* Timeline entries */
         .timeline {
             display: flex;
             flex-direction: column;
-            gap: 1.25rem;
         }
-        .timeline-item {
+        .tl-item {
             display: grid;
-            grid-template-columns: 160px 1fr;
-            gap: 1.5rem;
-            padding: 1rem 1.25rem;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-left: 3px solid transparent;
-            border-radius: 10px;
-            transition: all 0.2s;
+            grid-template-columns: 180px 1fr;
+            gap: 40px;
+            padding: 22px 0;
+            border-bottom: 1px solid var(--border-soft);
+            transition: background 0.3s ease;
         }
-        .timeline-item:hover {
-            border-left-color: var(--highlight);
-            background: rgba(255,255,255,0.06);
-        }
-        .timeline-item .date {
+        .tl-item:last-child { border-bottom: none; }
+        .tl-item:hover { background: rgba(250, 93, 41, 0.02); }
+        .tl-item .date {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
             color: var(--text-muted);
-            font-size: 0.85rem;
-            font-weight: 500;
             font-variant-numeric: tabular-nums;
             padding-top: 2px;
         }
-        .timeline-item .content h3 {
-            font-size: 1rem;
+        .tl-item h3 {
+            font-size: 16px;
             font-weight: 600;
-            margin-bottom: 0.25rem;
+            letter-spacing: -0.005em;
             color: var(--text);
+            line-height: 1.4;
+            margin-bottom: 4px;
         }
-        .timeline-item .content .sub {
+        .tl-item .sub {
+            font-size: 13.5px;
             color: var(--text-muted);
-            font-size: 0.92rem;
+            line-height: 1.5;
         }
-        .timeline-item .content .note {
+        .tl-item .note {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed var(--border);
+            font-size: 12.5px;
             color: var(--text-dim);
-            font-size: 0.82rem;
-            margin-top: 0.35rem;
             font-style: italic;
-        }
-        .timeline-item .content .tag-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            margin-top: 0.5rem;
-        }
-        .timeline-item .content .tag-row span {
-            font-size: 0.72rem;
-            padding: 0.15rem 0.6rem;
-            background: rgba(102, 126, 234, 0.1);
-            border: 1px solid rgba(102, 126, 234, 0.25);
-            color: #aab9f0;
-            border-radius: 4px;
-        }
-
-        /* Subsection label (for grouping within a section) */
-        .subsection-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--highlight);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin: 1.75rem 0 1rem;
-            padding-left: 0.5rem;
-            border-left: 3px solid var(--highlight);
-        }
-        .subsection-label:first-child { margin-top: 0; }
-
-        /* Reveal animation */
-        .reveal {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
+            line-height: 1.5;
         }
 
         /* Footer */
         footer {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            padding: 3rem 2rem;
-            color: var(--text-dim);
-            font-size: 0.85rem;
-            border-top: 1px solid var(--card-border);
-            margin-top: 4rem;
+            background: var(--bg-dark);
+            color: rgba(255,255,255,0.7);
+            padding: 80px var(--gutter) 48px;
+            margin-top: 80px;
         }
-        footer a { color: var(--text-muted); text-decoration: none; }
-        footer a:hover { color: var(--highlight); }
+        .footer-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 60px;
+            padding-bottom: 48px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .footer-brand h3 {
+            font-family: 'Inter Tight', sans-serif;
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: #fff;
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+        .footer-brand p {
+            font-size: 14px;
+            color: rgba(255,255,255,0.55);
+            max-width: 400px;
+        }
+        .footer-col h4 {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.45);
+            margin-bottom: 20px;
+        }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .footer-col a {
+            font-size: 14px;
+            color: rgba(255,255,255,0.75);
+            transition: color 0.3s ease;
+        }
+        .footer-col a:hover { color: var(--accent); }
+        .footer-bottom {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding-top: 32px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+        }
+
+        /* Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s var(--easing), transform 0.8s var(--easing);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
 
         /* Responsive */
+        @media (max-width: 1024px) {
+            :root { --gutter: 32px; }
+            .cv-head { grid-template-columns: 120px 1fr; gap: 40px; }
+            .hero-meta { grid-template-columns: 1fr; gap: 28px; }
+            .footer-inner { grid-template-columns: 1fr 1fr; }
+            .footer-brand { grid-column: 1 / -1; }
+        }
         @media (max-width: 768px) {
+            :root { --gutter: 24px; }
             .hamburger { display: flex; }
             .nav-links {
                 display: none;
                 position: absolute;
                 top: 64px; left: 0; right: 0;
+                background: #fff;
                 flex-direction: column;
-                background: rgba(26, 26, 46, 0.98);
-                padding: 1rem 2rem;
-                gap: 1rem;
-                border-bottom: 1px solid var(--card-border);
+                gap: 0;
+                padding: 12px 0;
+                border-bottom: 1px solid var(--border);
             }
             .nav-links.open { display: flex; }
-            .resume-hero { padding-top: 6rem; }
-            .timeline-item {
-                grid-template-columns: 1fr;
-                gap: 0.25rem;
+            .nav-links li { padding: 0 24px; }
+            .nav-links a {
+                display: block;
+                padding: 14px 0;
+                border-bottom: 1px solid var(--border-soft);
+                font-size: 15px;
             }
-            .timeline-item .date {
-                font-size: 0.78rem;
-                color: var(--highlight);
+            .nav-links li:last-child a { border-bottom: none; }
+            .resume-hero { padding: 120px 24px 56px; }
+            .cv-section { padding: 56px 24px; }
+            .cv-head { grid-template-columns: 1fr; gap: 16px; margin-bottom: 40px; }
+            .tl-item { grid-template-columns: 1fr; gap: 6px; padding: 18px 0; }
+            .tl-item .date {
+                font-size: 11.5px;
+                color: var(--accent);
+                letter-spacing: 0.08em;
             }
-            .section-tabs { margin: 0 -1rem 2rem; padding: 0 1rem; }
-            main { padding: 0 1rem; }
+            .footer-inner { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 8px; }
         }
     </style>
 </head>
 <body>
 
-<div class="bg-animation">
-    <div class="orb"></div>
-    <div class="orb"></div>
-    <div class="orb"></div>
-</div>
+<a class="skip-link" href="#main">Skip to content</a>
 
-<nav id="navbar">
+<nav class="top-nav" id="navbar">
     <div class="nav-inner">
-        <div class="nav-logo">Y.M. Kang</div>
-        <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+        <a href="index.html" class="nav-logo">Y.M. Kang</a>
+        <button class="hamburger" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
             <span></span><span></span><span></span>
         </button>
         <ul class="nav-links">
@@ -427,23 +495,29 @@
     </div>
 </nav>
 
-<main>
+<main id="main">
 
+<!-- Hero -->
 <section class="resume-hero">
-    <h1>Curriculum <span>Vitae</span></h1>
-    <div class="name-kr">강영민 · Young-Min Kang</div>
-    <div class="contact">
-        <span>동명대학교 ICT융합대학 게임공학과 교수</span>
-        <span>·</span>
-        <span>게임공학과 학과장</span>
-    </div>
-    <div class="contact">
-        <a href="mailto:ymkang@tu.ac.kr">ymkang@tu.ac.kr</a>
-        <span>부산광역시 남구 신선로 428, 동명대학교</span>
-        <a href="https://github.com/dknife" target="_blank" rel="noopener">GitHub @dknife</a>
+    <span class="eyebrow">Curriculum Vitae · 이력서</span>
+    <h1>
+        <span class="line"><span>YOUNG-MIN</span></span>
+        <span class="line"><span class="accent">KANG.</span></span>
+    </h1>
+    <div class="hero-meta">
+        <div class="hero-name">
+            Professor
+            <span class="kr">강영민 · 동명대학교 게임공학과</span>
+        </div>
+        <div class="contact">
+            <a href="mailto:ymkang@tu.ac.kr">ymkang@tu.ac.kr</a><br>
+            부산광역시 남구 신선로 428, 동명대학교<br>
+            <a href="https://github.com/dknife" target="_blank" rel="noopener">GitHub @dknife</a>
+        </div>
     </div>
 </section>
 
+<!-- Section sub-navigation -->
 <div class="section-tabs">
     <div class="section-tabs-inner">
         <a class="section-tab" href="#education">학력</a>
@@ -454,38 +528,38 @@
         <a class="section-tab" href="#awards">수상</a>
         <a class="section-tab" href="#proposals">제안서 집필</a>
         <a class="section-tab" href="#media">언론 활동</a>
-        <a class="section-tab" href="index.html#publications">Publications ↗</a>
-        <a class="section-tab" href="index.html#books">Books ↗</a>
+        <a class="section-tab" href="index.html#publications">Publications →</a>
+        <a class="section-tab" href="index.html#books">Books →</a>
     </div>
 </div>
 
 <!-- Education -->
-<section class="cv-section reveal" id="education">
-    <div class="section-title">
-        <h2>학력</h2>
-        <span class="en">Education</span>
+<section class="cv-section" id="education">
+    <div class="cv-head reveal">
+        <span class="num">01 / Education</span>
+        <h2>학력 <span class="en">Education</span></h2>
     </div>
     <div class="timeline">
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2003.02</div>
-            <div class="content">
-                <h3>이학박사 Ph.D., Computer Graphics</h3>
+            <div>
+                <h3>이학박사 · Ph.D., Computer Graphics</h3>
                 <div class="sub">부산대학교 대학원 전자계산학과 · 지도교수 조환규</div>
                 <div class="note">Dissertation: Real-time Cloth Animation with Physical Plausibility and Numerical Stability</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">1999.02</div>
-            <div class="content">
-                <h3>이학석사 M.S., Computer Graphics</h3>
+            <div>
+                <h3>이학석사 · M.S., Computer Graphics</h3>
                 <div class="sub">부산대학교 대학원 전자계산학과 · 지도교수 조환규</div>
                 <div class="note">논문: 평면 뜀뛰기 모델과 에너지 제한 조건을 이용한 효율적인 인간 주행 동작 생성을 위한 제어 기법</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">1996.02</div>
-            <div class="content">
-                <h3>이학사 B.S., Computer Science</h3>
+            <div>
+                <h3>이학사 · B.S., Computer Science</h3>
                 <div class="sub">부산대학교 전자계산학과</div>
             </div>
         </div>
@@ -493,129 +567,131 @@
 </section>
 
 <!-- Career -->
-<section class="cv-section reveal" id="career">
-    <div class="section-title">
-        <h2>경력</h2>
-        <span class="en">Career</span>
-    </div>
-    <div class="timeline">
-        <div class="timeline-item">
-            <div class="date">2005.03 — 현재</div>
-            <div class="content">
-                <h3>교수 · 동명대학교 ICT융합대학 게임공학과</h3>
-                <div class="sub">Professor, Dept. of Game Engineering, Tongmyong University</div>
-            </div>
+<section class="cv-section alt-bg" id="career">
+    <div class="inner">
+        <div class="cv-head reveal">
+            <span class="num">02 / Career</span>
+            <h2>경력 <span class="en">Professional Experience</span></h2>
         </div>
-        <div class="timeline-item">
-            <div class="date">2020.09 — 2021.08</div>
-            <div class="content">
-                <h3>파견 연구원 · 한국전자통신연구원(ETRI) 인공지능연구소</h3>
-                <div class="sub">연구년 · Principal Researcher (dispatched), AI Research Center, ETRI</div>
+        <div class="timeline">
+            <div class="tl-item">
+                <div class="date">2005.03 — 현재</div>
+                <div>
+                    <h3>교수 · 동명대학교 ICT융합대학 게임공학과</h3>
+                    <div class="sub">Professor, Dept. of Game Engineering, Tongmyong University</div>
+                </div>
             </div>
-        </div>
-        <div class="timeline-item">
-            <div class="date">2003.10 — 2005.03</div>
-            <div class="content">
-                <h3>연구원 · 한국전자통신연구원(ETRI) 디지털콘텐츠연구단</h3>
-                <div class="sub">Researcher, Digital Contents Research Division, ETRI</div>
+            <div class="tl-item">
+                <div class="date">2020.09 — 2021.08</div>
+                <div>
+                    <h3>파견 연구원 · 한국전자통신연구원(ETRI) 인공지능연구소</h3>
+                    <div class="sub">연구년 · Principal Researcher (dispatched), AI Research Center, ETRI</div>
+                </div>
             </div>
-        </div>
-        <div class="timeline-item">
-            <div class="date">2002.01 — 2002.07</div>
-            <div class="content">
-                <h3>임시연구원 · 제네바대학 MIRALab</h3>
-                <div class="sub">Temporary Researcher, MIRALab, Université de Genève — Virtual Cloth Project</div>
+            <div class="tl-item">
+                <div class="date">2003.10 — 2005.03</div>
+                <div>
+                    <h3>연구원 · 한국전자통신연구원(ETRI) 디지털콘텐츠연구단</h3>
+                    <div class="sub">Researcher, Digital Contents Research Division, ETRI</div>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="date">2002.01 — 2002.07</div>
+                <div>
+                    <h3>임시연구원 · 제네바대학 MIRALab</h3>
+                    <div class="sub">Temporary Researcher, MIRALab, Université de Genève — Virtual Cloth Project</div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 <!-- University Roles -->
-<section class="cv-section reveal" id="university-roles">
-    <div class="section-title">
-        <h2>학내 주요 보직</h2>
-        <span class="en">University Administrative & Department Roles</span>
+<section class="cv-section" id="university-roles">
+    <div class="cv-head reveal">
+        <span class="num">03 / University</span>
+        <h2>학내 보직 <span class="en">Administrative &amp; Department Roles</span></h2>
     </div>
 
-    <div class="subsection-label">학과/학부장 Head of Department</div>
+    <div class="sub-label">학과/학부장 · Head of Department</div>
     <div class="timeline">
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2024.03 — 현재</div>
-            <div class="content">
+            <div>
                 <h3>교양대학 SW교육 책임교수</h3>
                 <div class="sub">Professor in Charge of SW Education, College of Liberal Arts</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2024.01 — 현재</div>
-            <div class="content">
+            <div>
                 <h3>게임공학과 학과장</h3>
                 <div class="sub">Head of Dept. of Game Engineering</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2023.06 — 2025.02</div>
-            <div class="content">
+            <div>
                 <h3>게임그래픽학과 학과장</h3>
                 <div class="sub">Head of Dept. of Game Graphics Design</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2014.07 — 2015.01</div>
-            <div class="content">
+            <div>
                 <h3>디지털애니메이션학과 학과장</h3>
                 <div class="sub">Head of Dept. of Digital Animation</div>
             </div>
         </div>
     </div>
 
-    <div class="subsection-label">본부 보직 Major Administrative Positions</div>
+    <div class="sub-label">본부 보직 · Major Administrative Positions</div>
     <div class="timeline">
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2024.03 — 2023.09</div>
-            <div class="content">
+            <div>
                 <h3>SW융합교육원장</h3>
                 <div class="sub">Director of SW Convergence Education Institute · SW중심대학사업 집필 총괄</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2021.08 — 2023.06</div>
-            <div class="content">
+            <div>
                 <h3>기획처장</h3>
                 <div class="sub">Dean of University Planning · 교무위원, 본부 기획회의</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2016.08 — 2018.06</div>
-            <div class="content">
+            <div>
                 <h3>ACE(학부교육선도대학)사업단장</h3>
                 <div class="sub">Director, ACE Project · 교무위원, 본부 기획회의</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2014.02 — 2015.03</div>
-            <div class="content">
+            <div>
                 <h3>디지털엔터테인먼트학부장</h3>
                 <div class="sub">Dean, School of Digital Entertainment · 교무위원</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2012.08 — 2014.02</div>
-            <div class="content">
+            <div>
                 <h3>산학협력단장</h3>
                 <div class="sub">Dean, Industry-Academy Coop Foundation · 교무위원, 본부 기획회의</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2011.03 — 2012.08</div>
-            <div class="content">
+            <div>
                 <h3>정보전산센터장</h3>
                 <div class="sub">Director of Computing Center · 본부 기획회의</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2009.01 — 2011.03</div>
-            <div class="content">
+            <div>
                 <h3>신문방송국장 / 신문사 주간교수</h3>
                 <div class="sub">Director of University Press</div>
             </div>
@@ -623,96 +699,98 @@
     </div>
 </section>
 
-<!-- Government-Funded Projects -->
-<section class="cv-section reveal" id="govt-projects">
-    <div class="section-title">
-        <h2>주요 국고사업 관리</h2>
-        <span class="en">Major Government-Funded Project Management</span>
-    </div>
-    <div class="timeline">
-        <div class="timeline-item">
-            <div class="date">2021.08 — 2023.06</div>
-            <div class="content">
-                <h3>대학혁신지원사업 총괄책임자</h3>
-                <div class="sub">General Director, University Innovation Support Project</div>
-            </div>
+<!-- Government Projects -->
+<section class="cv-section alt-bg" id="govt-projects">
+    <div class="inner">
+        <div class="cv-head reveal">
+            <span class="num">04 / Projects</span>
+            <h2>국고사업 관리 <span class="en">Major Government-Funded Project Management</span></h2>
         </div>
-        <div class="timeline-item">
-            <div class="date">2016.08 — 2018.06</div>
-            <div class="content">
-                <h3>ACE 사업 단장</h3>
-                <div class="sub">Director, Advancement of College Education (ACE) Project</div>
+        <div class="timeline">
+            <div class="tl-item">
+                <div class="date">2021.08 — 2023.06</div>
+                <div>
+                    <h3>대학혁신지원사업 총괄책임자</h3>
+                    <div class="sub">General Director, University Innovation Support Project</div>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="date">2016.08 — 2018.06</div>
+                <div>
+                    <h3>ACE 사업 단장</h3>
+                    <div class="sub">Director, Advancement of College Education (ACE) Project</div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 <!-- External Committees -->
-<section class="cv-section reveal" id="committees">
-    <div class="section-title">
-        <h2>주요 외부 위원회 활동</h2>
-        <span class="en">Major External Committee Activities</span>
+<section class="cv-section" id="committees">
+    <div class="cv-head reveal">
+        <span class="num">05 / Committees</span>
+        <h2>외부 위원회 <span class="en">External Committee Activities</span></h2>
     </div>
     <div class="timeline">
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2026.01 — 2028.12</div>
-            <div class="content">
+            <div>
                 <h3>게임콘텐츠등급분류위원</h3>
                 <div class="sub">게임문화재단</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2026.01 — 대회종료</div>
-            <div class="content">
+            <div>
                 <h3>2027 충청 FISU 국제학술대회 학술위원회 위원</h3>
                 <div class="sub">유니버시아드대회 조직위원회</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2023.10 — 2024.09</div>
-            <div class="content">
+            <div>
                 <h3>자체등급분류사업자 (재)지정심사위원회 및 평가위원회</h3>
                 <div class="sub">게임물관리위원회 (GRAC)</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2023.03 — 2025.03</div>
-            <div class="content">
+            <div>
                 <h3>등급재분류자문위원회 자문위원</h3>
                 <div class="sub">게임물관리위원회 (GRAC)</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2023.01 — 현재</div>
-            <div class="content">
+            <div>
                 <h3>IEEE 부산 섹션 부회장</h3>
                 <div class="sub">Vice Chair, IEEE Busan Section</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2017.01 — 2022.12</div>
-            <div class="content">
+            <div>
                 <h3>IEEE 부산 섹션 사무국장 / 재무담당</h3>
-                <div class="sub">Secretary & Treasurer, IEEE Busan Section</div>
+                <div class="sub">Secretary &amp; Treasurer, IEEE Busan Section</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2012.01 — 2013.12</div>
-            <div class="content">
+            <div>
                 <h3>게임학회 6대 논문지 편집위원</h3>
                 <div class="sub">Editorial Board Member, Korea Computer Game Society</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2011.03 — 2012.03</div>
-            <div class="content">
+            <div>
                 <h3>부산인적자원개발원 운영위원</h3>
                 <div class="sub">Operating Committee Member, Busan HRDI</div>
             </div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2011.01 — 2012.12</div>
-            <div class="content">
+            <div>
                 <h3>국가과학기술연구망 자문위원</h3>
                 <div class="sub">Advisory Committee for Supercomputing, KISTI</div>
             </div>
@@ -721,288 +799,244 @@
 </section>
 
 <!-- Awards -->
-<section class="cv-section reveal" id="awards">
-    <div class="section-title">
-        <h2>수상 이력</h2>
-        <span class="en">Awards & Recognition</span>
-    </div>
+<section class="cv-section alt-bg" id="awards">
+    <div class="inner">
+        <div class="cv-head reveal">
+            <span class="num">06 / Awards</span>
+            <h2>수상 이력 <span class="en">Awards &amp; Recognition</span></h2>
+        </div>
 
-    <div class="subsection-label">학술상 Academic Awards</div>
-    <div class="timeline">
-        <div class="timeline-item">
-            <div class="date">2020</div>
-            <div class="content">
-                <h3>세종도서 학술부문 선정 — 『으뜸 파이썬』</h3>
-                <div class="sub">Korea Publication Industry Promotion Agency (KPIPA)</div>
+        <div class="sub-label">학술상 · Academic Awards</div>
+        <div class="timeline">
+            <div class="tl-item">
+                <div class="date">2020</div>
+                <div>
+                    <h3>세종도서 학술부문 선정 — 『으뜸 파이썬』</h3>
+                    <div class="sub">Korea Publication Industry Promotion Agency (KPIPA)</div>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="date">2011</div>
+                <div>
+                    <h3>우수논문상</h3>
+                    <div class="sub">한국컴퓨터게임학회 · Korea Computer Game Society</div>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="date">2007.11.23</div>
+                <div>
+                    <h3>우수논문상</h3>
+                    <div class="sub">한국멀티미디어학회 · Korea Multimedia Society</div>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="date">2003.12.19</div>
+                <div>
+                    <h3>우수 발표논문상</h3>
+                    <div class="sub">대한전자공학회 · Institute of Electronics Engineers of Korea</div>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="date">1999.08.20</div>
+                <div>
+                    <h3>우수논문상</h3>
+                    <div class="sub">한국그래픽스학회 · Korea Graphics Society</div>
+                </div>
             </div>
         </div>
-        <div class="timeline-item">
-            <div class="date">2011</div>
-            <div class="content">
-                <h3>우수논문상</h3>
-                <div class="sub">한국컴퓨터게임학회 Korea Computer Game Society</div>
-            </div>
-        </div>
-        <div class="timeline-item">
-            <div class="date">2007.11.23</div>
-            <div class="content">
-                <h3>우수논문상</h3>
-                <div class="sub">한국멀티미디어학회 Korea Multimedia Society</div>
-            </div>
-        </div>
-        <div class="timeline-item">
-            <div class="date">2003.12.19</div>
-            <div class="content">
-                <h3>우수 발표논문상</h3>
-                <div class="sub">대한전자공학회 Institute of Electronics Engineers of Korea</div>
-            </div>
-        </div>
-        <div class="timeline-item">
-            <div class="date">1999.08.20</div>
-            <div class="content">
-                <h3>우수논문상</h3>
-                <div class="sub">한국그래픽스학회 Korea Graphics Society</div>
-            </div>
-        </div>
-    </div>
 
-    <div class="subsection-label">교외 감사패 External Commendation</div>
-    <div class="timeline">
-        <div class="timeline-item">
-            <div class="date">2017.12.20</div>
-            <div class="content">
-                <h3>슈퍼컴퓨팅 자원 공동활용 및 활성화 공헌 감사패</h3>
-                <div class="sub">한국과학기술정보연구원(KISTI) 원장</div>
+        <div class="sub-label">교외 감사패 · External Commendation</div>
+        <div class="timeline">
+            <div class="tl-item">
+                <div class="date">2017.12.20</div>
+                <div>
+                    <h3>슈퍼컴퓨팅 자원 공동활용 및 활성화 공헌 감사패</h3>
+                    <div class="sub">한국과학기술정보연구원(KISTI) 원장</div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="subsection-label">동명대학교 총장/이사장상</div>
-    <div class="timeline">
-        <div class="timeline-item">
-            <div class="date">2024.04.09</div>
-            <div class="content">
-                <h3>건학 47주년 개교기념일 우수교원상</h3>
-                <div class="sub">서의택 이사장</div>
+        <div class="sub-label">동명대학교 총장/이사장상</div>
+        <div class="timeline">
+            <div class="tl-item">
+                <div class="date">2024.04.09</div>
+                <div>
+                    <h3>건학 47주년 개교기념일 우수교원상</h3>
+                    <div class="sub">서의택 이사장</div>
+                </div>
             </div>
-        </div>
-        <div class="timeline-item">
-            <div class="date">2018.10.22</div>
-            <div class="content">
-                <h3>2018 자율개선대학 선정 기여 공로상</h3>
-                <div class="sub">정홍섭 총장</div>
+            <div class="tl-item">
+                <div class="date">2018.10.22</div>
+                <div>
+                    <h3>2018 자율개선대학 선정 기여 공로상</h3>
+                    <div class="sub">정홍섭 총장</div>
+                </div>
             </div>
-        </div>
-        <div class="timeline-item">
-            <div class="date">2015.08.31</div>
-            <div class="content">
-                <h3>대학발전 건학이념 실현 기여 — 수업평가 우수상</h3>
-                <div class="sub">설동근 총장</div>
+            <div class="tl-item">
+                <div class="date">2015.08.31</div>
+                <div>
+                    <h3>대학발전 건학이념 실현 기여 — 수업평가 우수상</h3>
+                    <div class="sub">설동근 총장</div>
+                </div>
             </div>
-        </div>
-        <div class="timeline-item">
-            <div class="date">2009.04.11</div>
-            <div class="content">
-                <h3>개교기념일 우수교원상 (교육분야)</h3>
-                <div class="sub">이무근 총장</div>
+            <div class="tl-item">
+                <div class="date">2009.04.11</div>
+                <div>
+                    <h3>개교기념일 우수교원상 (교육분야)</h3>
+                    <div class="sub">이무근 총장</div>
+                </div>
             </div>
-        </div>
-        <div class="timeline-item">
-            <div class="date">2007.04.11</div>
-            <div class="content">
-                <h3>개교기념일 기념 국책사업 수행실적 우수교원 포상</h3>
-                <div class="sub">양승택 총장</div>
+            <div class="tl-item">
+                <div class="date">2007.04.11</div>
+                <div>
+                    <h3>개교기념일 기념 국책사업 수행실적 우수교원 포상</h3>
+                    <div class="sub">양승택 총장</div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Proposal Authorship -->
-<section class="cv-section reveal" id="proposals">
-    <div class="section-title">
-        <h2>학내 주요 사업 유치 제안서/기획서 집필</h2>
-        <span class="en">Proposal & Planning Document Authorship for University Projects</span>
+<!-- Proposals -->
+<section class="cv-section" id="proposals">
+    <div class="cv-head reveal">
+        <span class="num">07 / Proposals</span>
+        <h2>사업 제안서 집필 <span class="en">Proposal &amp; Planning Document Authorship</span></h2>
     </div>
 
-    <div class="subsection-label">집필 위원장 Committee Chair</div>
+    <div class="sub-label">집필 위원장 · Committee Chair</div>
     <div class="timeline">
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2024.02 — 2024.05</div>
-            <div class="content">
-                <h3>소프트웨어중심대학사업 집필팀</h3>
-            </div>
+            <div><h3>소프트웨어중심대학사업 집필팀</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2023.11 — 2024.02</div>
-            <div class="content">
-                <h3>POST SW중심대학사업 선정 유치 TFT</h3>
-            </div>
+            <div><h3>POST SW중심대학사업 선정 유치 TFT</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2023.05 — 2023.07</div>
-            <div class="content">
-                <h3>지방대학 활성화 사업 (대학혁신 3유형) TFT</h3>
-            </div>
+            <div><h3>지방대학 활성화 사업 (대학혁신 3유형) TFT</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2022.06 — 2022.08</div>
-            <div class="content">
-                <h3>대학재정 건전성 확보 정책연구팀</h3>
-            </div>
+            <div><h3>대학재정 건전성 확보 정책연구팀</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2021.09 — 2022.08</div>
-            <div class="content">
-                <h3>3주기 대학기관평가인증 자체진단평가 위원회</h3>
-            </div>
+            <div><h3>3주기 대학기관평가인증 자체진단평가 위원회</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2021.08 — 2022.02</div>
-            <div class="content">
-                <h3>공학계열 학문단위 혁신 정책연구 연구팀</h3>
-            </div>
+            <div><h3>공학계열 학문단위 혁신 정책연구 연구팀</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2018.05 — 2018.06</div>
-            <div class="content">
-                <h3>대학혁신지원사업(PILOT) 사업계획서 집필 TFT</h3>
-            </div>
+            <div><h3>대학혁신지원사업(PILOT) 사업계획서 집필 TFT</h3></div>
         </div>
     </div>
 
-    <div class="subsection-label">집필 위원 활동 Committee Member</div>
+    <div class="sub-label">집필 위원 활동 · Committee Member</div>
     <div class="timeline">
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2024.03 — 2024.04</div>
-            <div class="content">
-                <h3>2024 대학 산학연협력단지조성사업 집필팀</h3>
-            </div>
+            <div><h3>2024 대학 산학연협력단지조성사업 집필팀</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2023.04 — 2023.03</div>
-            <div class="content">
-                <h3>부산 워털루형 코업 프로그램 운영기관 공모 집필팀</h3>
-            </div>
+            <div><h3>부산 워털루형 코업 프로그램 운영기관 공모 집필팀</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2023.03 — 2023.05</div>
-            <div class="content">
-                <h3>글로컬대학 준비 TFT</h3>
-            </div>
+            <div><h3>글로컬대학 준비 TFT</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2022.12</div>
-            <div class="content">
-                <h3>국제협력선도대학 육성지원사업 집필팀</h3>
-            </div>
+            <div><h3>국제협력선도대학 육성지원사업 집필팀</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2022.01 — 2022.04</div>
-            <div class="content">
-                <h3>재정지원사업 (LINC 3.0) 집필팀</h3>
-            </div>
+            <div><h3>재정지원사업 (LINC 3.0) 집필팀</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2021.09 — 2022.08</div>
-            <div class="content">
-                <h3>3주기 대학기관평가인증 자체진단평가 기획위원회</h3>
-            </div>
+            <div><h3>3주기 대학기관평가인증 자체진단평가 기획위원회</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2021.08 — 2021.12</div>
-            <div class="content">
-                <h3>대학재정건전성개선 정책위원회</h3>
-            </div>
+            <div><h3>대학재정건전성개선 정책위원회</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2021.08 — 2024.02</div>
-            <div class="content">
-                <h3>캠퍼스개발혁신추진위원회 (기획)</h3>
-            </div>
+            <div><h3>캠퍼스개발혁신추진위원회 (기획)</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2019.12 — 2020.02</div>
-            <div class="content">
-                <h3>대학혁신지원사업 보고서 집필 TFT</h3>
-            </div>
+            <div><h3>대학혁신지원사업 보고서 집필 TFT</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2017.03 — 2018.08</div>
-            <div class="content">
-                <h3>2주기 대학구조개혁평가 자체평가위원회 / 기획위원회 (TFT)</h3>
-            </div>
+            <div><h3>2주기 대학구조개혁평가 자체평가위원회 / 기획위원회 (TFT)</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2016.11 — 2017.05</div>
-            <div class="content">
-                <h3>국고사업단 특성화프로그램 수립을 위한 TFT</h3>
-            </div>
+            <div><h3>국고사업단 특성화프로그램 수립을 위한 TFT</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2016.07 — 2016.08</div>
-            <div class="content">
-                <h3>창의적 소프트웨어 융합 사업단 재선정 집필팀 (TFT)</h3>
-            </div>
+            <div><h3>창의적 소프트웨어 융합 사업단 재선정 집필팀 (TFT)</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2014.03 — 2014.06</div>
-            <div class="content">
-                <h3>지방대학특성화사업단 집필팀 (TFT)</h3>
-            </div>
+            <div><h3>지방대학특성화사업단 집필팀 (TFT)</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2012.11 — 2013.02</div>
-            <div class="content">
-                <h3>차세대 수퍼컴퓨터 및 3D CG 미디어 교육/연구센터 설립 TFT</h3>
-            </div>
+            <div><h3>차세대 수퍼컴퓨터 및 3D CG 미디어 교육/연구센터 설립 TFT</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2012.06 — 2012.08</div>
-            <div class="content">
-                <h3>대학장단기발전 TFT</h3>
-            </div>
+            <div><h3>대학장단기발전 TFT</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2011.05</div>
-            <div class="content">
-                <h3>서울 ACCORD 활성화 사업 집필 위원회 (TFT)</h3>
-            </div>
+            <div><h3>서울 ACCORD 활성화 사업 집필 위원회 (TFT)</h3></div>
         </div>
-        <div class="timeline-item">
+        <div class="tl-item">
             <div class="date">2011.03 — 2011.12</div>
-            <div class="content">
-                <h3>학부교육선진화선도대학 사업 추진 TFT</h3>
-            </div>
+            <div><h3>학부교육선진화선도대학 사업 추진 TFT</h3></div>
         </div>
     </div>
 </section>
 
 <!-- Media -->
-<section class="cv-section reveal" id="media">
-    <div class="section-title">
-        <h2>주요 언론 활동</h2>
-        <span class="en">Major Media Activities</span>
-    </div>
-    <div class="timeline">
-        <div class="timeline-item">
-            <div class="date">2015.07 — 2016.12</div>
-            <div class="content">
-                <h3>부산일보 부일시론 필진</h3>
-                <div class="sub">부산일보 대표 칼럼 · 총 17편 게재</div>
-            </div>
+<section class="cv-section alt-bg" id="media">
+    <div class="inner">
+        <div class="cv-head reveal">
+            <span class="num">08 / Media</span>
+            <h2>언론 활동 <span class="en">Major Media Activities</span></h2>
         </div>
-        <div class="timeline-item">
-            <div class="date">2011.08 — 2013.03</div>
-            <div class="content">
-                <h3>부산일보 「강영민의 게임이야기」 연재</h3>
-                <div class="sub">지면 블로그 · 총 16편 연재</div>
+        <div class="timeline">
+            <div class="tl-item">
+                <div class="date">2015.07 — 2016.12</div>
+                <div>
+                    <h3>부산일보 부일시론 필진</h3>
+                    <div class="sub">부산일보 대표 칼럼 · 총 17편 게재</div>
+                </div>
             </div>
-        </div>
-        <div class="timeline-item">
-            <div class="date">2008.01 — 2008.06</div>
-            <div class="content">
-                <h3>부산일보 과학칼럼 필진</h3>
-                <div class="sub">기명 칼럼 · 총 6편 게재</div>
+            <div class="tl-item">
+                <div class="date">2011.08 — 2013.03</div>
+                <div>
+                    <h3>부산일보 「강영민의 게임이야기」 연재</h3>
+                    <div class="sub">지면 블로그 · 총 16편 연재</div>
+                </div>
+            </div>
+            <div class="tl-item">
+                <div class="date">2008.01 — 2008.06</div>
+                <div>
+                    <h3>부산일보 과학칼럼 필진</h3>
+                    <div class="sub">기명 칼럼 · 총 6편 게재</div>
+                </div>
             </div>
         </div>
     </div>
@@ -1011,29 +1045,56 @@
 </main>
 
 <footer>
-    <p>
-        &copy; 2025 Young-Min Kang ·
-        <a href="index.html">Home</a> ·
-        <a href="https://github.com/dknife" target="_blank" rel="noopener">GitHub</a> ·
-        <a href="mailto:ymkang@tu.ac.kr">ymkang@tu.ac.kr</a>
-    </p>
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <h3>Let's<br>connect.</h3>
+            <p>연구·교육 협력, 강연 요청, 공동 집필 제안 등은 학교 메일로 연락 주세요.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Contact</h4>
+            <ul>
+                <li><a href="mailto:ymkang@tu.ac.kr">ymkang@tu.ac.kr</a></li>
+                <li><a href="https://github.com/dknife" target="_blank" rel="noopener">GitHub @dknife</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Navigate</h4>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#publications">Publications</a></li>
+                <li><a href="index.html#books">Books</a></li>
+                <li><a href="index.html#lectures">Lectures</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <span>&copy; 2025 Young-Min Kang</span>
+        <span>동명대학교 ICT융합대학 게임공학과</span>
+    </div>
 </footer>
 
 <script>
+// Hero line reveal
+const heroLines = document.querySelectorAll('.resume-hero h1 .line');
+heroLines.forEach((line, i) => {
+    setTimeout(() => line.classList.add('visible'), 120 + i * 140);
+});
+
 // Scroll reveal
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('visible');
     });
-}, { threshold: 0.08 });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// Navbar scroll state
+// Navbar scrolled state
+const navbar = document.getElementById('navbar');
 window.addEventListener('scroll', () => {
-    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
 });
 
-// Smooth scroll + section-tab active state
+// Section-tab active state on scroll
 const tabLinks = document.querySelectorAll('.section-tab[href^="#"]');
 const sections = Array.from(tabLinks).map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
 

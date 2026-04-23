@@ -1,0 +1,7 @@
+# Local-only resume source files (contain PII: RRN, DOB, home address, personal phone).
+# Never publish these to the public repo.
+Resume/
+
+# macOS / OneDrive noise
+.DS_Store
+Thumbs.db
