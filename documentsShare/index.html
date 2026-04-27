@@ -21,6 +21,7 @@
       --accent:    #8b2e12;
       --accent2:   #1e3a5f;
       --gold:      #c4922a;
+      --moss:      #3d4a2a;
     }
 
     html { scroll-behavior: smooth; }
@@ -155,11 +156,8 @@
     /* Card grid */
     .card-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-    }
-    @media (max-width: 860px) {
-      .card-grid { grid-template-columns: 1fr; }
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.6rem;
     }
 
     .card {
@@ -183,6 +181,7 @@
     .card:nth-child(1) .card-accent-bar { background: var(--accent); }
     .card:nth-child(2) .card-accent-bar { background: var(--accent2); }
     .card:nth-child(3) .card-accent-bar { background: var(--gold); }
+    .card:nth-child(4) .card-accent-bar { background: var(--moss); }
 
     .card-body { padding: 1.8rem 1.8rem 1.4rem; flex: 1; }
     .card-issue {
@@ -223,6 +222,7 @@
     .card:nth-child(1) .card-tag { background: rgba(139,46,18,0.08); color: var(--accent); }
     .card:nth-child(2) .card-tag { background: rgba(30,58,95,0.08); color: var(--accent2); }
     .card:nth-child(3) .card-tag { background: rgba(196,146,42,0.12); color: #8a6010; }
+    .card:nth-child(4) .card-tag { background: rgba(61,74,42,0.10); color: var(--moss); }
 
     .card-read {
       font-size: 0.72rem;
@@ -265,6 +265,7 @@
     .article-wrapper:nth-child(1) .article-num { color: var(--accent); }
     .article-wrapper:nth-child(2) .article-num { color: var(--accent2); }
     .article-wrapper:nth-child(3) .article-num { color: var(--gold); }
+    .article-wrapper:nth-child(4) .article-num { color: var(--moss); }
 
     .article-title {
       font-family: 'Noto Serif KR', serif;
@@ -335,14 +336,14 @@
 
     .article-subhead {
       font-family: 'Noto Sans KR', sans-serif;
-      font-size: 0.82rem;
+      font-size: 0.9rem;
       font-weight: 700;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
       color: var(--ink);
-      margin: 1.6em 0 0.4em;
+      margin: 1.8em 0 0.6em;
       padding-top: 1.4em;
       border-top: 1px solid var(--rule);
-      break-before: column;
+      break-inside: avoid;
     }
 
     .article-pullquote {
@@ -364,6 +365,10 @@
     .article-wrapper:nth-child(3) .article-pullquote {
       color: #8a6010;
       border-color: var(--gold);
+    }
+    .article-wrapper:nth-child(4) .article-pullquote {
+      color: var(--moss);
+      border-color: var(--moss);
     }
 
     .article-byline {
@@ -414,7 +419,7 @@
 <header class="masthead" id="top">
   <p class="masthead-label">강영민 칼럼 시리즈</p>
   <h1 class="masthead-title">AI 시대의 사유</h1>
-  <p class="masthead-subtitle">확신·권위·판단 — 인공지능이 바꾸는 세 가지 조건</p>
+  <p class="masthead-subtitle">확신·권위·판단·책임 — 인공지능이 바꾸는 우리의 조건</p>
   <div class="masthead-rule"></div>
   <p class="masthead-byline">강영민 · 동명대 교수(게임학부)</p>
 </header>
@@ -426,6 +431,7 @@
     <a class="nav-link" href="#col1">① 확신을 부추기는 사회</a>
     <a class="nav-link" href="#col2">② 인공지능의 권위</a>
     <a class="nav-link" href="#col3">③ 전문가의 황혼</a>
+    <a class="nav-link" href="#col4">④ 나는 아직 죽음이 되지 않았다</a>
   </div>
 </nav>
 
@@ -470,6 +476,19 @@
       </div>
       <div class="card-footer">
         <span class="card-tag">전문직·과학·책임</span>
+        <span class="card-read">읽기 →</span>
+      </div>
+    </a>
+
+    <a class="card" href="#col4">
+      <div class="card-accent-bar"></div>
+      <div class="card-body">
+        <p class="card-issue">칼럼 04</p>
+        <h2 class="card-title">"나는 아직 죽음이 되지 않았다" — AI 시대의 새로운 오펜하이머</h2>
+        <p class="card-excerpt">청동에서 핵분열로, 그리고 이제 인공지능 코드로. 평생을 신경망에 바친 힌튼이 한복판에서 '그만 멈추라'고 외치는 까닭.</p>
+      </div>
+      <div class="card-footer">
+        <span class="card-tag">기술·전쟁·책임</span>
         <span class="card-read">읽기 →</span>
       </div>
     </a>
@@ -629,6 +648,77 @@
     <div class="ornament">— ✦ —</div>
   </article>
 
+  <!-- ── COL 4 ── -->
+  <article class="article-wrapper" id="col4">
+    <div class="article-header">
+      <div>
+        <p class="article-num">칼럼 04 · 기술과 전쟁</p>
+        <h2 class="article-title">"나는 아직 죽음이 되지 않았다" — AI 시대의 새로운 오펜하이머</h2>
+      </div>
+      <div class="article-meta">
+        <strong>강영민</strong>
+        동명대 교수(게임학부)
+      </div>
+    </div>
+
+    <div class="article-text">
+      <p>전쟁은 언제나 무기를 진화시켜 왔다. 청동에서 강철로, 화약에서 핵분열로, 그리고 이제는 인공지능 코드로 — 무기는 가장 발달한 기술과 짝을 이룬다. 인공지능은 지금 인류가 가진 첨단 기술을 한꺼번에 흡수하며 어떤 기술보다 깊고 위험한 방식으로 전쟁에 개입하는 중이다.</p>
+
+      <h3 class="article-subhead">인공지능 역사에 새겨진 이름</h3>
+
+      <p>이 위기를 가장 먼저 분명하게 경고한 사람은 인공신경망을 이용한 지능이 실제로 동작할 수 있게 만든 제프리 힌튼(Geoffrey Hinton)이다. 그의 가계에서 흥미로운 이름들은 지난 3개의 세기에 걸쳐있다. 컴퓨터의 이진 논리를 떠받치는 부울 대수(Boolean algebra)를 19세기에 창시한 수학자 조지 부울(George Boole)이 그의 외고조부다. 부울의 딸 메리가 수학자 찰스 하워드 힌튼과 결혼하여 혈통이 이어진다. 힌튼의 미들네임 'Everest'는 세계 최고봉 에베레스트 산에 붙여진 그의 친척 조지 에베레스트(George Everest)에서 따온 것이다. 그는 또한 핵무기를 개발하는 맨해튼 프로젝트에 참여한 극소수 여성 과학자 중 하나인 조안 힌튼(Joan Hinton)의 조카이기도 하다.</p>
+
+      <p>0/1의 논리를 발명한 사람의 후손이, 그 0/1의 신호로 생각하는 기계를 만들어 컴퓨터 과학자로는 최초로 2024년 존 홉필드와 함께 노벨 물리학상을 수상했다. 이 영광의 뒤에는 길고 외로운 시간이 있었다. 1970년대부터 2000년대까지, 신경망은 학계에서 거의 사라진 분야였고, 기호주의와 통계적 기법들의 화려한 수식과 논리가 주류였다. 신경망을 연구한다는 것은 가망 없는 낭만주의자로 취급되었다. 힌튼은 그 한복판에서 40년을 버텼다. 그는 연구라는 것이 유행을 따라가는 일이 아님을 묵묵히 증명한다.</p>
+
+      <p>영국에서 태어난 힌튼은 1987년, 토론토 대학으로 자리를 옮긴다. 미국이 아니라 캐나다였다. 이 선택은 단순한 우연이 아니다. 당시 미국 인공지능 연구의 상당 부분은 국방부 자금에 의존하고 있었다. 새로운 기술은 결국 무기 체계로 흘러 들어가는 것이 미국 학계의 자연스러운 흐름이었다. 힌튼은 이런 구조에 비판적 입장을 가지고 있었고, 자신의 연구가 군사적 목적으로 사용되는 것을 원하지 않았다. 그의 캐나다 행은 이런 고민의 결과로 볼 수 있다.</p>
+
+      <h3 class="article-subhead">통제할 수 있다는 믿음의 붕괴</h3>
+
+      <p>"기계가 결국 인간의 통제를 벗어날 수 있다"는 우려는 사실 새로운 이야기가 아니다. 메리 셸리의 "프랑켄슈타인"에서 영화 "터미네이터"에 이르기까지 클리쉐처럼 반복되었다. 하지만 인간은 늘 오만하고, 주류 학계는 "걱정은 하되, 통제는 가능하다"는 입장이었다. 인간 이성에 대한 낭만적 믿음과 낙관이 그 밑에 깔려 있었다.</p>
+
+      <p>2010년대 후반부터 상황이 급변한다. 거대 모델의 성능이 폭발적으로 도약하자, 돈 냄새를 맡은 자본은 그 가능성에 막대한 베팅을 시작했고, 손쉬운 승리의 가능성을 엿본 군대와 국가도 이 흐름을 놓치지 않았다. 기술에 대한 통제는 제품의 우위를 확보하려는 경쟁을 따를 수 없었고, 토론은 기업의 분기별 실적 발표와 정부의 국방 예산 투입 속도에 가려져 보이지 않았다.</p>
+
+      <p>힌튼은 2023년 5월, 10년간 몸담았던 구글을 떠나며 자신이 했던 연구에 대한 후회까지 피력하며 자유롭게 경고하기 위해 회사를 그만둔다고 밝혔다. 평생 쌓아 올린 자신의 연구를 스스로 후회하는 과학자는 드물다. 노벨상 수상 직후에도 그는 인공지능을 어떻게 통제할 것인가에 대한 논의가 시급하다고 거듭 호소했다.</p>
+
+      <h3 class="article-subhead">보이지 않는 오펜하이머</h3>
+
+      <p>지금의 전장은, 컴퓨터 기술이 전쟁에서 남아 있는 한 가닥 '인간성'마저 몰아내고 있다. 핵폭탄을 만들고 "나는 죽음이 되었다(I am become Death, the destroyer of worlds)"라고 고백한 오펜하이머는 더 이상 보이지 않는다. 무기를 만든 자가 자신의 손을 응시하며 떨던 시대는 20세기에 끝났다.</p>
+
+      <p>드론은 1인당 비용 수백 달러로 사람을 죽이는 기술로 각광받고, 인공지능은 표적 식별과 우선순위 부여, 심지어 전략적 판단의 영역에서까지 인간의 자리를 빼앗고 있다.</p>
+
+      <div class="article-pullquote">잘못된 폭격은 '데이터 오류', 민간인 사망은 '모델 오류'로 보고된다. 폭탄을 떨어트리라고 명령한 자는 있지만, 그 폭탄이 죽인 사람들의 목숨에 책임을 질 사람은 없다.</div>
+
+      <p>가장 위험한 것은 '책임의 증발'이다. 전쟁의 최고 의사결정권자들은 "전과(戰果)는 나의 것, 실책은 기계의 것"이라는 안전한 무책임의 영토를 새롭게 마련하고 있다. 잘못된 폭격은 "데이터 오류", 민간인 사망은 "모델 오류"로 보고된다. 폭탄을 떨어트리라고 명령한 자는 있지만, 그 폭탄이 죽인 사람들의 목숨에 책임을 질 사람은 없다.</p>
+
+      <p>힌튼이 말하는 위협은 단순히 기계가 인류를 '직접' 죽일 것이라는 영화적 디스토피아가 아니다. 인공지능 무기를 갖춘 강대국이 압도적 비대칭 무력을 손에 쥔 채, 거리낌 없이 약소국을 침공하는 것. 이미 그 징후는 가자, 우크라이나, 그리고 곳곳의 분쟁 지역에서 확인되고 있다.</p>
+
+      <h3 class="article-subhead">21세기 파시즘의 우려?</h3>
+
+      <p>이 풍경 위로, 최근 한 권의 책과 한 편의 게시물이 짙은 그림자를 드리우고 있다. 2025년 팔란티어(Palantir)의 CEO 알렉스 카프(Alex Karp)가 책을 내었다. 우리말로는 "기술 공화국 선언: 강력한 기술, 흔들리는 가치, 인류의 미래는 어디로 가는가"라는 제목으로 번역되었지만, 원래의 제목은 "기술 공화국: 강한 힘, 약한 신념, 서방의 미래"가 더 가깝다. 서구 중심의 질서를 무력을 포함하는 강한 힘으로 수호하는 것이 기술 엘리트의 의무라는 것이다.</p>
+
+      <p>출간 1주년을 맞아 팔란티어는 2026년 4월, 책의 핵심을 22개 항으로 압축한 '선언문'을 X에 게시했고, 이 게시물은 며칠 만에 3,000만 회 이상 조회되며 격렬한 논쟁을 불러일으켰다. 선언의 핵심은 거칠게 요약하면 이렇다. 실리콘밸리는 미국에 "도덕적 부채"를 지고 있으며, 기술 엘리트들은 국방에 복무할 "적극적 의무"가 있다는 것이다. 자유롭고 민주적인 사회를 위해 이제는 도덕적 호소가 아니라 '강한 힘 – 무력'이 필요하고, 21세기의 무력은 곧 소프트웨어라고 선언한다. 그러면서 인공지능을 사용한 무기를 만드는 게 중요한 것이 아니라 세계 최고의 가치를 진전시킨 미국을 위해, 미국 해병이 더 나은 무기를 원하면 기꺼이 만들어야 한다고 선언하고 있다.</p>
+
+      <p>이 선언이 위험한 지점은 미국과 서구의 가치를 선으로 규정하며, 그것이 아닌 문화 가운데 일부는 "해롭고 퇴행적"이라는 혐오적 평가와 독일과 일본의 무장을 해제한 현재의 질서를 부정하는 단계로 나아가고 있다는 점이다. 그리고 종교에 대한 비판적 입장을 불관용으로 단정한다.</p>
+
+      <p>비판자들에게 이 선언은 명백한 "테크노 파시즘"이다. 20세기를 피로 물들인 히틀러가 써내려간 "나의 투쟁(Mein Kampf)"에 이 선언을 비교하는 것은 과한 것일 수 있다. 그러나, 인종의 우열을 나눈 것과 문화의 위계를 나눈 이 선언이 얼마나 다른가 심각하게 살펴봐야 한다. 베르사유 조약을 통해 독일이 군사적 제약을 가지게 된 것에 분노한 히틀러처럼 전쟁 범죄로 거세된 독일과 일본의 비무장에 분노하는 카프의 주장도 누군가 이 질서를 만든 적들이 존재한다는 음모론에 근거하지 않았기를 바란다.</p>
+
+      <p>팔란티어로서는 이런 비판과 우려가 억울하다고 항변할지 모른다. 그러나, 미국 군대와 이민단속국, 그리고 이스라엘군을 적극적으로 지원하는 인공지능 데이터 분석 기업이, 국가의 무력 사용 방식과 문화의 우열까지 '선언'의 형식으로 공표하는 풍경 자체가 이미 살벌한 아포칼립스 이야기의 복선처럼 느껴진다. 이 선언은 미국 정부와 실리콘밸리, 군산복합체가 어디로 함께 움직이고 있는지를 드러내는 좌표다. 힌튼이 우려한 것처럼 자본과 군사 분야가 인공지능을 결코 그냥 두지 않으리라는 예측은 이제 공공연히 선언되는 수준에 이른 것이다.</p>
+
+      <h3 class="article-subhead">핵의 시대를 반복하지 않아야 할 인공지능</h3>
+
+      <p>우리는 이 가속을 통제할 의지가 있는가, 통제할 능력조차 이미 잃었는가. 의지가 있다면, 무엇부터 할 수 있을까?</p>
+
+      <p>힌튼은 이렇게 답했다. 첫째, AI 안전 연구에 GDP 단위의 자원을 투입해야 한다. 둘째, 자율 살상 무기에 대한 국제적 금지 조약이 필요하다. 셋째, 기술 기업이 자기 규제로 충분하다는 환상을 버려야 한다. 그가 평생을 바친 분야의 한가운데에서 "그만 멈추라"고 말하는 사람의 목소리를, 우리는 충분히 진지하게 듣고 있는가.</p>
+
+      <div class="article-pullquote">오펜하이머는 핵을 만든 뒤에야 비로소 시인의 언어로 자신을 들여다봤다. 힌튼은 그보다 한 발 일찍 멈춰서서 우리를 돌아보게 만들고 있다.</div>
+
+      <p>오펜하이머는 핵을 만든 뒤에야 비로소 시인의 언어로 자신을 들여다봤다. 힌튼은 그보다 한 발 일찍 멈춰서서 우리를 돌아보게 만들고 있다. 그는 인공지능 시대의 새로운 오펜하이머일지 모른다. 어쩌면 이것이 그가 받은 노벨상의 진짜 의미다. 가장 깊이 들여다 본 사람이, 가장 먼저 경고하는 일. 지나칠 수 없는 일이다. 기술이 이미 권력의 언어로 자신을 선포하기 시작한 시대에, 그 경고를 듣지 않는 것은 자유가 아니라 자신에 대한 무책임이다.</p>
+    </div>
+
+    <p class="article-byline">강영민 · 동명대 교수(게임학부)</p>
+    <div class="ornament">— ✦ —</div>
+  </article>
+
   <div style="text-align:center; margin-top: 3rem;">
     <a class="back-top" href="#top">↑ 맨 위로</a>
   </div>
@@ -641,7 +731,7 @@
 
 <script>
   // Highlight active nav link on scroll
-  const sections = ['col1','col2','col3'];
+  const sections = ['col1','col2','col3','col4'];
   const navLinks = document.querySelectorAll('.nav-link');
 
   const observer = new IntersectionObserver(entries => {
