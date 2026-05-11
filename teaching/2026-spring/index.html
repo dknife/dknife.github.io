@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teaching · 2026년 1학기 — Young-Min Kang</title>
+    <meta name="description" content="강영민 교수 · 동명대학교 게임공학과 · 2026년 1학기 강의노트, 유인물, 중간고사 자료">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #F8F8F8;
+            --bg-alt: #FFFFFF;
+            --bg-soft: #EDEDED;
+            --bg-dark: #111111;
+            --text: #222222;
+            --text-muted: #555555;
+            --text-dim: #888888;
+            --border: #e5e5e5;
+            --border-soft: #f0f0f0;
+            --accent: #FA5D29;
+            --accent-soft: rgba(250, 93, 41, 0.08);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+            --easing: cubic-bezier(0.25, 1, 0.5, 1);
+            --max-width: 1300px;
+            --gutter: 52px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter Tight', 'Noto Sans KR', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            font-size: 15px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        .skip-link {
+            position: absolute;
+            top: -100px; left: var(--gutter);
+            padding: 10px 18px;
+            background: var(--text);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 9999;
+            border-radius: 6px;
+        }
+        .skip-link:focus { top: 12px; outline: 2px solid var(--accent); }
+
+        /* Top nav */
+        .top-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 64px;
+            background: rgba(248, 248, 248, 0.75);
+            backdrop-filter: saturate(180%) blur(14px);
+            -webkit-backdrop-filter: saturate(180%) blur(14px);
+            border-bottom: 1px solid transparent;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        .top-nav.scrolled {
+            background: rgba(255, 255, 255, 0.92);
+            border-bottom-color: var(--border);
+        }
+        .nav-inner {
+            height: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--gutter);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-logo {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+        .nav-logo::after { content: '.'; color: var(--accent); }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 36px;
+        }
+        .nav-links a {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        .nav-links a:hover { color: var(--accent); }
+        .nav-links a.active { color: var(--accent); }
+        .nav-links a.active::before {
+            content: '';
+            position: absolute;
+            left: -10px; top: 50%;
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: var(--accent);
+            transform: translateY(-50%);
+        }
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            width: 36px; height: 36px;
+            cursor: pointer;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            padding: 0;
+        }
+        .hamburger span {
+            display: block;
+            width: 22px; height: 1.5px;
+            background: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        /* Hero */
+        .teach-hero {
+            padding: 160px var(--gutter) 80px;
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 36px;
+        }
+        .eyebrow::before {
+            content: '';
+            width: 36px; height: 1px;
+            background: var(--text);
+        }
+        .teach-hero h1 {
+            font-family: 'Inter Tight', sans-serif;
+            font-size: clamp(48px, 9.5vw, 124px);
+            font-weight: 800;
+            line-height: 0.94;
+            letter-spacing: -0.045em;
+            margin-bottom: 36px;
+        }
+        .teach-hero h1 .accent { color: var(--accent); }
+        .teach-hero .hero-meta {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 48px;
+            align-items: start;
+            max-width: 960px;
+            margin-top: 24px;
+        }
+        .hero-name {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .hero-name .kr {
+            display: block;
+            margin-top: 6px;
+            font-family: 'Noto Sans KR', sans-serif;
+            color: var(--text);
+            font-size: 14px;
+            letter-spacing: 0.02em;
+            text-transform: none;
+        }
+        .hero-desc {
+            font-size: clamp(16px, 1.4vw, 19px);
+            line-height: 1.6;
+            color: var(--text);
+            max-width: 640px;
+        }
+        .hero-desc strong {
+            font-weight: 600;
+            background: linear-gradient(180deg, transparent 60%, var(--accent-soft) 60%);
+            padding: 0 2px;
+        }
+
+        /* Sticky course tab row */
+        .section-tabs {
+            position: sticky;
+            top: 64px;
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            z-index: 50;
+        }
+        .section-tabs-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 14px var(--gutter);
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            overflow-x: auto;
+        }
+        .section-tab {
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: var(--bg-alt);
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+        .section-tab:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+        .section-tab.active {
+            color: #fff;
+            background: var(--text);
+            border-color: var(--text);
+        }
+
+        /* Course sections */
+        section.course {
+            padding: 96px var(--gutter);
+        }
+        section.course.alt { background: var(--bg-alt); }
+
+        .course-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .course-head {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+            align-items: start;
+        }
+        .course-head .num {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+        }
+        .course-head h2 {
+            font-family: 'Inter Tight', sans-serif;
+            font-size: clamp(30px, 4vw, 48px);
+            font-weight: 800;
+            line-height: 1.0;
+            letter-spacing: -0.035em;
+            margin-bottom: 16px;
+        }
+        .course-head h2 .accent { color: var(--accent); }
+        .course-head h2 .kr {
+            display: block;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: clamp(20px, 2vw, 28px);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text);
+            margin-top: 8px;
+        }
+        .course-head p {
+            font-size: 15px;
+            line-height: 1.65;
+            color: var(--text-muted);
+            max-width: 720px;
+        }
+
+        /* Material group */
+        .mat-group {
+            margin-top: 56px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+        }
+        .mat-group:first-of-type {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+        .mat-group-head {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+        .mat-group-head h3 {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .mat-group-head .count {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+        }
+        .mat-group-head .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            background: var(--accent-soft);
+            border-radius: 999px;
+        }
+        .mat-group p.note {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+            max-width: 720px;
+            line-height: 1.6;
+        }
+
+        .mat-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+        .mat-list li > a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg-alt);
+            transition: all 0.3s ease;
+        }
+        .mat-list li > a:hover {
+            transform: translateY(-3px);
+            border-color: var(--text);
+            box-shadow: var(--shadow-md);
+        }
+        .mat-icon {
+            flex-shrink: 0;
+            width: 36px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: #fff;
+            background: var(--text);
+            border-radius: 4px;
+            position: relative;
+        }
+        .mat-icon::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            border-style: solid;
+            border-width: 0 0 8px 8px;
+            border-color: transparent transparent var(--bg-alt) transparent;
+        }
+        .mat-body {
+            min-width: 0;
+            flex: 1;
+        }
+        .mat-title {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: var(--text);
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+        }
+        .mat-meta {
+            margin-top: 4px;
+            font-size: 11.5px;
+            color: var(--text-dim);
+            letter-spacing: 0.02em;
+        }
+
+        /* Empty-state notice block (e.g., handouts not available) */
+        .mat-empty {
+            padding: 18px 20px;
+            font-size: 13.5px;
+            color: var(--text-muted);
+            background: var(--bg-soft);
+            border-radius: 10px;
+            line-height: 1.6;
+        }
+
+        /* Course summary stats inline */
+        .course-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 28px;
+            margin-top: 26px;
+            padding: 20px 24px;
+            background: var(--bg-soft);
+            border-radius: 12px;
+        }
+        .course-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .course-stat .v {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
+        .course-stat .l {
+            font-size: 11.5px;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-dark);
+            color: #fff;
+            padding: 60px var(--gutter) 32px;
+        }
+        .footer-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        .footer-inner h4 {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 14px;
+        }
+        .footer-inner p, .footer-inner a {
+            font-size: 13.5px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.7;
+        }
+        .footer-inner a:hover { color: var(--accent); }
+        .footer-bottom {
+            max-width: var(--max-width);
+            margin: 40px auto 0;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            :root { --gutter: 28px; }
+            .nav-links {
+                position: fixed;
+                top: 64px; left: 0; right: 0;
+                background: var(--bg-alt);
+                flex-direction: column;
+                padding: 24px 0;
+                gap: 0;
+                border-bottom: 1px solid var(--border);
+                display: none;
+            }
+            .nav-links.open { display: flex; }
+            .nav-links li { padding: 0 24px; }
+            .nav-links a {
+                display: block;
+                padding: 14px 0;
+                border-bottom: 1px solid var(--border-soft);
+            }
+            .nav-links li:last-child a { border-bottom: none; }
+            .hamburger { display: flex; }
+
+            .teach-hero { padding: 130px var(--gutter) 50px; }
+            .teach-hero .hero-meta { grid-template-columns: 1fr; gap: 18px; }
+            .course-head { grid-template-columns: 1fr; gap: 16px; margin-bottom: 40px; }
+            section.course { padding: 64px var(--gutter); }
+            .footer-inner { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<nav class="top-nav" id="navbar">
+    <div class="nav-inner">
+        <a href="../../index.html" class="nav-logo">Y.M. Kang</a>
+        <button class="hamburger" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links">
+            <li><a href="../../index.html#hero">Home</a></li>
+            <li><a href="../../index.html#research">Research</a></li>
+            <li><a href="../../index.html#publications">Publications</a></li>
+            <li><a href="../../index.html#books">Books</a></li>
+            <li><a href="" class="active">Teaching · 2026-1</a></li>
+            <li><a href="../../resume.html">Resume</a></li>
+            <li><a href="../../index.html#bookmarks">Resources</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main id="main">
+
+<!-- Hero -->
+<section class="teach-hero">
+    <span class="eyebrow">Teaching · 2026년 1학기</span>
+    <h1>
+        TEACHING<span class="accent">.</span>
+    </h1>
+    <div class="hero-meta">
+        <div class="hero-name">
+            Spring 2026
+            <span class="kr">동명대학교 게임공학과 · 강영민</span>
+        </div>
+        <p class="hero-desc">
+            2026학년도 1학기 강의의 <strong>강의노트·유인물·중간고사 문제지·평가 보고서</strong>를 모은
+            자료실입니다. 평가 보고서는 학생 개인정보가 드러나지 않도록 모두 <strong>익명화</strong>되어
+            있습니다. 자료는 <em>강의 진행에 맞춰</em> 추가·갱신됩니다.
+        </p>
+    </div>
+</section>
+
+<!-- Course tabs -->
+<div class="section-tabs">
+    <div class="section-tabs-inner">
+        <a class="section-tab" href="#csharp">C# 프로그래밍</a>
+        <a class="section-tab" href="#game-math">게임 수학</a>
+        <a class="section-tab" href="#twod-game">2D 게임프로젝트</a>
+    </div>
+</div>
+
+<!-- C# 프로그래밍 -->
+<section class="course" id="csharp">
+    <div class="course-inner">
+        <div class="course-head">
+            <div class="num">01 / C# Programming</div>
+            <div>
+                <h2>C<span class="accent">#</span> Programming<span class="kr">C# 프로그래밍 — 2026년 1학기</span></h2>
+                <p>
+                    Unity 환경에서의 C# 프로그래밍 기초. 객체지향 설계, 컬렉션, 이벤트 처리, WinForms를 통한
+                    GUI 프로토타이핑을 다룹니다. 중간고사는 5개 실습 문제로 구성된 코드 작성 시험.
+                </p>
+                <div class="course-stats" aria-label="Course summary">
+                    <div class="course-stat"><span class="v">9</span><span class="l">강의노트</span></div>
+                    <div class="course-stat"><span class="v">2</span><span class="l">슬라이드</span></div>
+                    <div class="course-stat"><span class="v">4</span><span class="l">유인물</span></div>
+                    <div class="course-stat"><span class="v">1</span><span class="l">중간고사</span></div>
+                    <div class="course-stat"><span class="v">1</span><span class="l">평가보고서</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mat-group">
+            <div class="mat-group-head">
+                <h3>강의노트</h3>
+                <span class="count">9 items</span>
+            </div>
+            <p class="note">주차별 강의노트입니다. 8주차는 중간고사 주이므로 강의노트가 없습니다.</p>
+            <ul class="mat-list">
+                <li><a href="csharp/notes/01_%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 1 · 개발 환경</span>
+                        <span class="mat-meta">Visual Studio·.NET 셋업</span>
+                    </span>
+                </a></li>
+                <li><a href="csharp/notes/02_C%23_%EA%B0%9C%EC%9A%94.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 2 · C# 개요</span>
+                        <span class="mat-meta">언어 특성·기본 문법</span>
+                    </span>
+                </a></li>
+                <li><a href="csharp/notes/03_Unity_%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8_%EC%83%9D%EC%84%B1.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 3 · Unity 프로젝트 생성</span>
+                        <span class="mat-meta">C# 학습용 Unity 셋업</span>
+                    </span>
+                </a></li>
+                <li><a href="csharp/notes/04_%ED%81%B4%EB%9E%98%EC%8A%A4_%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 4 · 클래스 이해하기</span>
+                        <span class="mat-meta">필드·메서드·생성자</span>
+                    </span>
+                </a></li>
+                <li><a href="csharp/notes/05_%ED%81%B4%EB%9E%98%EC%8A%A4_%ED%99%9C%EC%9A%A9_%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 5 · 클래스 활용 · 객체지향</span>
+                        <span class="mat-meta">게임으로 배우는 OOP</span>
+                    </span>
+                </a></li>
+                <li><a href="csharp/notes/06_%EC%A0%88%EC%B0%A8%EC%A0%81_vs_OOP.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 6 · 절차적 vs OOP</span>
+                        <span class="mat-meta">클래스가 코드를 간편하게 하는 이유</span>
+                    </span>
+                </a></li>
+                <li><a href="csharp/notes/07_Graphics_Shooting_Game.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 7 · Graphics & Shooting Game</span>
+                        <span class="mat-meta">WinForms 슈팅 게임 (Step-by-Step)</span>
+                    </span>
+                </a></li>
+                <li><a href="csharp/notes/09_Unity_Script_C%23.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 9 · Unity Script C#</span>
+                        <span class="mat-meta">MonoBehaviour·컴포넌트</span>
+                    </span>
+                </a></li>
+                <li><a href="csharp/notes/10_Unity_C%23_%ED%95%B5%EC%8B%AC%EA%B8%B0%EB%8A%A5.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 10 · Unity로 체험하는 C# 핵심 기능</span>
+                        <span class="mat-meta">언어 핵심 + Unity 통합</span>
+                    </span>
+                </a></li>
+            </ul>
+        </div>
+
+        <div class="mat-group">
+            <div class="mat-group-head">
+                <h3>슬라이드</h3>
+                <span class="count">2 items</span>
+            </div>
+            <p class="note">강의 중 발표에 사용된 슬라이드 자료. 강의노트(handout)는 같은 내용을 본문 형태로 정리한 별도 PDF입니다.</p>
+            <ul class="mat-list">
+                <li><a href="csharp/slides/09_Unity_Script_C%23_%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 9 · Unity Script C# (Slides)</span>
+                        <span class="mat-meta">Beamer 발표 슬라이드</span>
+                    </span>
+                </a></li>
+                <li><a href="csharp/slides/10_Unity_C%23_%ED%95%B5%EC%8B%AC%EA%B8%B0%EB%8A%A5_%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 10 · Unity C# 핵심기능 (Slides)</span>
+                        <span class="mat-meta">Beamer 발표 슬라이드</span>
+                    </span>
+                </a></li>
+            </ul>
+        </div>
+
+        <div class="mat-group">
+            <div class="mat-group-head">
+                <h3>유인물</h3>
+                <span class="count">4 items</span>
+            </div>
+            <p class="note">수업 중에 배포된 퀴즈 문제, 중간고사 대비 정리, 그리고 보충 자료입니다.</p>
+            <ul class="mat-list">
+                <li><a href="csharp/handouts/lec6_%ED%80%B4%EC%A6%88_%EB%AC%B8%EC%A0%9C.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 6 · 퀴즈 문제</span>
+                        <span class="mat-meta">수업 중 배포</span>
+                    </span>
+                </a></li>
+                <li><a href="csharp/handouts/lec6_%ED%80%B4%EC%A6%88_%EB%8B%B5%EC%95%88.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 6 · 퀴즈 답안</span>
+                        <span class="mat-meta">해설 포함</span>
+                    </span>
+                </a></li>
+                <li><a href="csharp/handouts/lec7_%EC%A4%91%EA%B0%84%EA%B3%A0%EC%82%AC_%EC%A0%95%EB%A6%AC.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 7 · 중간고사 정리</span>
+                        <span class="mat-meta">시험 범위 요약</span>
+                    </span>
+                </a></li>
+                <li><a href="csharp/handouts/lec10_%EB%B6%80%EB%A1%9D_%ED%82%A4%EB%B3%B4%EB%93%9C%EC%9E%85%EB%A0%A5_LogPanel.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 10 · 부록 — 키보드 입력 / LogPanel</span>
+                        <span class="mat-meta">실습 보충 자료</span>
+                    </span>
+                </a></li>
+            </ul>
+        </div>
+
+        <div class="mat-group">
+            <div class="mat-group-head">
+                <h3>중간고사 문제지</h3>
+                <span class="count">1 item</span>
+            </div>
+            <ul class="mat-list">
+                <li><a href="csharp/midterm/CSharp_%EC%A4%91%EA%B0%84%EA%B3%A0%EC%82%AC_%EB%AC%B8%EC%A0%9C%EC%A7%80.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">C# 프로그래밍 중간고사 문제지</span>
+                        <span class="mat-meta">5문항, 각 20점</span>
+                    </span>
+                </a></li>
+            </ul>
+        </div>
+
+        <div class="mat-group">
+            <div class="mat-group-head">
+                <h3>중간고사 평가 결과</h3>
+                <span class="badge">익명화</span>
+                <span class="count">1 item</span>
+            </div>
+            <p class="note">학생 식별 정보는 모두 제거되었으며, 학생은 점수 순위에 따라 <em>학생01, 학생02 …</em> 형식으로 표기됩니다.</p>
+            <ul class="mat-list">
+                <li><a href="csharp/evaluation/CSharp_%EC%A4%91%EA%B0%84%EA%B3%A0%EC%82%AC_%ED%8F%89%EA%B0%80%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">중간고사 채점 보고서 (익명)</span>
+                        <span class="mat-meta">15명 · 채점 기준·등급 분포·문항별 분석</span>
+                    </span>
+                </a></li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- 게임수학 -->
+<section class="course alt" id="game-math">
+    <div class="course-inner">
+        <div class="course-head">
+            <div class="num">02 / Game Mathematics</div>
+            <div>
+                <h2>Game <span class="accent">Math</span>ematics<span class="kr">게임 수학 — 2026년 1학기</span></h2>
+                <p>
+                    게임 개발에 필요한 수학 — 벡터, 점곱·가위곱, 행렬과 변환, 복소수와 쿼터니언, 충돌 감지.
+                    Google Colab 노트북과 자체 시각화 라이브러리 <code>tuvis.py</code>를 활용한 실습 중심 강의.
+                </p>
+                <div class="course-stats" aria-label="Course summary">
+                    <div class="course-stat"><span class="v">11</span><span class="l">강의노트</span></div>
+                    <div class="course-stat"><span class="v">9</span><span class="l">유인물</span></div>
+                    <div class="course-stat"><span class="v">1</span><span class="l">중간고사</span></div>
+                    <div class="course-stat"><span class="v">1</span><span class="l">평가보고서</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mat-group">
+            <div class="mat-group-head">
+                <h3>강의노트</h3>
+                <span class="count">11 items</span>
+            </div>
+            <ul class="mat-list">
+                <li><a href="game-math/notes/01_%EC%A0%84%EC%B2%B4%EA%B0%9C%EC%9A%94.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">01 · 전체 개요</span>
+                        <span class="mat-meta">강의 개요</span></span></a></li>
+                <li><a href="game-math/notes/01b_%ED%8C%8C%EC%9D%B4%EC%8D%AC%EC%86%8C%EA%B0%9C.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">01b · 파이썬 소개</span>
+                        <span class="mat-meta">실습 환경 소개</span></span></a></li>
+                <li><a href="game-math/notes/02_%EB%B2%A1%ED%84%B0_%EA%B0%80%EC%8B%9C%ED%99%94_%EB%8D%A7%EC%85%88%EB%BA%84%EC%85%88.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">02 · 벡터 — 가시화와 덧·뺄셈</span>
+                        <span class="mat-meta">기초 벡터 연산</span></span></a></li>
+                <li><a href="game-math/notes/03_%EB%B2%A1%ED%84%B0%EC%9D%98_%EC%A0%90%EA%B3%B1.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">03 · 벡터의 점곱</span>
+                        <span class="mat-meta">사잇각, 정사영, 코사인 유사도</span></span></a></li>
+                <li><a href="game-math/notes/04_%EB%B2%A1%ED%84%B0%EC%9D%98_%EA%B0%80%EC%9C%84%EA%B3%B1.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">04 · 벡터의 가위곱</span>
+                        <span class="mat-meta">삼각형 넓이, 삼중곱과 부피</span></span></a></li>
+                <li><a href="game-math/notes/05_%EB%B2%A1%ED%84%B0%EC%9D%98_%EC%9D%91%EC%9A%A9.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">05 · 벡터의 응용</span>
+                        <span class="mat-meta">점-직선·점-평면 거리</span></span></a></li>
+                <li><a href="game-math/notes/06_%EC%B6%A9%EB%8F%8C%EA%B0%90%EC%A7%80.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">06 · 충돌 감지</span>
+                        <span class="mat-meta">구–구, AABB, 구–AABB</span></span></a></li>
+                <li><a href="game-math/notes/07_%ED%96%89%EB%A0%AC%EA%B8%B0%EC%B4%88.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">07 · 행렬 기초</span>
+                        <span class="mat-meta">정의와 기본 연산</span></span></a></li>
+                <li><a href="game-math/notes/08_%ED%96%89%EB%A0%AC%EC%8B%9D%EA%B3%BC_%EC%97%AD%ED%96%89%EB%A0%AC.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">08 · 행렬식과 역행렬</span>
+                        <span class="mat-meta">det, adj, inv</span></span></a></li>
+                <li><a href="game-math/notes/09_%ED%96%89%EB%A0%AC%EA%B3%BC_%EB%B3%80%ED%99%98.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">09 · 행렬과 변환</span>
+                        <span class="mat-meta">선형변환·아핀변환</span></span></a></li>
+                <li><a href="game-math/notes/10_%EB%B3%B5%EC%86%8C%EC%88%98%EC%99%80_%EC%BF%BC%ED%84%B0%EB%8B%88%EC%96%B8.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">10 · 복소수와 회전, 쿼터니언</span>
+                        <span class="mat-meta">2D 회전 → 3D 쿼터니언</span></span></a></li>
+            </ul>
+        </div>
+
+        <div class="mat-group">
+            <div class="mat-group-head">
+                <h3>유인물</h3>
+                <span class="count">9 items</span>
+            </div>
+            <p class="note">주차별 강의 교재(article 형식 핸드아웃)와 시각화 라이브러리 레퍼런스. 강의노트(슬라이드)와 짝을 이루는 본문 형태의 자료입니다.</p>
+            <ul class="mat-list">
+                <li><a href="game-math/handouts/lec03_%EB%B2%A1%ED%84%B0%EC%9D%98_%EC%A0%90%EA%B3%B1_%EA%B5%90%EC%9E%AC.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 3 · 벡터의 점곱 (내적)</span>
+                        <span class="mat-meta">강의 교재 · Inner / Scalar Product</span>
+                    </span>
+                </a></li>
+                <li><a href="game-math/handouts/lec04_%EB%B2%A1%ED%84%B0%EC%9D%98_%EA%B0%80%EC%9C%84%EA%B3%B1_%EA%B5%90%EC%9E%AC.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 4 · 벡터의 가위곱 (외적)</span>
+                        <span class="mat-meta">강의 교재 · Cross Product</span>
+                    </span>
+                </a></li>
+                <li><a href="game-math/handouts/lec05_%EB%B2%A1%ED%84%B0%EC%9D%98_%EC%9D%91%EC%9A%A9_%EA%B5%90%EC%9E%AC.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 5 · 벡터의 응용</span>
+                        <span class="mat-meta">강의 교재 · 점-직선·점-평면 거리</span>
+                    </span>
+                </a></li>
+                <li><a href="game-math/handouts/lec06_%EC%B6%A9%EB%8F%8C%EA%B0%90%EC%A7%80_%EA%B5%90%EC%9E%AC.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 6 · 벡터 응용 2 — 충돌 감지</span>
+                        <span class="mat-meta">강의 교재 · 구·AABB Collision</span>
+                    </span>
+                </a></li>
+                <li><a href="game-math/handouts/lec07_%ED%96%89%EB%A0%AC_%EA%B8%B0%EC%B4%88_%EA%B5%90%EC%9E%AC.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 7 · 행렬 기초</span>
+                        <span class="mat-meta">강의 교재 · 정의와 기본 연산</span>
+                    </span>
+                </a></li>
+                <li><a href="game-math/handouts/lec08_%ED%96%89%EB%A0%AC%EC%8B%9D%EA%B3%BC_%EC%97%AD%ED%96%89%EB%A0%AC_%EA%B5%90%EC%9E%AC.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 8 · 행렬식과 역행렬</span>
+                        <span class="mat-meta">강의 교재 · det / adj / inv</span>
+                    </span>
+                </a></li>
+                <li><a href="game-math/handouts/lec09_%ED%96%89%EB%A0%AC%EA%B3%BC_%EB%B3%80%ED%99%98_%EA%B5%90%EC%9E%AC.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 9 · 행렬과 변환</span>
+                        <span class="mat-meta">강의 교재 · 선형변환·아핀변환</span>
+                    </span>
+                </a></li>
+                <li><a href="game-math/handouts/lec10_%EB%B3%B5%EC%86%8C%EC%88%98%EC%99%80_%EC%BF%BC%ED%84%B0%EB%8B%88%EC%96%B8_%EA%B5%90%EC%9E%AC.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 10 · 복소수와 쿼터니언</span>
+                        <span class="mat-meta">강의 교재 · 2D 회전 → 3D 쿼터니언</span>
+                    </span>
+                </a></li>
+                <li><a href="game-math/handouts/tuvis_%EC%8B%9C%EA%B0%81%ED%99%94_%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC_%EB%A7%A4%EB%89%B4%EC%96%BC.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">tuvis.py 시각화 라이브러리 매뉴얼</span>
+                        <span class="mat-meta">실습용 함수 레퍼런스</span>
+                    </span>
+                </a></li>
+            </ul>
+        </div>
+
+        <div class="mat-group">
+            <div class="mat-group-head">
+                <h3>중간고사 문제지</h3>
+                <span class="count">1 item</span>
+            </div>
+            <ul class="mat-list">
+                <li><a href="game-math/midterm/%EA%B2%8C%EC%9E%84%EC%88%98%ED%95%99_%EC%A4%91%EA%B0%84%EA%B3%A0%EC%82%AC_%EB%AC%B8%EC%A0%9C%EC%A7%80.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">게임 수학 중간고사 문제지</span>
+                        <span class="mat-meta">10문항 · Colab 노트북 풀이</span>
+                    </span>
+                </a></li>
+            </ul>
+        </div>
+
+        <div class="mat-group">
+            <div class="mat-group-head">
+                <h3>중간고사 평가 결과</h3>
+                <span class="badge">익명화</span>
+                <span class="count">1 item</span>
+            </div>
+            <p class="note">학생 식별 정보(이름·학번·제출 파일명)는 모두 제거되었으며, 학생은 점수 순위에 따라 <em>학생01, 학생02 …</em> 형식으로 표기됩니다.</p>
+            <ul class="mat-list">
+                <li><a href="game-math/evaluation/%EA%B2%8C%EC%9E%84%EC%88%98%ED%95%99_%EC%A4%91%EA%B0%84%EA%B3%A0%EC%82%AC_%ED%8F%89%EA%B0%80%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">중간고사 채점 결과 (익명)</span>
+                        <span class="mat-meta">16명 · 문제별 평균·종합 점수표·학생별 상세 평가</span>
+                    </span>
+                </a></li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- 2D 게임프로젝트 -->
+<section class="course" id="twod-game">
+    <div class="course-inner">
+        <div class="course-head">
+            <div class="num">03 / 2D Game Project</div>
+            <div>
+                <h2>2D Game <span class="accent">Project</span><span class="kr">2D 게임프로젝트 — 2026년 1학기</span></h2>
+                <p>
+                    Unity 엔진을 이용한 2D 게임 프로젝트 실습. Input System, 충돌 처리, 사용자 인터페이스,
+                    아케이드 게임 메커닉(스폰·전투·이펙트), 게임 매니저 설계까지 한 학기 동안의 완성형 프로젝트.
+                </p>
+                <div class="course-stats" aria-label="Course summary">
+                    <div class="course-stat"><span class="v">10</span><span class="l">강의노트</span></div>
+                    <div class="course-stat"><span class="v">10</span><span class="l">보강 슬라이드·핸드아웃</span></div>
+                    <div class="course-stat"><span class="v">1</span><span class="l">중간고사</span></div>
+                    <div class="course-stat"><span class="v">1</span><span class="l">평가보고서</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mat-group">
+            <div class="mat-group-head">
+                <h3>강의노트</h3>
+                <span class="count">10 items</span>
+            </div>
+            <ul class="mat-list">
+                <li><a href="2d-game/notes/01_Unity_%EC%9D%B5%EC%88%99%ED%95%B4%EC%A7%80%EA%B8%B0.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">01 · Unity 익숙해지기</span>
+                        <span class="mat-meta">Editor 기본</span></span></a></li>
+                <li><a href="2d-game/notes/02_Unity_Game%EB%A7%8C%EB%93%A4%EA%B8%B0.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">02 · Unity 게임 만들기</span>
+                        <span class="mat-meta">첫 프로젝트</span></span></a></li>
+                <li><a href="2d-game/notes/03_Snowboard.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">03 · Snowboard 예제</span>
+                        <span class="mat-meta">물리 + 입력</span></span></a></li>
+                <li><a href="2d-game/notes/04_UserInterface.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">04 · 사용자 인터페이스</span>
+                        <span class="mat-meta">Canvas·UI Toolkit</span></span></a></li>
+                <li><a href="2d-game/notes/05_ArcadeGame_Player_Enemy.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">05 · 아케이드 — Player & Enemy</span>
+                        <span class="mat-meta">캐릭터 셋업</span></span></a></li>
+                <li><a href="2d-game/notes/06_ArcadeGame_Battle.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">06 · 아케이드 — Battle</span>
+                        <span class="mat-meta">발사·피격</span></span></a></li>
+                <li><a href="2d-game/notes/07_ArcadeGame_Enemy_And_Effects.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">07 · 아케이드 — Enemy & Effects</span>
+                        <span class="mat-meta">스폰 / 이펙트</span></span></a></li>
+                <li><a href="2d-game/notes/09_GameManager.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">09 · GameManager</span>
+                        <span class="mat-meta">상태 관리</span></span></a></li>
+                <li><a href="2d-game/notes/10_ArcadeGame_Management.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">10 · 아케이드 — Management</span>
+                        <span class="mat-meta">씬 전환·점수</span></span></a></li>
+                <li><a href="2d-game/notes/11_Unity_2D%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%EC%A0%95%EB%A6%AC.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span><span class="mat-body">
+                        <span class="mat-title">11 · Unity 2D 프로그래밍 정리</span>
+                        <span class="mat-meta">종합 정리</span></span></a></li>
+            </ul>
+        </div>
+
+        <div class="mat-group">
+            <div class="mat-group-head">
+                <h3>보강 슬라이드 · 핸드아웃</h3>
+                <span class="count">10 items</span>
+            </div>
+            <p class="note">강의 진행 중 보강·재구성된 슬라이드(Beamer)와 강의자료(Handout). 강의노트(상단)는 PPT 기반의 메인 자료이며, 본 섹션은 LaTeX로 다시 정리된 보강본·후속 시리즈입니다. Lec 9–10은 단원별 개별 자료와 통합본을 함께 제공합니다.</p>
+            <ul class="mat-list">
+                <li><a href="2d-game/extras/04_UserInterface_v2_%EB%B3%B4%EA%B0%95.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 4 v2 · User Interface로 퀴즈 게임 만들기</span>
+                        <span class="mat-meta">보강 슬라이드</span>
+                    </span>
+                </a></li>
+                <li><a href="2d-game/extras/05_ArcadeGame_Player_Enemy_%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 5 · 아케이드 게임 — 플레이어 / 적 비행체 제어</span>
+                        <span class="mat-meta">슬라이드 (ArcadeGame01)</span>
+                    </span>
+                </a></li>
+                <li><a href="2d-game/extras/06_ArcadeGame_Battle_%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 6 · 아케이드 게임 — 전투와 게임 관리</span>
+                        <span class="mat-meta">슬라이드 (ArcadeGame02)</span>
+                    </span>
+                </a></li>
+                <li><a href="2d-game/extras/07_ArcadeGame_Enemy_Effects_%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 7 · 아케이드 게임 — 적 동작과 효과</span>
+                        <span class="mat-meta">슬라이드 (ArcadeGame03)</span>
+                    </span>
+                </a></li>
+                <li><a href="2d-game/extras/09_Unity_Script_CSharp_%ED%95%B8%EB%93%9C%EC%95%84%EC%9B%83.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 9 · Unity 스크립트로서의 C#</span>
+                        <span class="mat-meta">핸드아웃 (Article)</span>
+                    </span>
+                </a></li>
+                <li><a href="2d-game/extras/09_Unity_Script_CSharp_%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 9 · Unity 스크립트로서의 C#</span>
+                        <span class="mat-meta">슬라이드 (Beamer)</span>
+                    </span>
+                </a></li>
+                <li><a href="2d-game/extras/10_Unity_CSharp_%ED%95%B5%EC%8B%AC%EA%B8%B0%EB%8A%A5_%ED%95%B8%EB%93%9C%EC%95%84%EC%9B%83.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 10 · Unity로 체험하는 C# 핵심 기능</span>
+                        <span class="mat-meta">핸드아웃 (Article)</span>
+                    </span>
+                </a></li>
+                <li><a href="2d-game/extras/10_Unity_CSharp_%ED%95%B5%EC%8B%AC%EA%B8%B0%EB%8A%A5_%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 10 · Unity로 체험하는 C# 핵심 기능</span>
+                        <span class="mat-meta">슬라이드 (Beamer)</span>
+                    </span>
+                </a></li>
+                <li><a href="2d-game/extras/09-10_Unity_CSharp_%ED%86%B5%ED%95%A9_%ED%95%B8%EB%93%9C%EC%95%84%EC%9B%83.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 9–10 통합 · Unity C# 프로그래밍</span>
+                        <span class="mat-meta">통합 핸드아웃</span>
+                    </span>
+                </a></li>
+                <li><a href="2d-game/extras/09-10_Unity_CSharp_%ED%86%B5%ED%95%A9_%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">Lec 9–10 통합 · Unity C# 프로그래밍</span>
+                        <span class="mat-meta">통합 슬라이드</span>
+                    </span>
+                </a></li>
+            </ul>
+        </div>
+
+        <div class="mat-group">
+            <div class="mat-group-head">
+                <h3>중간고사 문제지</h3>
+                <span class="count">1 item</span>
+            </div>
+            <ul class="mat-list">
+                <li><a href="2d-game/midterm/2D%EA%B2%8C%EC%9E%84_%EC%A4%91%EA%B0%84%EA%B3%A0%EC%82%AC_%EB%AC%B8%EC%A0%9C%EC%A7%80.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">2D 게임프로젝트 중간고사 문제지</span>
+                        <span class="mat-meta">심해 탐험대 · 실기시험</span>
+                    </span>
+                </a></li>
+            </ul>
+        </div>
+
+        <div class="mat-group">
+            <div class="mat-group-head">
+                <h3>중간고사 평가 결과</h3>
+                <span class="badge">익명화</span>
+                <span class="count">1 item</span>
+            </div>
+            <p class="note">학생 식별 정보는 모두 제거되었으며, <em>학생01, 학생02 …</em> 형식으로 표기됩니다. 자가평가 + 코드 분석의 두 단계 평가 결과와 패턴별 비교가 포함됩니다.</p>
+            <ul class="mat-list">
+                <li><a href="2d-game/evaluation/2D%EA%B2%8C%EC%9E%84_%EC%A4%91%EA%B0%84%EA%B3%A0%EC%82%AC_%ED%8F%89%EA%B0%80%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf" target="_blank" rel="noopener">
+                    <span class="mat-icon">PDF</span>
+                    <span class="mat-body">
+                        <span class="mat-title">중간고사 평가 보고서 (익명)</span>
+                        <span class="mat-meta">25명 제출 · 자가평가 + 코드 분석</span>
+                    </span>
+                </a></li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<footer>
+    <div class="footer-inner">
+        <div>
+            <h4>강의 자료 · Teaching</h4>
+            <p>본 자료실은 수강생의 복습과 외부 학습자의 참고를 위해 공개됩니다.<br>
+               평가 보고서는 모두 익명화되어 있으며, 원본 채점 데이터는 별도 보관됩니다.</p>
+        </div>
+        <div>
+            <h4>Contact</h4>
+            <p>
+                <a href="mailto:ymkang@tu.ac.kr">ymkang@tu.ac.kr</a><br>
+                동명대학교 게임공학과 · 부산광역시 남구 신선로 428
+            </p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <span>© 2026 Young-Min Kang</span>
+        <span><a href="../../index.html">← Back to Home</a></span>
+    </div>
+</footer>
+
+<script>
+    // Scroll state on nav
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Active tab tracking
+    const courseSections = document.querySelectorAll('section.course');
+    const tabAnchors = document.querySelectorAll('.section-tab');
+    const tabMap = new Map();
+    tabAnchors.forEach(a => {
+        const id = a.getAttribute('href').slice(1);
+        tabMap.set(id, a);
+        a.addEventListener('click', () => {
+            document.querySelector('.nav-links').classList.remove('open');
+        });
+    });
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                tabAnchors.forEach(a => a.classList.remove('active'));
+                const tab = tabMap.get(e.target.id);
+                if (tab) tab.classList.add('active');
+            }
+        });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    courseSections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

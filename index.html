@@ -569,9 +569,20 @@
             display: flex;
             align-items: center;
             gap: 16px;
+            transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
         }
-        .lecture-notice::before {
-            content: '!';
+        a.lecture-notice:hover {
+            background: rgba(250, 93, 41, 0.14);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        a.lecture-notice:hover .lecture-notice-cta {
+            color: var(--accent);
+        }
+        a.lecture-notice:hover .lecture-notice-cta::after {
+            transform: translateX(4px);
+        }
+        .lecture-notice-icon {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -579,13 +590,34 @@
             background: var(--accent);
             color: #fff;
             border-radius: 50%;
-            font-weight: 700;
             flex-shrink: 0;
+        }
+        .lecture-notice-icon svg {
+            width: 18px;
+            height: 18px;
+            display: block;
         }
         .lecture-notice p {
             font-size: 14.5px;
             font-weight: 500;
             color: var(--text);
+            flex: 1;
+        }
+        .lecture-notice-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--text-muted);
+            white-space: nowrap;
+            transition: color 0.3s ease;
+        }
+        .lecture-notice-cta::after {
+            content: '→';
+            font-weight: 600;
+            transition: transform 0.3s ease;
         }
         .lectures-grid {
             display: grid;
@@ -785,6 +817,7 @@
             <li><a href="#publications">Publications</a></li>
             <li><a href="#books">Books</a></li>
             <li><a href="#lectures">Lectures</a></li>
+            <li><a href="teaching/2026-spring/">Teaching · 2026-1</a></li>
             <li><a href="resume.html">Resume</a></li>
             <li><a href="#bookmarks">Resources</a></li>
         </ul>
@@ -1517,9 +1550,17 @@
             </div>
         </div>
 
-        <div class="lecture-notice reveal">
-            <p>2026년 1학기부터는 동명대학교 E-Campus 사이트에서 수업을 관리합니다.</p>
-        </div>
+        <a class="lecture-notice reveal" href="teaching/2026-spring/" aria-label="2026년 1학기 강의 전체 페이지로 이동">
+            <span class="lecture-notice-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 10 12 5 2 10l10 5 10-5Z"/>
+                    <path d="M6 12v5a6 6 0 0 0 12 0v-5"/>
+                    <path d="M22 10v6"/>
+                </svg>
+            </span>
+            <p>2026년 1학기 강의 전체 페이지</p>
+            <span class="lecture-notice-cta">바로가기</span>
+        </a>
 
         <div class="lectures-grid">
             <div class="lecture-card reveal">
