@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture Archive — Young-Min Kang</title>
+    <meta name="description" content="강영민 교수 · 동명대학교 게임학부 · 2015–2025 학기별 강의 자료 아카이브">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #F8F8F8;
+            --bg-alt: #FFFFFF;
+            --bg-soft: #EDEDED;
+            --bg-dark: #111111;
+            --text: #222222;
+            --text-muted: #555555;
+            --text-dim: #888888;
+            --border: #e5e5e5;
+            --border-soft: #f0f0f0;
+            --accent: #FA5D29;
+            --accent-soft: rgba(250, 93, 41, 0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
+            --easing: cubic-bezier(0.25, 1, 0.5, 1);
+            --max-width: 1300px;
+            --gutter: 52px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter Tight', 'Noto Sans KR', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            font-size: 15px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        .skip-link {
+            position: absolute;
+            top: -100px; left: var(--gutter);
+            padding: 10px 18px;
+            background: var(--text);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 9999;
+            border-radius: 6px;
+        }
+        .skip-link:focus { top: 12px; outline: 2px solid var(--accent); }
+
+        /* Navigation */
+        .top-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 64px;
+            background: rgba(248, 248, 248, 0.75);
+            backdrop-filter: saturate(180%) blur(14px);
+            -webkit-backdrop-filter: saturate(180%) blur(14px);
+            border-bottom: 1px solid transparent;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        .top-nav.scrolled {
+            background: rgba(255, 255, 255, 0.92);
+            border-bottom-color: var(--border);
+        }
+        .nav-inner {
+            height: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--gutter);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-logo { font-size: 16px; font-weight: 700; letter-spacing: -0.03em; }
+        .nav-logo::after { content: '.'; color: var(--accent); }
+        .nav-links { list-style: none; display: flex; gap: 36px; }
+        .nav-links a {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        .nav-links a:hover { color: var(--accent); }
+        .nav-links a.active { color: var(--accent); }
+        .nav-links a.active::before {
+            content: '';
+            position: absolute;
+            left: -10px; top: 50%;
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: var(--accent);
+            transform: translateY(-50%);
+        }
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            width: 36px; height: 36px;
+            cursor: pointer;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            padding: 0;
+        }
+        .hamburger span {
+            display: block;
+            width: 22px; height: 1.5px;
+            background: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        /* Hero */
+        .arch-hero {
+            padding: 170px var(--gutter) 60px;
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+        .eyebrow::before { content: ''; width: 36px; height: 1px; background: var(--text); }
+        .arch-hero h1 {
+            font-family: 'Inter Tight', sans-serif;
+            font-size: clamp(48px, 9.5vw, 124px);
+            font-weight: 800;
+            line-height: 0.94;
+            letter-spacing: -0.045em;
+            margin-bottom: 28px;
+        }
+        .arch-hero h1 .accent { color: var(--accent); }
+        .arch-hero p.lead {
+            font-size: clamp(16px, 1.4vw, 19px);
+            line-height: 1.6;
+            color: var(--text-muted);
+            max-width: 640px;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 28px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+        .back-link::before { content: '←'; transition: transform 0.3s ease; }
+        .back-link:hover { color: var(--accent); }
+        .back-link:hover::before { transform: translateX(-4px); }
+
+        /* Archive grid */
+        section.archive {
+            padding: 40px var(--gutter) 100px;
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+        .lectures-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .lecture-card {
+            padding: 28px 26px;
+            background: var(--bg-alt);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .lecture-card:hover {
+            border-color: var(--text);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        .semester-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--text);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            border-radius: 4px;
+            margin-bottom: 18px;
+        }
+        .lecture-card ul { list-style: none; }
+        .lecture-card li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-soft);
+            font-size: 14px;
+        }
+        .lecture-card li:last-child { border-bottom: none; }
+        .lecture-card a {
+            color: var(--text);
+            transition: color 0.3s ease;
+            display: block;
+        }
+        .lecture-card a:hover { color: var(--accent); }
+
+        /* Footer */
+        footer {
+            background: var(--bg-dark);
+            color: rgba(255,255,255,0.7);
+            padding: 60px var(--gutter) 40px;
+        }
+        .footer-bottom {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+        }
+        .footer-bottom a { color: rgba(255,255,255,0.75); transition: color 0.3s ease; }
+        .footer-bottom a:hover { color: var(--accent); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            :root { --gutter: 32px; }
+            .lectures-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            :root { --gutter: 24px; }
+            .hamburger { display: flex; }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 64px; left: 0; right: 0;
+                background: #fff;
+                flex-direction: column;
+                gap: 0;
+                padding: 12px 0;
+                border-bottom: 1px solid var(--border);
+            }
+            .nav-links.open { display: flex; }
+            .nav-links li { padding: 0 24px; }
+            .nav-links a {
+                display: block;
+                padding: 14px 0;
+                border-bottom: 1px solid var(--border-soft);
+                font-size: 15px;
+            }
+            .nav-links li:last-child a { border-bottom: none; }
+            .arch-hero { padding: 120px 24px 40px; }
+            .lectures-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<nav class="top-nav" id="navbar">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">Y.M. Kang</a>
+        <button class="hamburger" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links">
+            <li><a href="index.html#hero">Home</a></li>
+            <li><a href="index.html#research">Research</a></li>
+            <li><a href="index.html#publications">Publications</a></li>
+            <li><a href="index.html#books">Books</a></li>
+            <li><a href="index.html#lectures" class="active">Lectures</a></li>
+            <li><a href="teaching/2026-spring/">Teaching · 2026-1</a></li>
+            <li><a href="resume.html">Resume</a></li>
+            <li><a href="index.html#bookmarks">Resources</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main id="main">
+
+<!-- Hero -->
+<section class="arch-hero">
+    <span class="eyebrow">Lecture Archive · 2015 – 2025</span>
+    <h1>이전 강의 <span class="accent">아카이브</span></h1>
+    <p class="lead">
+        2025년 2학기까지의 학기별 강의 자료입니다. 대부분 GitHub 저장소(또는 Wiki)에 공개되어 있습니다.
+        2026년 1학기 이후 강의는 메인 페이지의 <strong>Teaching</strong> 메뉴에서 확인할 수 있습니다.
+    </p>
+    <a class="back-link" href="index.html#lectures">메인으로 돌아가기</a>
+</section>
+
+<!-- Archive grid -->
+<section class="archive">
+    <div class="lectures-grid">
+        <div class="lecture-card">
+            <span class="semester-badge">2025-2</span>
+            <ul>
+                <li><a href="https://github.com/dknife/2025_2_Python" target="_blank" rel="noopener">파이썬으로 문제해결 하기</a></li>
+                <li><a href="https://github.com/dknife/2025_2_GameEngine" target="_blank" rel="noopener">게임엔진 기초</a></li>
+                <li><a href="https://github.com/dknife/2025_2_Graphics" target="_blank" rel="noopener">3D 그래픽스 프로그래밍</a></li>
+                <li><a href="https://github.com/dknife/2025_2_Capstone" target="_blank" rel="noopener">캡스톤 디자인</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2025-1</span>
+            <ul>
+                <li><a href="https://github.com/dknife/2025_2DGame" target="_blank" rel="noopener">2D 게임 프로그래밍 (Unity)</a></li>
+                <li><a href="https://github.com/dknife/2025_ML" target="_blank" rel="noopener">머신러닝 기초 실습</a></li>
+                <li><a href="https://github.com/dknife/2025_GameMath" target="_blank" rel="noopener">게임수학</a></li>
+                <li><a href="https://github.com/dknife/2025_Mentoring" target="_blank" rel="noopener">멘토링</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2024-2</span>
+            <ul>
+                <li><a href="https://github.com/dknife/2024Graphics" target="_blank" rel="noopener">3D 그래픽스 프로그래밍</a></li>
+                <li><a href="https://github.com/dknife/2024WebProgramming" target="_blank" rel="noopener">웹프로그래밍</a></li>
+                <li><a href="https://github.com/dknife/2024GameMath" target="_blank" rel="noopener">게임수학</a></li>
+                <li><a href="https://github.com/dknife/2024Mentoring" target="_blank" rel="noopener">멘토링 2/4</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2024-1</span>
+            <ul>
+                <li><a href="https://github.com/dknife/2024Web" target="_blank" rel="noopener">웹프로그래밍</a></li>
+                <li><a href="https://github.com/dknife/2024MachineLearning" target="_blank" rel="noopener">머신러닝 Basics</a></li>
+                <li><a href="https://github.com/dknife/2024DiscreteMath" target="_blank" rel="noopener">Discrete Math</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2023-2</span>
+            <ul>
+                <li><a href="https://github.com/dknife/2023Web" target="_blank" rel="noopener">웹프로그래밍</a></li>
+                <li><a href="https://github.com/dknife/2023Graphics" target="_blank" rel="noopener">3D 그래픽스 프로그래밍</a></li>
+                <li><a href="https://github.com/dknife/2023GMath" target="_blank" rel="noopener">게임수학</a></li>
+                <li><a href="https://github.com/dknife/2023Capstone2" target="_blank" rel="noopener">Capstone Design</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2023-1</span>
+            <ul>
+                <li><a href="https://github.com/dknife/2023ML" target="_blank" rel="noopener">머신러닝 Basics</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2022</span>
+            <ul>
+                <li><a href="https://github.com/dknife/2022Graphics" target="_blank" rel="noopener">3D Computer Graphics (2학기)</a></li>
+                <li><a href="https://github.com/dknife/2022MLClass" target="_blank" rel="noopener">머신러닝 (1학기)</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2021</span>
+            <ul>
+                <li><a href="https://github.com/dknife/2021Graphics" target="_blank" rel="noopener">3D Computer Graphics (2학기)</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2019-2</span>
+            <ul>
+                <li><a href="https://github.com/dknife/2019_3D_Graphics/wiki" target="_blank" rel="noopener">3D Graphics</a></li>
+                <li><a href="https://github.com/dknife/2019_2_GameMath/wiki" target="_blank" rel="noopener">게임수학</a></li>
+                <li><a href="https://github.com/dknife/2019Capstone/wiki" target="_blank" rel="noopener">Capstone Design</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2019-1</span>
+            <ul>
+                <li><a href="https://github.com/dknife/OOP2019/wiki" target="_blank" rel="noopener">Java Programming</a></li>
+                <li><a href="https://github.com/dknife/PBM2019/wiki" target="_blank" rel="noopener">Physics-based Modeling</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2018-2</span>
+            <ul>
+                <li><a href="https://github.com/dknife/201802_GameMath/wiki" target="_blank" rel="noopener">게임수학</a></li>
+                <li><a href="https://github.com/dknife/201802_Graphics/wiki" target="_blank" rel="noopener">Graphics</a></li>
+                <li><a href="https://github.com/dknife/201802_GPUProgramming/wiki" target="_blank" rel="noopener">GPU Programming</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2018-1</span>
+            <ul>
+                <li><a href="https://github.com/dknife/TUGameOOP2018/wiki" target="_blank" rel="noopener">Java Programming</a></li>
+                <li><a href="https://github.com/dknife/PBM2018/wiki" target="_blank" rel="noopener">Physics-based Modeling</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2017-2</span>
+            <ul>
+                <li><a href="https://github.com/dknife/GameMath2017/wiki" target="_blank" rel="noopener">Math for Game Programming</a></li>
+                <li><a href="https://github.com/dknife/Graphics2017/wiki" target="_blank" rel="noopener">3D 그래픽스 프로그래밍</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2017-1</span>
+            <ul>
+                <li><a href="https://github.com/dknife/OOP2017Java/wiki" target="_blank" rel="noopener">Java Programming</a></li>
+                <li><a href="https://github.com/dknife/PBM2017/wiki" target="_blank" rel="noopener">Physics-based Modeling</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2016-2</span>
+            <ul>
+                <li><a href="https://github.com/dknife/201602_GameMath/wiki" target="_blank" rel="noopener">Math for Game Programming</a></li>
+                <li><a href="https://github.com/dknife/201602_Graphics/wiki" target="_blank" rel="noopener">3D 그래픽스 프로그래밍</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2016-1</span>
+            <ul>
+                <li><a href="https://github.com/dknife/2016LecOOPJava/wiki" target="_blank" rel="noopener">Java Programming</a></li>
+                <li><a href="https://github.com/dknife/2016LecPBM/wiki" target="_blank" rel="noopener">Physics-based Modeling</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2015-2</span>
+            <ul>
+                <li><a href="https://github.com/dknife/201502_GameMath/wiki" target="_blank" rel="noopener">Math for Game Programming</a></li>
+                <li><a href="https://github.com/dknife/201502_Graphics/wiki" target="_blank" rel="noopener">3D 그래픽스 프로그래밍</a></li>
+            </ul>
+        </div>
+        <div class="lecture-card">
+            <span class="semester-badge">2015-1</span>
+            <ul>
+                <li><a href="https://github.com/dknife/201501LEC_OOP_JAVA/wiki" target="_blank" rel="noopener">Java Programming</a></li>
+                <li><a href="https://github.com/dknife/201501Lec_GamePhysics/wiki" target="_blank" rel="noopener">Physics-based Modeling</a></li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+</main>
+
+<footer>
+    <div class="footer-bottom">
+        <span>&copy; 2026 Young-Min Kang</span>
+        <span><a href="index.html#lectures">← Back to Lectures</a></span>
+    </div>
+</footer>
+
+<script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+</script>
+
+</body>
+</html>
