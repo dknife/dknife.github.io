@@ -231,6 +231,46 @@
             padding: 0 2px;
         }
 
+        /* Hero video showcase */
+        .hero-video {
+            margin-top: 72px;
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--bg-dark);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+        }
+        .hero-video video {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        .hero-video figcaption {
+            position: absolute;
+            left: 20px;
+            bottom: 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            background: rgba(17, 17, 17, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 999px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+        }
+        .hero-video figcaption::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
         /* Wave divider */
         .wave-divider {
             display: block;
@@ -859,6 +899,13 @@
             기술 서적을 출판했고 20년 넘게 학부생을 가르치고 있습니다.
         </p>
     </div>
+    <figure class="hero-video reveal" data-delay="3">
+        <video autoplay muted loop playsinline preload="metadata">
+            <source src="video/simulation_capture.mp4" type="video/mp4">
+            브라우저가 동영상 재생을 지원하지 않습니다.
+        </video>
+        <figcaption>Physically-based Simulation</figcaption>
+    </figure>
 </section>
 
 <!-- WAVE into dark stats block -->
