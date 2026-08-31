@@ -177,11 +177,11 @@
         }
         .hero h1 {
             font-family: 'Inter Tight', sans-serif;
-            font-size: clamp(58px, 13vw, 172px);
+            font-size: clamp(38px, 6.5vw, 84px);
             font-weight: 800;
-            line-height: 0.92;
-            letter-spacing: -0.045em;
-            margin-bottom: 64px;
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            margin-bottom: 40px;
         }
         .hero h1 .line {
             display: block;
@@ -233,7 +233,8 @@
 
         /* Hero video showcase */
         .hero-video {
-            margin-top: 72px;
+            margin-top: 0;
+            margin-bottom: 56px;
             position: relative;
             border-radius: 16px;
             overflow: hidden;
@@ -887,6 +888,13 @@
         <span class="line"><span>TEACH.</span></span>
         <span class="line"><span class="accent">BUILD.</span></span>
     </h1>
+    <figure class="hero-video reveal" data-delay="1">
+        <video autoplay muted loop playsinline preload="metadata">
+            <source src="video/simulation_capture.mp4" type="video/mp4">
+            브라우저가 동영상 재생을 지원하지 않습니다.
+        </video>
+        <figcaption>Physically-based Simulation</figcaption>
+    </figure>
     <div class="hero-meta reveal" data-delay="2">
         <div class="hero-name">
             Young-Min Kang
@@ -899,13 +907,6 @@
             기술 서적을 출판했고 20년 넘게 학부생을 가르치고 있습니다.
         </p>
     </div>
-    <figure class="hero-video reveal" data-delay="3">
-        <video autoplay muted loop playsinline preload="metadata">
-            <source src="video/simulation_capture.mp4" type="video/mp4">
-            브라우저가 동영상 재생을 지원하지 않습니다.
-        </video>
-        <figcaption>Physically-based Simulation</figcaption>
-    </figure>
 </section>
 
 <!-- WAVE into dark stats block -->
