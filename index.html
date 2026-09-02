@@ -196,6 +196,14 @@
             transform: translateY(0);
         }
         .hero h1 .accent { color: var(--accent); }
+        .hero-top {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin-bottom: 56px;
+        }
+        .hero-top h1 { margin-bottom: 0; }
         .hero-meta {
             display: grid;
             grid-template-columns: 240px 1fr;
@@ -234,7 +242,7 @@
         /* Hero video showcase */
         .hero-video {
             margin-top: 0;
-            margin-bottom: 56px;
+            margin-bottom: 0;
             position: relative;
             border-radius: 16px;
             overflow: hidden;
@@ -820,6 +828,8 @@
             .footer-inner { grid-template-columns: 1fr 1fr; }
             .footer-brand { grid-column: 1 / -1; }
             .hero-meta { grid-template-columns: 1fr; gap: 28px; }
+            .hero-top { grid-template-columns: 1fr; gap: 32px; }
+            .hero-top h1 { margin-bottom: 0; }
         }
         @media (max-width: 768px) {
             :root { --gutter: 24px; }
@@ -883,17 +893,19 @@
 <!-- HERO -->
 <section class="hero" id="hero">
     <span class="eyebrow reveal">Professor · 동명대학교 게임학부</span>
-    <h1>
-        <span class="line"><span>RESEARCH.</span></span>
-        <span class="line"><span>TEACH.</span></span>
-        <span class="line"><span class="accent">BUILD.</span></span>
-    </h1>
-    <figure class="hero-video reveal" data-delay="1">
-        <video autoplay muted loop playsinline preload="metadata">
-            <source src="video/dress_hero.mp4" type="video/mp4">
-            브라우저가 동영상 재생을 지원하지 않습니다.
-        </video>
-    </figure>
+    <div class="hero-top">
+        <h1>
+            <span class="line"><span>RESEARCH.</span></span>
+            <span class="line"><span>TEACH.</span></span>
+            <span class="line"><span class="accent">BUILD.</span></span>
+        </h1>
+        <figure class="hero-video reveal" data-delay="1">
+            <video autoplay muted loop playsinline preload="metadata">
+                <source src="video/dress_hero.mp4" type="video/mp4">
+                브라우저가 동영상 재생을 지원하지 않습니다.
+            </video>
+        </figure>
+    </div>
     <div class="hero-meta reveal" data-delay="2">
         <div class="hero-name">
             Young-Min Kang
