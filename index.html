@@ -616,6 +616,19 @@
             line-height: 1.45;
             margin-bottom: 10px;
         }
+        .thesis-item .title a {
+            color: inherit;
+            text-decoration: none;
+            background-image: linear-gradient(var(--accent), var(--accent));
+            background-size: 0 1px;
+            background-repeat: no-repeat;
+            background-position: 0 100%;
+            transition: background-size 0.3s ease, color 0.3s ease;
+        }
+        .thesis-item .title a:hover {
+            color: var(--accent);
+            background-size: 100% 1px;
+        }
         .thesis-item .venue {
             font-size: 13px;
             color: var(--text-muted);
@@ -1604,12 +1617,12 @@
             <div class="thesis-grid">
                 <div class="thesis-item">
                     <div class="label">Ph.D. · 2003</div>
-                    <div class="title">Real-time Cloth Animation with Physical Plausibility and Numerical Stability</div>
+                    <div class="title"><a href="https://github.com/dknife/publishedPapers/raw/master/THESIS_PHD_2003.pdf" target="_blank" rel="noopener">Real-time Cloth Animation with Physical Plausibility and Numerical Stability</a></div>
                     <div class="venue">부산대학교 박사학위논문</div>
                 </div>
                 <div class="thesis-item">
                     <div class="label">M.S. · 1999</div>
-                    <div class="title">평면 뜀뛰기 모델과 에너지 제한 조건을 이용한 효율적인 인간 주행 동작 생성을 위한 제어 기법</div>
+                    <div class="title"><a href="https://github.com/dknife/publishedPapers/raw/master/THESIS_MSC_1999.pdf" target="_blank" rel="noopener">평면 뜀뛰기 모델과 에너지 제한 조건을 이용한 효율적인 인간 주행 동작 생성을 위한 제어 기법</a></div>
                     <div class="venue">부산대학교 석사학위논문</div>
                 </div>
             </div>
