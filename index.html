@@ -329,6 +329,48 @@
             width: 22px;
             background: var(--accent);
         }
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            right: 16px;
+            transform: translateY(-50%);
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 50%;
+            background: rgba(17, 17, 17, 0.45);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            color: #fff;
+            cursor: pointer;
+            z-index: 4;
+            transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            animation: arrowNudge 1.8s var(--easing) infinite;
+        }
+        .carousel-arrow svg {
+            width: 30px;
+            height: 30px;
+            display: block;
+        }
+        .carousel-arrow:hover {
+            background: var(--accent);
+            transform: translateY(-50%) scale(1.08);
+            box-shadow: 0 6px 20px rgba(250, 93, 41, 0.4);
+        }
+        @keyframes arrowNudge {
+            0%, 100% { transform: translateY(-50%) translateX(0); }
+            50% { transform: translateY(-50%) translateX(5px); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .carousel-arrow { animation: none; }
+        }
+        @media (max-width: 768px) {
+            .carousel-arrow { width: 46px; height: 46px; right: 12px; }
+            .carousel-arrow svg { width: 24px; height: 24px; }
+        }
 
         /* Wave divider */
         .wave-divider {
@@ -981,6 +1023,11 @@
                     <source src="video/fem_realtime.mp4" type="video/mp4">
                 </video>
             </div>
+            <button class="carousel-arrow" type="button" aria-label="다음 영상 재생">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="9 6 15 12 9 18"></polyline>
+                </svg>
+            </button>
             <figcaption class="carousel-caption">실시간 의상 시뮬레이션</figcaption>
             <div class="carousel-dots"></div>
         </figure>
@@ -1847,6 +1894,9 @@ heroLines.forEach((line, i) => {
         v.addEventListener('ended', () => { if (i === idx) next(); });
         v.addEventListener('error', () => { if (i === idx) next(); });
     });
+
+    const arrow = carousel.querySelector('.carousel-arrow');
+    if (arrow) arrow.addEventListener('click', next);
 
     show(0);
 })();
