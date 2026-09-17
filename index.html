@@ -284,6 +284,52 @@
             background: var(--accent);
         }
 
+        /* Hero carousel — one video at a time */
+        .hero-carousel .carousel-track {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 2610 / 1880;
+            background: var(--bg-dark);
+        }
+        .hero-carousel .carousel-slide {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 0.8s var(--easing);
+            pointer-events: none;
+        }
+        .hero-carousel .carousel-slide.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .carousel-dots {
+            position: absolute;
+            right: 18px;
+            bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 3;
+        }
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            padding: 0;
+            border: none;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: width 0.3s ease, background 0.3s ease;
+        }
+        .carousel-dot:hover { background: rgba(255, 255, 255, 0.7); }
+        .carousel-dot.active {
+            width: 22px;
+            background: var(--accent);
+        }
+
         /* Wave divider */
         .wave-divider {
             display: block;
@@ -916,12 +962,27 @@
             <span class="line"><span>TEACH.</span></span>
             <span class="line"><span class="accent">BUILD.</span></span>
         </h1>
-        <figure class="hero-video reveal" data-delay="1">
-            <video autoplay muted loop playsinline preload="metadata">
-                <source src="video/dress_hero.mp4" type="video/mp4">
-                브라우저가 동영상 재생을 지원하지 않습니다.
-            </video>
-            <figcaption>실시간 옷감 애니메이션</figcaption>
+        <figure class="hero-video hero-carousel reveal" data-delay="1">
+            <div class="carousel-track">
+                <video class="carousel-slide active" muted playsinline preload="auto" data-caption="실시간 의상 시뮬레이션">
+                    <source src="video/render_capture.mp4" type="video/mp4">
+                    브라우저가 동영상 재생을 지원하지 않습니다.
+                </video>
+                <video class="carousel-slide" muted playsinline preload="none" data-caption="실시간 옷감 애니메이션">
+                    <source src="video/dress_hero.mp4" type="video/mp4">
+                </video>
+                <video class="carousel-slide" muted playsinline preload="none" data-caption="Extremely Stiff Strands">
+                    <source src="video/cloth_sim.mp4" type="video/mp4">
+                </video>
+                <video class="carousel-slide" muted playsinline preload="none" data-caption="Interactive 40K-Vertex Shell">
+                    <source src="video/armadillo_edge_capture.mp4" type="video/mp4">
+                </video>
+                <video class="carousel-slide" muted playsinline preload="none" data-caption="FEM-realtime">
+                    <source src="video/fem_realtime.mp4" type="video/mp4">
+                </video>
+            </div>
+            <figcaption class="carousel-caption">실시간 의상 시뮬레이션</figcaption>
+            <div class="carousel-dots"></div>
         </figure>
     </div>
     <div class="hero-meta reveal" data-delay="2">
@@ -936,27 +997,6 @@
             기술 서적을 출판했고 20년 넘게 학부생을 가르치고 있습니다.
         </p>
     </div>
-    <figure class="hero-video hero-video-below reveal" data-delay="3">
-        <video autoplay muted loop playsinline preload="metadata">
-            <source src="video/cloth_sim.mp4" type="video/mp4">
-            브라우저가 동영상 재생을 지원하지 않습니다.
-        </video>
-        <figcaption>Extremely Stiff Strands</figcaption>
-    </figure>
-    <figure class="hero-video hero-video-below reveal" data-delay="4">
-        <video autoplay muted loop playsinline preload="metadata">
-            <source src="video/armadillo_edge_capture.mp4" type="video/mp4">
-            브라우저가 동영상 재생을 지원하지 않습니다.
-        </video>
-        <figcaption>Interactive 40K-Vertex Shell</figcaption>
-    </figure>
-    <figure class="hero-video hero-video-below reveal" data-delay="5">
-        <video autoplay muted loop playsinline preload="metadata">
-            <source src="video/fem_realtime.mp4" type="video/mp4">
-            브라우저가 동영상 재생을 지원하지 않습니다.
-        </video>
-        <figcaption>FEM-realtime</figcaption>
-    </figure>
 </section>
 
 <!-- WAVE into dark stats block -->
@@ -1756,6 +1796,60 @@ const heroLines = document.querySelectorAll('.hero h1 .line');
 heroLines.forEach((line, i) => {
     setTimeout(() => line.classList.add('visible'), 120 + i * 140);
 });
+
+// Hero video carousel — plays one clip at a time, advances when it ends
+(function () {
+    const carousel = document.querySelector('.hero-carousel');
+    if (!carousel) return;
+    const slides = Array.from(carousel.querySelectorAll('.carousel-slide'));
+    const caption = carousel.querySelector('.carousel-caption');
+    const dotsWrap = carousel.querySelector('.carousel-dots');
+    if (slides.length === 0) return;
+
+    // Build navigation dots
+    const dots = slides.map((_, i) => {
+        const b = document.createElement('button');
+        b.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        b.setAttribute('aria-label', 'Show clip ' + (i + 1));
+        b.addEventListener('click', () => show(i));
+        dotsWrap.appendChild(b);
+        return b;
+    });
+
+    let idx = 0;
+    let fallback = null;
+
+    function show(i) {
+        const prev = slides[idx];
+        prev.classList.remove('active');
+        prev.pause();
+        idx = (i + slides.length) % slides.length;
+        const v = slides[idx];
+        v.classList.add('active');
+        dots.forEach((d, j) => d.classList.toggle('active', j === idx));
+        if (caption && v.dataset.caption) caption.textContent = v.dataset.caption;
+        try { v.currentTime = 0; } catch (e) {}
+        const p = v.play();
+        if (p && p.catch) p.catch(() => {});
+        // safety: advance even if 'ended' never fires (e.g. metadata missing)
+        clearTimeout(fallback);
+        v.addEventListener('loadedmetadata', armFallback, { once: true });
+        armFallback();
+        function armFallback() {
+            const dur = isFinite(v.duration) && v.duration > 0 ? v.duration : 14;
+            clearTimeout(fallback);
+            fallback = setTimeout(() => { if (idx === Array.prototype.indexOf.call(slides, v)) next(); }, (dur + 0.5) * 1000);
+        }
+    }
+    function next() { show(idx + 1); }
+
+    slides.forEach((v, i) => {
+        v.addEventListener('ended', () => { if (i === idx) next(); });
+        v.addEventListener('error', () => { if (i === idx) next(); });
+    });
+
+    show(0);
+})();
 
 // Scroll reveal
 const observer = new IntersectionObserver((entries) => {
