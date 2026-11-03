@@ -480,6 +480,211 @@
             .footer-inner { grid-template-columns: 1fr; }
             .footer-bottom { flex-direction: column; gap: 8px; }
         }
+
+        /* Publication record */
+        .pub-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .pub-stats .stat {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px 24px 20px;
+            background: var(--bg-alt);
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+        .pub-stats .stat:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .pub-stats .stat-num {
+            font-family: 'Inter Tight', sans-serif;
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -0.03em;
+            color: var(--text);
+        }
+        .pub-stats .stat.total .stat-num { color: var(--accent); }
+        .pub-stats .stat-label {
+            margin-top: 10px;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .pub-stats .stat-label span {
+            display: block;
+            margin-top: 2px;
+            font-size: 11.5px;
+            font-weight: 500;
+            color: var(--text-dim);
+            letter-spacing: 0.02em;
+        }
+        .pub-record-note {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .pub-record-note a {
+            color: var(--text);
+            border-bottom: 1px solid var(--border);
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+        .pub-record-note a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+        /* Full reference list — shown only when printing to PDF */
+        .pub-ref { display: none; }
+        @media (max-width: 768px) {
+            .pub-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .pub-stats .stat { padding: 18px; }
+            .pub-stats .stat-num { font-size: 32px; }
+        }
+
+        /* PDF export CTA */
+        .print-cta {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 72px var(--gutter) 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            text-align: center;
+        }
+        .print-cta p {
+            font-size: 13px;
+            color: var(--text-dim);
+            letter-spacing: 0.02em;
+        }
+        .print-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: var(--text);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .print-btn:hover { background: var(--accent); transform: translateY(-2px); }
+        .print-btn svg { width: 17px; height: 17px; }
+
+        /* Print / PDF output */
+        @media print {
+            @page { margin: 12mm 11mm; }
+            html { scroll-behavior: auto; }
+            body {
+                background: #fff;
+                color: #000;
+                font-size: 8.8pt;
+                line-height: 1.28;
+            }
+            .top-nav, .section-tabs, footer, .skip-link, .hamburger, .print-cta { display: none !important; }
+
+            main { position: static; }
+
+            /* Force all animated content visible */
+            .reveal { opacity: 1 !important; transform: none !important; }
+            .resume-hero h1 .line { overflow: visible; }
+            .resume-hero h1 .line > span { transform: none !important; }
+
+            /* Compact hero */
+            .resume-hero {
+                padding: 0 0 12px;
+                max-width: none;
+                border-bottom: 2px solid #000;
+                margin-bottom: 6px;
+            }
+            .eyebrow { margin-bottom: 10px; color: #000; font-size: 7.5pt; }
+            .eyebrow::before { background: #000; }
+            .resume-hero h1 { font-size: 30pt; line-height: 0.92; margin-bottom: 14px; }
+            .resume-hero h1 .accent { color: #000; }
+            .hero-meta { gap: 32px; max-width: none; }
+            .hero-name, .hero-meta .contact { color: #000; }
+            .hero-name { font-size: 8pt; }
+            .hero-name .kr { font-size: 8.5pt; margin-top: 4px; }
+            .hero-meta .contact { font-size: 8.5pt; line-height: 1.55; }
+            .hero-meta .contact a { color: #000; }
+
+            /* Sections flow */
+            .cv-section, .cv-section.alt-bg {
+                padding: 10px 0;
+                max-width: none;
+                background: transparent;
+                break-inside: auto;
+            }
+            .cv-section.alt-bg > .inner { max-width: none; padding: 0; }
+            .cv-head {
+                grid-template-columns: 130px 1fr;
+                gap: 20px;
+                margin-bottom: 12px;
+                break-after: avoid;
+            }
+            .cv-head .num { color: #000; font-size: 8pt; }
+            .cv-head h2 { font-size: 14pt; }
+            .cv-head h2 .en { color: #444; font-size: 8pt; margin-top: 3px; }
+
+            .sub-label { color: #000; border-left-color: #000; margin: 14px 0 8px; font-size: 8pt; }
+
+            /* Keep each entry intact across page breaks */
+            .tl-item {
+                grid-template-columns: 140px 1fr;
+                gap: 20px;
+                padding: 5px 0;
+                break-inside: avoid;
+                border-bottom: 1px solid #ddd;
+            }
+            .tl-item:hover { background: transparent; }
+            .tl-item .date, .tl-item h3, .tl-item .sub { color: #000; }
+            .tl-item .date { font-size: 8pt; padding-top: 1px; }
+            .tl-item h3 { font-size: 9.2pt; margin-bottom: 2px; }
+            .tl-item .sub { font-size: 8.2pt; line-height: 1.35; }
+            .tl-item .note { margin-top: 4px; padding-top: 4px; font-size: 7.8pt; color: #333; border-top-color: #ccc; }
+            .tl-item .note a, .tl-item .note a:hover { color: #000; border-bottom: none; }
+
+            /* Publication record */
+            .pub-stats { gap: 8px; margin-bottom: 12px; }
+            .pub-stats .stat { padding: 10px 12px; break-inside: avoid; }
+            .pub-stats .stat-num { font-size: 20pt; }
+            .pub-stats .stat-label { font-size: 7.6pt; }
+            .pub-stats .stat-label span { font-size: 6.8pt; }
+            .pub-record-note { display: none; }
+
+            /* Full reference list in PDF */
+            .pub-ref { display: block; }
+            .pub-ref .ref-label {
+                font-size: 8pt;
+                font-weight: 700;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: #000;
+                border-left: 3px solid #000;
+                padding-left: 8px;
+                margin: 14px 0 7px;
+                break-after: avoid;
+            }
+            .pub-ref .ref-label span { font-weight: 500; color: #555; }
+            .pub-ref ol {
+                margin: 0 0 6px;
+                padding-left: 20px;
+            }
+            .pub-ref li {
+                font-size: 7.8pt;
+                line-height: 1.32;
+                margin-bottom: 3.5px;
+                padding-left: 2px;
+                break-inside: avoid;
+            }
+            .pub-ref li .rt { font-weight: 600; }
+            .pub-ref li .rv { font-style: italic; color: #333; }
+            .pub-ref li .award { font-weight: 600; color: #000; }
+
+            a { color: #000; }
+        }
     </style>
 </head>
 <body>
@@ -538,6 +743,7 @@
         <a class="section-tab" href="#awards">수상</a>
         <a class="section-tab" href="#proposals">제안서 집필</a>
         <a class="section-tab" href="#media">언론 활동</a>
+        <a class="section-tab" href="#pub-record">연구 성과</a>
         <a class="section-tab" href="index.html#publications">Publications →</a>
         <a class="section-tab" href="index.html#books">Books →</a>
     </div>
@@ -633,14 +839,14 @@
     <div class="sub-label">학과/학부장 · Head of Department</div>
     <div class="timeline">
         <div class="tl-item">
-            <div class="date">2024.03 — 현재</div>
+            <div class="date">2024.03 — 2025.02</div>
             <div>
                 <h3>교양대학 SW교육 책임교수</h3>
                 <div class="sub">Professor in Charge of SW Education, College of Liberal Arts</div>
             </div>
         </div>
         <div class="tl-item">
-            <div class="date">2024.01 — 현재</div>
+            <div class="date">2024.01 — 2025.02</div>
             <div>
                 <h3>게임공학과 학과장</h3>
                 <div class="sub">Head of Dept. of Game Engineering</div>
@@ -1072,6 +1278,127 @@
         </div>
     </div>
 </section>
+
+<!-- Publication record -->
+<section class="cv-section" id="pub-record">
+    <div class="cv-head reveal">
+        <span class="num">09 / Publications</span>
+        <h2>연구 성과 <span class="en">Publication Record</span></h2>
+    </div>
+    <p class="pub-record-note reveal">
+        세종도서 학술부문 선정(『으뜸 파이썬』) · 다수의 SCI(E)/Scopus 저널 게재 ·
+        전체 논문 및 저서 목록은 <a href="index.html#publications">Publications</a> 및
+        <a href="index.html#books">Books</a>에서 확인할 수 있습니다.
+    </p>
+
+    <!-- Full reference list (PDF only) -->
+    <div class="pub-ref">
+        <div class="ref-label">International Journals <span>· 14</span></div>
+        <ol>
+            <li><span class="ra">Kim, S.-S., Kim, Y.-K., &amp; Kang, Y.-M.</span> (2021). <span class="rt">AORM: Fast Incremental Arbitrary-Order Reachability Matrix Computation for Massive Graphs.</span> <span class="rv">IEEE Access, 9, 69539-69558.</span></li>
+            <li><span class="ra">Kang, Y.-M., Kim, S.-S., &amp; Nam, G.-T.</span> (2016). <span class="rt">GPU-based object identification in large-scale images for real-time radar signal analysis.</span> <span class="rv">Int'l Journal of New Computer Architecture and their Applications, 6(4):140-149.</span></li>
+            <li><span class="ra">Kang, S., Kim, S.-S., Won, J., &amp; Kang, Y.-M.</span> (2016). <span class="rt">GPU-based parallel genetic approach to large-scale travelling salesman problem.</span> <span class="rv">Journal of Supercomputing, 72(11):4399-4414.</span></li>
+            <li><span class="ra">Kang, Y.-M., Lee, D.-H., &amp; Cho, H.-G.</span> (2015). <span class="rt">Multipeak anisotropic microfacet model for iridescent surfaces.</span> <span class="rv">Multimedia Tools and Applications, 74(16):6229-6242.</span></li>
+            <li><span class="ra">Song, S.-M., Kang, Y.-M., Lee, K.-H., &amp; Ok, S.-Y.</span> (2014). <span class="rt">GPU-driven Parallel Processing for Realtime Creation of Tree Animation.</span> <span class="rv">Int'l Journal of Software Engineering and Its Applications, 8(6):183-194.</span></li>
+            <li><span class="ra">Kang, Y.-M., &amp; Cho, C.-S.</span> (2012). <span class="rt">Photorealistic Cloth in Realtime Applications.</span> <span class="rv">Computer Animation and Virtual Worlds, DOI:10.1002/cav.1456.</span></li>
+            <li><span class="ra">Kang, S., Ok, S.-Y., &amp; Kang, Y.-M.</span> (2012). <span class="rt">Automatic Music Generation and Machine Learning Based Evaluation.</span> <span class="rv">Communications in Computer and Information Science, 346:436-443.</span></li>
+            <li><span class="ra">Song, S.-M., Kang, Y.-M., &amp; Ok, S.-Y.</span> (2012). <span class="rt">An Efficient and Stable Water Surface Animation for Interactive Applications.</span> <span class="rv">Communications in Computer and Information Science, 346:483-490.</span></li>
+            <li><span class="ra">Song, S.-M., Kang, Y.-M., Lee, E.-J., &amp; Ok, S.-Y.</span> (2012). <span class="rt">Tree Animation Based on Hierarchical Shape Matching.</span> <span class="rv">Communications in Computer and Information Science, 346:475-482.</span></li>
+            <li><span class="ra">Kang, Y.-M., Cho, H.-G., &amp; Kim, S.-S.</span> (2011). <span class="rt">Plausible and Realtime Rendering of Scratched Metal by Deforming MDF of Normal Mapped Anisotropic Surface.</span> <span class="rv">Journal of WSCG, 19(3):101-110.</span></li>
+            <li><span class="ra">Kang, Y.-M.</span> (2010). <span class="rt">Realtime Rendering of Realistic Fabric with Alternation of Deformed Anisotropy.</span> <span class="rv">LNCS, 6459:301-312.</span></li>
+            <li><span class="ra">Kang, Y.-M., &amp; Cho, H.-G.</span> (2004). <span class="rt">Real-time Animation of Complex Virtual Cloth with Physical Plausibility and Numerical Stability.</span> <span class="rv">PRESENCE - Teleoperators and Virtual Environments, 13(6):668-680.</span></li>
+            <li><span class="ra">Kang, Y.-M., Choi, J.-H., Cho, H.-G., &amp; Lee, D.-H.</span> (2001). <span class="rt">An Efficient Animation of Wrinkled Cloth with Approximate Implicit Integration.</span> <span class="rv">The Visual Computer Journal, 17(3):147-157.</span></li>
+            <li><span class="ra">Kang, Y.-M., Cho, H.-G., &amp; Lee, E.-T.</span> (1999). <span class="rt">An Efficient Control over Human Running Animation with Extension of Planar Hopper Model.</span> <span class="rv">Journal of Visualization and Computer Animation, 10(4):215-224.</span></li>
+        </ol>
+
+        <div class="ref-label">International Conferences <span>· 21</span></div>
+        <ol>
+            <li><span class="ra">Kim, S.-S., Kang, Y.-M., &amp; Kim, Y.-K.</span> (2022). <span class="rt">Sparsity-Aware Reachability Computation for Massive Graphs.</span> <span class="rv">BigComp 2022, Daegu, Korea.</span></li>
+            <li><span class="ra">Kang, Y.-M.</span> (2017). <span class="rt">Explicit but Stable Spring-Damper Model with Harmonic Oscillation.</span> <span class="rv">ICESS 2017, Japan.</span></li>
+            <li><span class="ra">Kang, Y.-M., Kim, S.-S., &amp; Nam, G.-T.</span> (2016). <span class="rt">A Parallel Approach to Object Identification in Large-scale Images.</span> <span class="rv">ICESS 2016, Japan.</span></li>
+            <li><span class="ra">Kang, S., Kim, S.-S., Won, J., &amp; Kang, Y.-M.</span> (2015). <span class="rt">Bidirectional Constructive Crossover for Evolutionary Approach to Travelling Salesman Problem.</span> <span class="rv">ICITCS 2015, Kuala Lumpur.</span></li>
+            <li><span class="ra">Kang, Y.-M., &amp; Cho, C.-S.</span> (2012). <span class="rt">Photorealistic Cloth in Realtime Applications.</span> <span class="rv">CASA 2012, Singapore.</span></li>
+            <li><span class="ra">Kang, S., Kim, S.-S., &amp; Kang, Y.-M.</span> (2014). <span class="rt">An Improved Sequential Constructive Crossover for Evolutionary Approach to TSP.</span> <span class="rv">ICOCE 2014, Shenzhen.</span></li>
+            <li><span class="ra">Kim, T.-H., Kang, Y.-M., &amp; Ok, S.-Y.</span> (2014). <span class="rt">An Efficient Simulation of Massive Crowd with Navigation and Affordance Fields.</span> <span class="rv">ICOCE 2014, Shenzhen.</span></li>
+            <li><span class="ra">Kang, S., Ok, S.-Y., &amp; Kang, Y.-M.</span> (2012). <span class="rt">Automatic Music Generation and Machine Learning Based Evaluation.</span> <span class="rv">CMSP 2012, Shanghai.</span></li>
+            <li><span class="ra">Song, S.-M., Kang, Y.-M., &amp; Ok, S.-Y.</span> (2012). <span class="rt">An Efficient and Stable Water Surface Animation for Interactive Applications.</span> <span class="rv">CMSP 2012, Shanghai.</span></li>
+            <li><span class="ra">Kang, Y.-M., Cho, H.-G., &amp; Kim, S.-S.</span> (2011). <span class="rt">Plausible and Realtime Rendering of Scratched Metal by Deforming MDF.</span> <span class="rv">WSCG 2011, Plzen, Czech.</span></li>
+            <li><span class="ra">Kang, Y.-M.</span> (2010). <span class="rt">Realtime Rendering of Realistic Fabric with Alternation of Deformed Anisotropy.</span> <span class="rv">Motion in Games 2010, Netherlands.</span></li>
+            <li><span class="ra">Kim, S.-S., Kang, Y.-M., &amp; Nam, S.-W.</span> (2010). <span class="rt">Procedural Approach for Realistic Woven Fabric Rendering.</span> <span class="rv">Eurographics 2010 Posters, Norrköping, Sweden.</span></li>
+            <li><span class="ra">Kang, Y.-M., &amp; Cho, H.-G.</span> (2009). <span class="rt">Imaginary Wall Model for Efficient Animation of Wheeled Vehicle in Racing Games.</span> <span class="rv">CASA 2009, Amsterdam.</span></li>
+            <li><span class="ra">Kang, Y.-M., Zhang, H.-G., &amp; Cho, H.-G.</span> (2009). <span class="rt">Plausible Virtual Paper for Real-time Applications.</span> <span class="rv">CASA 2009, Amsterdam.</span></li>
+            <li><span class="ra">Kang, Y.-M., &amp; Cho, H.-G.</span> (2008). <span class="rt">A Simple and Effective Model for Interactive Paper Folding.</span> <span class="rv">Pacific Graphics 2008, Tokyo.</span></li>
+            <li><span class="ra">Kang, Y.-M., &amp; Cho, H.-G.</span> (2002). <span class="rt">Complex Deformable Objects in Virtual Reality.</span> <span class="rv">ACM VRST 2002, Hongkong.</span></li>
+            <li><span class="ra">Kang, Y.-M., &amp; Cho, H.-G.</span> (2002). <span class="rt">Bilayered Approach for efficient animation of cloth with realistic wrinkles.</span> <span class="rv">Computer Animation 2002, Geneva.</span></li>
+            <li><span class="ra">Kang, Y.-M., Choi, J.-H., Cho, H.-G., &amp; Park, C.-J.</span> (2000). <span class="rt">Fast and stable Animation of Cloth with Approximated Implicit Method.</span> <span class="rv">CGI 2000, Geneva.</span></li>
+            <li><span class="ra">Kang, Y.-M., Choi, J.-H., Lee, D.-H., Park, C.-J., &amp; Cho, H.-G.</span> (2000). <span class="rt">Real-time Animation Technique for Flexible and Thin Objects.</span> <span class="rv">WSCG 2000, Plzen, Czech.</span></li>
+            <li><span class="ra">Kang, Y.-M., Park, S.-J., Cho, H.-G., &amp; Lee, E.-T.</span> (1998). <span class="rt">An Efficient Control over Human Running Animation with Extension of Planar Hopper Model.</span> <span class="rv">Pacific Graphics 98, Singapore.</span></li>
+            <li><span class="ra">Park, J.-K., Kang, Y.-M., Kim, S.-S., &amp; Cho, H.-G.</span> (1997). <span class="rt">Expressive Character Animation with Energy Constraints.</span> <span class="rv">CompuGraphics'97, Portugal.</span></li>
+        </ol>
+
+        <div class="ref-label">국내 저널 <span>· Domestic Journals · 16</span></div>
+        <ol>
+            <li><span class="ra">노승희, 강은영, 박동규, 강영민</span> (2022). <span class="rt">객체 탐지 기법과 기계학습 라이브러리를 활용한 단감 등급 선별 알고리즘.</span> <span class="rv">멀티미디어학회논문지, 25(6):769-782.</span></li>
+            <li><span class="ra">강영민</span> (2018). <span class="rt">GPU를 활용한 고성능 연체 객체 시뮬레이션을 위한 조화진동 모델과 야코비 반복법 기반 수치 적분 기술.</span> <span class="rv">한국게임학회 논문지, 18(5):123-132.</span></li>
+            <li><span class="ra">강영민</span> (2016). <span class="rt">대규모 레이더 신호 데이터의 실시간 분석을 위한 GPU 기반 객체 추출 기법.</span> <span class="rv">한국멀티미디어학회 논문지, 19(8):1297-1309.</span></li>
+            <li><span class="ra">강영민</span> (2010). <span class="rt">미세면 분포 함수 변형을 통한 고품질 실시간 금속 렌더링.</span> <span class="rv">한국게임학회 논문지, 10(6):169-178.</span></li>
+            <li><span class="ra">강영민</span> (2010). <span class="rt">이방성 반사의 변형을 통한 실시간 옷감 렌더링.</span> <span class="rv">한국게임학회논문지, 10(4):81-90.</span></li>
+            <li><span class="ra">강영민</span> (2010). <span class="rt">절차적 범프 매핑을 이용한 직물표면의 사실적 렌더링.</span> <span class="rv">한국게임학회논문지, 10(3):103-120.</span></li>
+            <li><span class="ra">강영민</span> (2009). <span class="rt">실시간 종이 구김 시뮬레이션을 위한 적응적 메쉬 구조.</span> <span class="rv">한국게임학회논문지, 9(4):97-105.</span></li>
+            <li><span class="ra">옥수열, 강영민</span> (2008). <span class="rt">게임 캐릭터를 위한 자동동작생성기의 개발과 응용.</span> <span class="rv">한국해양정보통신학회논문지, 12(8):1363-1369.</span></li>
+            <li><span class="ra">강영민, 조환규</span> (2008). <span class="rt">실시간 환경에서의 사실적 종이 시뮬레이션.</span> <span class="rv">한국콘텐츠학회지, 6(1):47-53.</span></li>
+            <li><span class="ra">강영민, 옥수열</span> (2007). <span class="rt">모바일 사용자 작업 예측 모델 및 정확도 평가 기법.</span> <span class="rv">한국해양정보통신학회논문지, 11(9):1742-1748.</span></li>
+            <li><span class="ra">강영민</span> (2007). <span class="rt">실시간 옷감 애니메이션과 LOD 제어를 위한 계층적 시뮬레이션.</span> <span class="rv">한국해양정보통신학회논문지, 11(3):479-485.</span></li>
+            <li><span class="ra">강영민</span> (2006). <span class="rt">가상 벽과 충격 모델에 기반한 레이싱 게임용 차량 바퀴 시뮬레이션 기법.</span> <span class="rv">한국해양정보통신학회논문지, 10(10):1758-1764.</span></li>
+            <li><span class="ra">강영민</span> (2005). <span class="rt">안정적이고 병렬화가 용이한 옷감 애니메이션 기법.</span> <span class="rv">한국해양정보통신학회논문지, 9(5):995-1001.</span></li>
+            <li><span class="ra">황원택, 강영민</span> (2004). <span class="rt">게임환경에서 동작하는 실시간 불 애니메이션을 위한 잡음 기반 텍스쳐 생성 기법.</span> <span class="rv">한국컴퓨터게임학회논문지, 1(4):36-44.</span></li>
+            <li><span class="ra">강영민, 조환규, 박찬종</span> (1999). <span class="rt">비정형 물체의 실시간 애니메이션을 위한 안정적 질량-스프링 모델.</span> <span class="rv">한국컴퓨터그래픽스학회논문지, 5(1):27-33.</span></li>
+            <li><span class="ra">강영민, 박선진, 조환규</span> (1998). <span class="rt">한 발 뜀뛰기 모델을 이용한 사실적인 달리기 애니메이션.</span> <span class="rv">한국컴퓨터그래픽스학회 논문지, 4(2):1-13.</span></li>
+        </ol>
+
+        <div class="ref-label">국내 학회 <span>· Domestic Conferences · 15</span></div>
+        <ol>
+            <li><span class="ra">강영민</span> (2011). <span class="rt">조화진동 모델을 통한 대규모 질량-스프링 시뮬레이션의 수치안정성 개선 및 병렬처리.</span> <span class="rv">한국융합소프트웨어학회 추계학술발표대회.</span></li>
+            <li><span class="ra">강영민, 조창식</span> (2011). <span class="rt">무리 이동 개체의 군집 형태 제어 기법.</span> <span class="rv">한국게임학회 추계 학술발표대회.</span></li>
+            <li><span class="ra">강세민, 강영민, 조창식</span> (2011). <span class="rt">집단 행동 제어를 위한 가이드 에이전트 모델.</span> <span class="rv">한국게임학회 추계 학술발표대회.</span> <span class="award">· 우수논문상</span></li>
+            <li><span class="ra">강영민, 김성수, 남승우</span> (2009). <span class="rt">직조 기반 비등방 반사를 이용한 의류 렌더링.</span> <span class="rv">한국게임학회 추계학술대회.</span></li>
+            <li><span class="ra">강영민, 강정훈, 김성수</span> (2009). <span class="rt">의류객체의 사실적인 렌더링 기법.</span> <span class="rv">한국컴퓨터그래픽스학회 추계학술대회.</span></li>
+            <li><span class="ra">강정훈, 전주희, 강영민, 옥수열</span> (2007). <span class="rt">고수준 매개 변수를 이용한 자동 동작 생성 도구 개발.</span> <span class="rv">한국멀티미디어학회 추계학술발표대회.</span></li>
+            <li><span class="ra">옥수열, 강영민, 이응주, 추영열</span> (2007). <span class="rt">계층적 매개함수를 이용한 캐릭터 보행 동작 자동 생성.</span> <span class="rv">한국멀티미디어학회 추계학술발표대회.</span> <span class="award">· 우수논문상</span></li>
+            <li><span class="ra">송지훈, 박창준, 강영민, 옥수열</span> (2007). <span class="rt">자동 동작 생성 엔진을 이용한 게임 개발.</span> <span class="rv">한국멀티미디어학회 추계학술발표대회.</span></li>
+            <li><span class="ra">강영민</span> (2006). <span class="rt">효율적인 모바일 서비스를 위한 적응적 사용자 인터페이스 기술.</span> <span class="rv">한국콘텐츠학회추계종합학술대회.</span></li>
+            <li><span class="ra">강영민</span> (2003). <span class="rt">효율적인 옷감 애니메이션 및 충돌 처리 기법.</span> <span class="rv">컴퓨터소사이어티 추계학술대회.</span> <span class="award">· 우수논문발표상</span></li>
+            <li><span class="ra">강영민, 조환규</span> (2003). <span class="rt">실시간 환경에서의 사실적인 옷감 애니메이션.</span> <span class="rv">한국정보과학회 춘계 학술발표.</span></li>
+            <li><span class="ra">황미녕, 강영민, 조환규</span> (2000). <span class="rt">서열정보의 유사성 검사를 위한 가시화 도구.</span> <span class="rv">한국정보과학회 학술발표.</span></li>
+            <li><span class="ra">강영민, 배경수, 조환규, 박찬종</span> (1999). <span class="rt">안정적인 질량-스프링 모델을 이용한 빠르고 사실적인 옷감 애니메이션.</span> <span class="rv">한국컴퓨터그래픽스학회 학술대회.</span> <span class="award">· 우수논문상</span></li>
+            <li><span class="ra">강영민, 박선진, 조환규</span> (1998). <span class="rt">한 발 뜀뛰기 모델을 이용한 사실적인 달리기 애니메이션.</span> <span class="rv">한국컴퓨터그래픽스학회 학술대회.</span></li>
+            <li><span class="ra">박재권, 강영민, 김성수, 조환규</span> (1997). <span class="rt">에너지 제한조건을 이용한 캐릭터 애니메이션 기법.</span> <span class="rv">한국정보과학회 학술대회.</span></li>
+        </ol>
+
+        <div class="ref-label">저 · 역서 <span>· Books &amp; Translations · 6</span></div>
+        <ol>
+            <li><span class="ra">강영민, 박동규, 김성수.</span> <span class="rt">으뜸 머신러닝.</span> <span class="rv">생능출판사, 2021 (개정판 2026.02.25).</span></li>
+            <li><span class="ra">박동규, 강영민.</span> <span class="rt">으뜸 파이썬.</span> <span class="rv">생능출판사, 2020 (개정판 2024.06.14).</span> <span class="award">· 세종도서 학술부문 선정</span></li>
+            <li><span class="ra">천인국, 박동규, 강영민.</span> <span class="rt">따라하며 배우는 파이썬과 데이터 과학.</span> <span class="rv">생능출판사, 2020 (개정판 2023.11.20).</span></li>
+            <li><span class="ra">박동규, 강영민 (초판) / 박동규, 강영민, 김병욱 (개정판).</span> <span class="rt">으뜸 데이터 분석과 머신러닝.</span> <span class="rv">생능출판사, 2021.12.10 (개정판 2024.12.16).</span></li>
+            <li><span class="ra">강영민.</span> <span class="rt">게임 개발자를 위한 수학과 OpenGL 프로그래밍.</span> <span class="rv">GS인터비전, 2015.</span></li>
+            <li><span class="ra">구자영, 강영민 외.</span> <span class="rt">OpenGL을 이용한 컴퓨터 그래픽스 5판 (번역).</span> <span class="rv">사이텍미디어, 2009.</span></li>
+        </ol>
+    </div>
+</section>
+
+<!-- PDF export -->
+<div class="print-cta reveal">
+    <p>이 이력서를 PDF로 저장하거나 인쇄할 수 있습니다.</p>
+    <button type="button" class="print-btn" onclick="window.print()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 9V2h12v7"></path>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+        PDF로 정리하기
+    </button>
+</div>
 
 </main>
 
